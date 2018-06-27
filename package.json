@@ -4,7 +4,9 @@
   "description": "kt keep trying",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "webpack --config webpack.config.js",
+    "run-server": "nodemon ./dist/server.js"
   },
   "keywords": [
     "kt"
@@ -30,8 +32,12 @@
   "devDependencies": {
     "@types/koa": "^2.0.46",
     "@types/koa-router": "^7.0.30",
+    "@types/node": "^10.3.6",
     "nodemon": "^1.17.5",
+    "ts-loader": "^4.4.1",
     "ts-node": "^7.0.0",
-    "typescript": "^2.9.2"
+    "typescript": "^2.9.2",
+    "webpack": "^4.12.1",
+    "webpack-cli": "^3.0.8"
   }
 }
