@@ -10,7 +10,6 @@ function ApiDispatcher(ctx) {
 			return;
 		}
 	}
-
 	ctx.body = "No Such Api Found";
 }
 
@@ -20,10 +19,9 @@ function InitApi() {
 	}
 }
 
-
-function RunApiTest(ctx, next) {
+async function RunApiTest(ctx, next) {
 	const apiList = {};
-	return ctx.render('apitest', apiList);
+	await ctx.render('apitest', apiList);
 }
 
 export {ApiList, ApiDispatcher, InitApi, RunApiTest}

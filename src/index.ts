@@ -2,7 +2,6 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router'
 import * as KoaStatic from 'koa-static'
 import * as KoaViews from 'koa-views'
-const path = require("path");
 
 import { Config } from './config/config'
 import {ApiDispatcher, InitApi, RunApiTest} from "./api/api";
