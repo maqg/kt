@@ -20,4 +20,10 @@ function InitApi() {
 	}
 }
 
-export {ApiList, ApiDispatcher, InitApi}
+
+function RunApiTest(ctx, next) {
+	const apiList = {};
+	return ctx.render('apitest', apiList);
+}
+
+export {ApiList, ApiDispatcher, InitApi, RunApiTest}
