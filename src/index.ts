@@ -1,24 +1,17 @@
 import * as Koa from 'koa';
-
 import * as Router from 'koa-router'
+import { Config } from './config/config'
 
 const app = new Koa();
+const router = new Router();
 
-/*
+router.get('/api/', async (ctx, next) => {
+	ctx.body = "Hello World, KT!"
+});
 
- app.use(context => {
- context.body = "hello world kt with api gateway";
- });
- */
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-const router = new Router()
+app.listen(Config.Port);
 
-router.get('/api/', async(ctx, next) => {
- ctx.body = "Hello World, KT!"
-})
-
-app.use(router.routes())
-
-app.listen(8000);
-
-console.log("hello world");
+console.log("Listen on Port " + Config.Port);
