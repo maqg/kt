@@ -63,6 +63,7 @@
     "vue-property-decorator": "^7.0.0",
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
+    "uuid": "^3.3.2",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8"
   }

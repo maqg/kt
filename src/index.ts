@@ -4,18 +4,18 @@ import * as KoaStatic from 'koa-static'
 import * as KoaViews from 'koa-views'
 
 import { Config } from './config/config'
-import {ApiDispatcher, InitApi, RunApiTest} from "./api/api";
+import {apiDispatcher, initApis, runApiTest} from "./api/api";
 import {Context} from "koa";
 
 const app = new Koa();
 const router = new Router();
 
 router.get('/api/test/', async(ctx, next) => {
-	await RunApiTest(ctx, next)
+	await runApiTest(ctx, next)
 });
 
 router.get('/api/', async(ctx, next) => {
-	await ApiDispatcher(ctx);
+	await apiDispatcher(ctx);
 });
 
 router.get('/dashboard/', async(ctx: Context)=>{
@@ -28,7 +28,7 @@ app.use(KoaStatic("../static"));
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-InitApi();
+initApis();
 app.listen(Config.Port);
 
 console.log("Listen on Port " + Config.Port);
