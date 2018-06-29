@@ -24,7 +24,6 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 InitApi();
-
 app.listen(Config.Port);
 
 console.log("Listen on Port " + Config.Port);

@@ -4,8 +4,13 @@
     "target": "esnext",
     "allowJs": true,
     "sourceMap": true,
-    "lib": ["es6"]
+    "lib": ["esnext"],
+    "outDir": "dist"
   },
+  "include": [
+    "src/**/*"
+  ],
+  "compileOnSave": true,
   "exclude": [
     "node_modules"
   ]

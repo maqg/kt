@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev-server": "webpack --config webpack.config.js",
-    "run-server": "nodemon ./dist/server.js"
+    "dev-server": "tsc -w -p ./tsconfig.json",
+    "run-server": "nodemon ./dist/index.js"
   },
   "keywords": [
     "kt"
