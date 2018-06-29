@@ -5,6 +5,7 @@ import * as KoaViews from 'koa-views'
 
 import { Config } from './config/config'
 import {ApiDispatcher, InitApi, RunApiTest} from "./api/api";
+import {Context} from "koa";
 
 const app = new Koa();
 const router = new Router();
@@ -17,8 +18,12 @@ router.get('/api/', async(ctx, next) => {
 	await ApiDispatcher(ctx);
 });
 
-app.use(KoaViews("./views", { extension: 'html' }));
-app.use(KoaStatic("./static"));
+router.get('/dashboard/', async(ctx: Context)=>{
+    await ctx.render('dashboard');
+});
+
+app.use(KoaViews("../views", { extension: 'html' }));
+app.use(KoaStatic("../static"));
 
 app.use(router.routes());
 app.use(router.allowedMethods());

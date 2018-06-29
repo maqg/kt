@@ -6,13 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-server": "tsc -w -p ./tsconfig.json",
-    "run-server": "nodemon ./dist/index.js"
+    "run-server": "nodemon ./dist/index.js",
+    "dev-dashboard": "webpack --config ./webpack.config.js"
   },
   "keywords": [
     "kt"
   ],
   "author": "henry.ma",
   "license": "Public Domain",
+  "browserslist": [
+    "defaults",
+    "not ie < 11",
+    "last 2 versions",
+    "> 1%",
+    "iOS 7",
+    "last 3 iOS versions"
+  ],
   "dependencies": {
     "bookshelf": "^0.13.3",
     "co": "^4.6.0",
@@ -27,7 +36,8 @@
     "koa-views": "^6.1.4",
     "md5": "^2.2.1",
     "moment": "^2.22.2",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "vue": "^2.5.16"
   },
   "devDependencies": {
     "@types/koa": "^2.0.46",
@@ -35,10 +45,24 @@
     "@types/koa-static": "^4.0.0",
     "@types/koa-views": "^2.0.3",
     "@types/node": "^10.3.6",
+    "autoprefixer": "^8.6.4",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.0",
+    "node-sass": "^4.9.0",
     "nodemon": "^1.17.5",
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
     "ts-loader": "^4.4.1",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2",
+    "vue-class-component": "^6.2.0",
+    "vue-loader": "^15.2.4",
+    "vue-property-decorator": "^7.0.0",
+    "vue-style-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.16",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8"
   }
