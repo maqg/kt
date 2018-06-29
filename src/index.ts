@@ -22,8 +22,8 @@ router.get('/dashboard/', async(ctx: Context)=>{
     await ctx.render('dashboard');
 });
 
-app.use(KoaViews("../views", { extension: 'html' }));
-app.use(KoaStatic("../static"));
+app.use(KoaViews("./views", { extension: 'html' }));
+app.use(KoaStatic("./static"));
 
 app.use(router.routes());
 app.use(router.allowedMethods());
