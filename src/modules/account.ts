@@ -9,7 +9,6 @@ function web_show_accountlist() {
 	let account = new Account("test");
 
 	account.id = getUuid();
-	account.status = "Enabled";
 
 	accouts.push(account.toObj());
 

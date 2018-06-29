@@ -5,8 +5,7 @@
 
 export enum Errors {
 	RET_SUCCESS = 0,
-
-	RET_INVALID_PARAS = 5,
+	RET_INVALID_PARAS = 5
 }
 
 class ErrorProto {
@@ -33,8 +32,3 @@ export class ErrorObj implements ErrroInterface{
 		this.errorMsgEN = "";
 	}
 }
-
-const errorList = {
-	RET_SUCCESS: "Ret Success",
-	RET_INVALID_PARAS: "Invalid Paras"
-};

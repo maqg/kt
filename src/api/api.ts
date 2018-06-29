@@ -6,7 +6,7 @@ import {transToStr} from "../utils/utils";
 let ApiList = [];
 
 function apiDispatcher(ctx) {
-	let key = "APIShowAllAccounts";
+	let key = "APIShowAccountList";
 	for (let api of ApiList) {
 		if (api["key"] == key) {
 			let resp = api["service"]();
