@@ -3,8 +3,11 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-export const RET_SUCCESS = 0;
-export const RET_INVALID_PARAS = 20;
+export enum Errors {
+	RET_SUCCESS = 0,
+
+	RET_INVALID_PARAS = 5,
+}
 
 class ErrorProto {
 
@@ -24,7 +27,7 @@ export class ErrorObj implements ErrroInterface{
 	errorMsgEN?: string;
 
 	constructor() {
-		this.errorNo = RET_SUCCESS;
+		this.errorNo = Errors.RET_SUCCESS;
 		this.errorLog = "";
 		this.errorMsg = "";
 		this.errorMsgEN = "";

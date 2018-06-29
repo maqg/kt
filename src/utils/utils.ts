@@ -7,7 +7,7 @@ import * as uuidv4 from 'uuid/v4';
 
 // return milliseconds
 function getMilliSeconds() {
-	return (new Date()).getMilliseconds();
+	return (new Date()).getTime();
 }
 
 function getCurrentDate() {
@@ -16,14 +16,12 @@ function getCurrentDate() {
 }
 
 function toDateStr(milliSeconds: number) {
-	let now = new Date();
-	now.setMilliseconds(milliSeconds);
-	return now.getFullYear() + "-" + now.getMonth() + "-" + now.getDay();
+	let now = new Date(milliSeconds);
+	return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate()
 }
 
 function toTimeStr(milliSeconds: number) {
-	let now = new Date();
-	now.setMilliseconds(milliSeconds);
+	let now = new Date(milliSeconds);
 	return toDateStr(milliSeconds) + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
 }
 

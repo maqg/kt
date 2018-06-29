@@ -3,7 +3,7 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {ErrorObj, RET_SUCCESS} from "./ErrorObj";
+import {ErrorObj} from "./ErrorObj";
 
 export class ApiResponse {
 	errorObj: ErrorObj;
@@ -13,6 +13,13 @@ export class ApiResponse {
 		this.errorObj = new ErrorObj();
 		this.data = null;
 	}
+}
+
+export function buildSuccessResp(data: any) {
+	let resp = new ApiResponse();
+	resp.data = data;
+	return resp;
+
 }
 
 export function buildErrorResp(errorNo, errorLog) {

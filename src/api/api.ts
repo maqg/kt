@@ -1,12 +1,12 @@
 import {ApiAccount} from "./api_account";
 import {buildErrorResp} from "../models/ApiResponse";
-import {RET_INVALID_PARAS} from "../models/ErrorObj";
+import {Errors} from "../models/ErrorObj";
 import {transToStr} from "../utils/utils";
 
 let ApiList = [];
 
 function apiDispatcher(ctx) {
-	let key = "APIShowAccountList";
+	let key = "APIShowAllAccounts";
 	for (let api of ApiList) {
 		if (api["key"] == key) {
 			let resp = api["service"]();
@@ -14,7 +14,7 @@ function apiDispatcher(ctx) {
 			return;
 		}
 	}
-	let resp = buildErrorResp(RET_INVALID_PARAS, "");
+	let resp = buildErrorResp(Errors.RET_INVALID_PARAS, "");
 	ctx.body = transToStr(resp);
 }
 
