@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^5.0.0",
     "@types/koa-router": "^7.0.30",
     "@types/koa-static": "^4.0.0",
     "@types/koa-views": "^2.0.3",
@@ -58,12 +59,12 @@
     "ts-loader": "^4.4.1",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2",
+    "uuid": "^3.3.2",
     "vue-class-component": "^6.2.0",
     "vue-loader": "^15.2.4",
     "vue-property-decorator": "^7.0.0",
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
-    "uuid": "^3.3.2",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8"
   }

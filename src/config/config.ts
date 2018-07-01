@@ -1,3 +1,8 @@
+/*
+ * Global Configuration for KT.
+ * Created at 06.29.2018 by Henry.Ma
+ */
+
 const Config = {
 	"Port": 8000,
 	"DbName": "dbkt",

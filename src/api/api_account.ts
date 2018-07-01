@@ -1,3 +1,8 @@
+/*
+ * API Entrance of Account Management.
+ * Created at 06.29.2018 by Henry.Ma
+ */
+
 import {web_show_accountlist, web_show_allaccounts} from "../modules/account";
 
 const ApiAccount = {

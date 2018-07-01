@@ -1,3 +1,8 @@
+/*
+ * API Entrance for KT.
+ * Created at 06.29.2018 by Henry.Ma
+ */
+
 import {ApiAccount} from "./api_account";
 import {buildErrorResp} from "../models/ApiResponse";
 import {Errors} from "../models/ErrorObj";
@@ -11,13 +16,20 @@ let ApiModules = [
 ];
 
 function apiDispatcher(ctx) {
-	let key = API_PREFIX + "APIShowAccountList";
-	let api = ApiListMap[key];
+	let apiKey = ctx.request.body["api"];
+	if (!apiKey) {
+		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, "apiKey not specified");
+		ctx.body = transToStr(resp);
+		return
+	}
+
+	let api = ApiListMap[apiKey];
 	if (api) {
-		let resp = api["service"]();
+		console.log(ctx.request.body);
+		let resp = api["service"](ctx.request.body);
 		ctx.body = JSON.stringify(resp);
 	} else {
-		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, "");
+		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, apiKey + "not exist");
 		ctx.body = transToStr(resp);
 	}
 }
@@ -44,8 +56,6 @@ function initApis() {
 			};
 		}
 	}
-
-	console.log(JSON.stringify(ApiModuleMap));
 }
 
 async function runApiTest(ctx, next) {

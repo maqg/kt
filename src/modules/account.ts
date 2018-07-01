@@ -1,3 +1,8 @@
+/*
+ * Account Management features from KT.
+ * Created at 06.29.2018 by Henry.Ma
+ */
+
 import {Account} from "../models/Account";
 import {getMilliSeconds, getUuid} from "../utils/utils";
 import {ApiResponse} from "../models/ApiResponse";
