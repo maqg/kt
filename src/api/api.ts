@@ -16,22 +16,42 @@ let ApiModules = [
 ];
 
 function parseParas(ctx) {
-	return ctx.request.body;
+	if (ctx.request.body.hasOwnProperty("paras")) {
+		return ctx.request.body["paras"];
+	} else {
+		return {};
+	}
 }
 
-function checkParas(apiProto, paras) {
+class CheckResult {
+	errorNo: number;
+	errorLog: string;
+
+	constructor(errorNo, msg) {
+		this.errorNo = errorNo;
+		this.errorLog = msg;
+	}
+}
+
+function checkParas(apiProto, paras): (CheckResult){
 	let apiParas = apiProto["paras"];
 	for (let key in apiParas) {
 		let param = apiParas[key];
 
-		if (param["default"] != PARAM_NOT_NULL && !paras.hasOwnProperty("default")) {
-			paras["defult"] = param["default"];
+		if (key == "default") {
+			continue;
 		}
 
-		if (param["default"] == PARAM_NOT_NULL && (!paras.hasOwnProperty("default") || paras[key] == "")) {
+		if (param["default"] != PARAM_NOT_NULL && (
+			!paras.hasOwnProperty("default") || paras[key] == null || paras[key] == "")) {
+			paras[key] = param["default"];
+		}
+
+		if (param["default"] == PARAM_NOT_NULL && (
+			!paras.hasOwnProperty(key) || paras[key] == null || paras[key] == "")) {
 			let errorMsg = "paras " + key + " must be specified";
 			console.log(errorMsg);
-			return false;
+			return new CheckResult(Errors.RET_INVALID_PARAS, errorMsg);
 		}
 
 		if (param["default"] == PARAM_TYPE_INT) {
@@ -42,13 +62,14 @@ function checkParas(apiProto, paras) {
 		}
 	}
 
-	return true;
+	return new CheckResult(0, "");
 }
 
 function apiDispatcher(ctx) {
 
 	let paras = parseParas(ctx);
-	let apiKey = paras["api"];
+	let apiKey = ctx.request.body["api"];
+
 	if (!apiKey) {
 		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, "apiKey not specified");
 		ctx.body = transToStr(resp);
@@ -57,8 +78,9 @@ function apiDispatcher(ctx) {
 
 	let api = ApiListMap[apiKey];
 	if (api) {
-		if (!checkParas(api, paras)) {
-			let resp = buildErrorResp(Errors.RET_INVALID_PARAS, apiKey + " not exist");
+		let ret = checkParas(api, paras);
+		if (ret.errorNo != 0) {
+			let resp = buildErrorResp(ret.errorNo, ret.errorLog);
 			ctx.body = transToStr(resp);
 			return
 		}
@@ -111,7 +133,7 @@ function initApis() {
 }
 
 async function runApiTest(ctx, next) {
-	await ctx.render('apitest', {TITLE: "Keep Trying", APICONFIG: JSON.stringify(ApiModuleMap) });
+	await ctx.render('apitest', {TITLE: "Keep Trying", APICONFIG: JSON.stringify(ApiModuleMap)});
 }
 
 export {ApiList, apiDispatcher, initApis, runApiTest}

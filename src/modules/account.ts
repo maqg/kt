@@ -48,6 +48,7 @@ function web_show_accountinfo(paras) {
 	let resp = new ApiResponse();
 	resp.errorObj.errorNo = Errors.RET_INVALID_PARAS;
 	resp.errorObj.errorLog = "No Such Account Info";
+	resp.data = paras["id"];
 	return resp;
 }
 
