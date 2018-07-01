@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KT API UNITEST</title>
+    <title><%= TITLE %></title>
     <link rel="icon" href="/apitest/imgs/favicon.ico" type="image/x-icon">
     <script src="/apitest/jquery-1.11.3.min.js"></script>
     <script src="/apitest/js/apitest_utils.js"></script>
@@ -18,38 +18,24 @@
 
 <div class="container">
 
-    <h1>欢迎使用API单元测试平台</h1>
+    <h1>欢迎使用 <%= TITLE %> API单元测试功能 </h1>
 
     <textarea title="" id="hidenString" hidden style="height: 1px">
-         {{ moduleListStr }}
+        <%= APICONFIG %>
     </textarea>
 
-    <textarea title="" id="hidenResultString" hidden style="height: 1px">
-        {{ resultStr }}
-    </textarea>
 
     <div style="display: inline-block; padding-top: 25px">
         <label class="" style="width: 80px;float: left;line-height: 34px; margin-right: 10px">选择模块：</label>
-        <select id="apiModuleList" onchange="updateApis();" title="" style="margin-right:10px; width: 150px;float: left" class="form-control">
-            {% for moduleName in sorted(moduleList.keys()) %}
-                {% if moduleName == result["moduleSelected"] %}
-                    <option selected>{{ moduleName }}</option>
-                {% else %}
-                    <option>{{ moduleName }}</option>
-                {% end %}
-            {% end %}
+        <select id="apiModuleList" onchange="updateApis();" title="" style="margin-right:10px; width: 150px;float: left"
+                class="form-control">
         </select>
         <label class="" style="width: 80px;float: left;line-height: 34px; margin-right: 10px">选择API：</label>
-        <select id="apiList" onchange="updateParas();" title="" style="margin-right:10px; width: 300px;float: left" class="form-control">
-            {% for api in moduleList[result["moduleSelected"]] %}
-                {% if api["key"] == result["apiSelected"] %}
-                    <option value="{{ api['key'] }}" selected>{{ api["name"] }}</option>
-                {% else %}
-                    <option value="{{ api['key'] }}">{{ api["name"] }}</option>
-                {% end %}
-            {% end %}
+        <select id="apiList" onchange="updateParas();" title="" style="margin-right:10px; width: 300px;float: left"
+                class="form-control">
         </select>
-        <input id="moduleQueryButton" style="display: inline-block; width: 80px; float: left" onclick="commint_request();" type="button"
+        <input id="moduleQueryButton" style="display: inline-block; width: 80px; float: left"
+               onclick="commint_request();" type="button"
                value="提交" class="btn btn-primary"/>
     </div>
 
@@ -64,18 +50,12 @@
     <label class="" style="width: 80px;float: left;line-height: 34px; margin-right: 10px">请求内容：</label><br><br>
     <div>
         <pre id="requestBody" style="height: 100%; padding: 5px" title="">
-            {% if result %}
-                {{ result["request"] }}
-            {% end %}
         </pre>
     </div>
 
     <label class="" style="width: 80px;float: left;line-height: 34px; margin-right: 10px">回复内容：</label><br><br>
     <div>
         <pre id="responseBody" style="height: 100%; padding: 5px" title="">
-            {% if result %}
-                {{ result["reply"] }}
-            {% end %}
         </pre>
     </div>
 
@@ -88,15 +68,8 @@
         selectedModule = getSelectedOption("#apiModuleList");
         selectedApi = getSelectedOption("#apiList");
 
-        apiListObj = JsonObj[selectedModule];
-        for (var i = 0; i < apiListObj.length; i++) {
-            temp = apiListObj[i];
-            if (temp["key"] == selectedApi) {
-                return temp;
-            }
-        }
-
-        return null;
+        apiModule = JsonObj[selectedModule];
+        return apiModule["protos"][selectedApi];
     }
 
     function updateParas() {
@@ -112,23 +85,21 @@
         bodyStr += "<th width='25%'>类型</th>";
         bodyStr += "<th style='word-break: break-all'>内容</th></tr>";
 
-        for (var item in parasList) {
+        for (var i = 0; i < parasList.length; i++) {
 
-            var placeHolder = parasList[item]["descCN"];
+            param = parasList[i];
+
+            var placeHolder = param["desc"];
             var value = "";
 
-            if (parasList[item]["default"] != "NotNull") {
-                placeHolder = placeHolder + " ( " + parasList[item]["default"] + " ) ";
-                value = parasList[item]["default"];
+            if (param["default"] != "NotNull") {
+                placeHolder = placeHolder + " ( " + param["default"] + " ) ";
+                value = param["default"];
             }
 
-            if (resultObj["paras"][item] != null) {
-                value = resultObj["paras"][item];
-            }
-
-            bodyStr += "<tr><td><input type='text' disabled readonly name='name' value = " + item + "></td > ";
-            bodyStr += "<td><select readonly disabled name='type' class='form-control'><option>" + parasList[item]["type"] + "</option></select></td > ";
-            bodyStr += "<td><input type='text' name='value' placeholder='" +  placeHolder + "' value = '" + value + "'></td></tr>";
+            bodyStr += "<tr><td><input type='text' disabled readonly name='name' value = " + param["name"] + "></td > ";
+            bodyStr += "<td><select readonly disabled name='type' class='form-control'><option>" + param["type"] + "</option></select></td > ";
+            bodyStr += "<td><input type='text' name='value' placeholder='" + placeHolder + "' value = '" + value + "'></td></tr>";
         }
 
         $parasTable.html(bodyStr);
@@ -140,11 +111,11 @@
         var $apiList = $("#apiList");
         var bodyStr = "";
 
-        apiListObj = JsonObj[selectedModule];
+        apiModule = JsonObj[selectedModule];
 
-        for (var i = 0; i < apiListObj.length; i++) {
-            node = apiListObj[i];
-            bodyStr += "<option value='" + node["key"] + "'>" + node["name"] + "</option>"
+        for (var key in apiModule["protos"]) {
+            apiNode = apiModule["protos"][key];
+            bodyStr += "<option value='" + key + "'>" + apiNode["name"] + "</option>"
         }
 
         $apiList.html(bodyStr);
@@ -157,27 +128,25 @@
 
         $apiTable = $("#apiRequestTable");
         var $trs = $apiTable.children("tbody").children("tr");
-        $trs.each(function(index) {
+        $trs.each(function (index) {
             var $tr = $(this);
             if (index != 0) {
                 $tds = $tr.children("td");
-                name = $tds[0].children[0].value;
+                var name = $tds[0].children[0].value;
                 valueType = $tds[1].children[0].value;
                 value = $tds[2].children[0].value;
-                if (valueType === "int") {
+                if (valueType == "int") {
                     paras[name] = parseInt(value);
-                }else if (valueType === "boolean") {
+                } else if (valueType == "boolean") {
                     paras[name] = value.toLowerCase() == "true";
-                } else if(valueType === "liststring") {
-	                paras[name] = value.split(",");
-                } else if (valueType === "listobject") {
-                	paras[name] = JSON.parse(value);
-                } else if(valueType === "listint") {
+                } else if (valueType == "liststring") {
+                    paras[name] = value.split(",");
+                } else if (valueType == "listint") {
                     paras[name] = value.split(",");
                 } else {
                     paras[name] = value;
                 }
-              }
+            }
         });
 
         return paras;
@@ -187,11 +156,11 @@
     function commint_request() {
 
         selectedModule = getSelectedOption("#apiModuleList");
-        selectedApi = getSelectedOption("#apiList");
+        selectedApi = getSelectedApi();
 
         json = {
             "module": selectedModule,
-            "api": selectedApi,
+            "api": selectedApi["key"],
             "paras": fetch_api_paras(),
             "async": false,
             "session": {
@@ -202,19 +171,29 @@
 
         bodyStr = JSON.stringify(json);
 
-        httpPost("/api/", bodyStr, function(resJson){
+        httpPost("/api/", bodyStr, function (resJson) {
             $("#requestBody").html(JSON.stringify(json, null, 4));
             $("#responseBody").html(JSON.stringify(resJson, null, 4));
         });
     }
 
+    function initModuleList() {
+        var bodyStr = "";
+        var $moduleListTable = $("#apiModuleList");
+        for (var key in JsonObj) {
+            bodyStr += "<option>" + key + "</optipn>";
+        }
+        $moduleListTable.html(bodyStr);
+    }
+
     var $hidenNode = $("#hidenString");
     var JsonObj = JSON.parse($hidenNode.html());
 
-    var $hidenResultNode = $("#hidenResultString");
-    var resultObj = JSON.parse($hidenResultNode.html());
+    initModuleList();
 
-    updateParas();
+    updateApis();
+
+    console.log(JsonObj)
 
 </script>
 

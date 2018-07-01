@@ -3,7 +3,7 @@ import * as Router from 'koa-router'
 import * as KoaStatic from 'koa-static'
 import * as KoaViews from 'koa-views'
 
-import { Config } from './config/config'
+import {ApiModuleMap, Config} from './config/config'
 import {apiDispatcher, initApis, runApiTest} from "./api/api";
 import {Context} from "koa";
 
@@ -17,18 +17,22 @@ router.get('/api/test/', async(ctx, next) => {
 router.get('/api/', async(ctx, next) => {
 	await apiDispatcher(ctx);
 });
+router.post('/api/', async(ctx, next) => {
+	await apiDispatcher(ctx);
+});
 
 router.get('/dashboard/', async(ctx: Context)=>{
     await ctx.render('dashboard');
 });
 
-app.use(KoaViews("./views", { extension: 'html' }));
+app.use(KoaViews("./views", { extension: 'html', map: {html: 'ejs'}}));
 app.use(KoaStatic("./static"));
 
 app.use(router.routes());
 app.use(router.allowedMethods());
 
 initApis();
+
 app.listen(Config.Port);
 
 console.log("Listen on Port " + Config.Port);

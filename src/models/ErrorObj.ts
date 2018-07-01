@@ -8,7 +8,7 @@ export enum Errors {
 	RET_INVALID_PARAS = 5
 }
 
-class ErrorProto {
+ class ErrorProto {
 
 }
 
@@ -32,3 +32,12 @@ export class ErrorObj implements ErrroInterface{
 		this.errorMsgEN = "";
 	}
 }
+
+interface ErrorArray {
+	readonly [index: number]: string;
+}
+
+let errorList: ErrorArray = [
+	"eee",
+	"jkjkjk"
+];
