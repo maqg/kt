@@ -7,7 +7,7 @@ import {ApiAccount} from "./api_account";
 import {buildErrorResp} from "../models/ApiResponse";
 import {Errors} from "../models/ErrorObj";
 import {transToStr} from "../utils/utils";
-import {API_PREFIX, ApiModuleMap} from "../config/config";
+import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT} from "../config/config";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -15,8 +15,40 @@ let ApiModules = [
 	ApiAccount,
 ];
 
+function parseParas(ctx) {
+	return ctx.request.body;
+}
+
+function checkParas(apiProto, paras) {
+	let apiParas = apiProto["paras"];
+	for (let key in apiParas) {
+		let param = apiParas[key];
+
+		if (param["default"] != PARAM_NOT_NULL && !paras.hasOwnProperty("default")) {
+			paras["defult"] = param["default"];
+		}
+
+		if (param["default"] == PARAM_NOT_NULL && (!paras.hasOwnProperty("default") || paras[key] == "")) {
+			let errorMsg = "paras " + key + " must be specified";
+			console.log(errorMsg);
+			return false;
+		}
+
+		if (param["default"] == PARAM_TYPE_INT) {
+			if (paras[key] == undefined || paras[key] == null) {
+				paras[key] = 0;
+			}
+			paras[key] = <number>paras[key];
+		}
+	}
+
+	return true;
+}
+
 function apiDispatcher(ctx) {
-	let apiKey = ctx.request.body["api"];
+
+	let paras = parseParas(ctx);
+	let apiKey = paras["api"];
 	if (!apiKey) {
 		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, "apiKey not specified");
 		ctx.body = transToStr(resp);
@@ -25,14 +57,34 @@ function apiDispatcher(ctx) {
 
 	let api = ApiListMap[apiKey];
 	if (api) {
-		console.log(ctx.request.body);
-		let resp = api["service"](ctx.request.body);
+		if (!checkParas(api, paras)) {
+			let resp = buildErrorResp(Errors.RET_INVALID_PARAS, apiKey + " not exist");
+			ctx.body = transToStr(resp);
+			return
+		}
+
+		console.log(paras);
+		let resp = api["service"](paras);
 		ctx.body = JSON.stringify(resp);
 	} else {
 		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, apiKey + "not exist");
 		ctx.body = transToStr(resp);
 	}
 }
+
+function parasMap2List(paras) {
+	let paraList = [];
+	for (let key in paras) {
+		paraList.push({
+			"name": key,
+			"default": paras[key]["default"],
+			"type": paras[key]["type"],
+			"desc": paras[key]["desc"]
+		});
+	}
+	return paraList
+}
+
 
 function initApis() {
 	for (let apiModule of ApiModules) {
@@ -52,7 +104,7 @@ function initApis() {
 			ApiModuleMap[apiModule["module"]]["protos"][api["key"]] = {
 				"name": api["name"],
 				"key": API_PREFIX + api["key"],
-				"paras": {}
+				"paras": parasMap2List(api["paras"])
 			};
 		}
 	}

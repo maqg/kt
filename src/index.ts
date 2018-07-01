@@ -1,12 +1,12 @@
 import * as Koa from 'koa';
+import {Context} from 'koa';
 import * as Router from 'koa-router'
 import * as KoaStatic from 'koa-static'
 import * as KoaBodyParar from 'koa-bodyparser'
 import * as KoaViews from 'koa-views'
 
-import {ApiModuleMap, Config} from './config/config'
+import {Config} from './config/config'
 import {apiDispatcher, initApis, runApiTest} from "./api/api";
-import {Context} from "koa";
 
 const app = new Koa();
 const router = new Router();

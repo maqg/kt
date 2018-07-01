@@ -16,4 +16,12 @@ const API_PREFIX = "octlink.kt.v1.";
 
 let ApiModuleMap = {};
 
+export const PARAM_TYPE_STRING = "string";
+export const PARAM_TYPE_INTLIST = "intlist";
+export const PARAM_TYPE_STRINGLIST = "stringlist";
+export const PARAM_TYPE_INT = "int";
+
+export const PARAM_NOT_NULL = "NotNull";
+
+
 export {Config, API_PREFIX, ApiModuleMap};
