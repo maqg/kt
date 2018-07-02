@@ -6,7 +6,7 @@
 import {Account} from "../models/Account";
 import {getMilliSeconds, getUuid} from "../utils/utils";
 import {ApiResponse} from "../models/ApiResponse";
-import {Errors} from "../models/ErrorObj";
+import {Errors} from "../models/KtError";
 
 function web_show_accountlist(paras) {
 	let accouts = [];

@@ -89,5 +89,5 @@ function test() {
 	let hello = new Account('aaron');
 	hello.init();
 	let word = {...hello, xyz: '123'};
-	JSON.stringify(hello);
+	console.log(JSON.stringify(hello));
 }
