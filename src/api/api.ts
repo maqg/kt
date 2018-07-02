@@ -87,7 +87,7 @@ function checkParas(apiProto, paras): (CheckResult){
 	return new CheckResult(0, "");
 }
 
-function apiDispatcher(ctx) {
+async function apiDispatcher(ctx) {
 
 	let paras = parseParas(ctx);
 	let api = ctx.request.body["api"];
@@ -107,8 +107,8 @@ function apiDispatcher(ctx) {
 			return
 		}
 
-		console.log(paras);
-		let resp = apiProto["service"](paras);
+		let resp = await apiProto["service"](paras);
+		console.log(resp);
 		ctx.body = JSON.stringify(resp);
 	} else {
 		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, apiProto + "not exist");

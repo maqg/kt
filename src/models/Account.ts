@@ -4,6 +4,8 @@
  */
 
 import {toTimeStr} from "../utils/utils";
+import {knexDbHandler} from "../utils/bookshelf";
+import * as Bookshelf from "bookshelf";
 
 export const USER_STATUS_ENABLED = "enabled";
 export const USER_STATUS_DISABLED = "disabled";
@@ -40,7 +42,7 @@ export interface AccountObj extends AccountInterface, TimeInfoObj {
 
 const ACCOUNT_ROLE_SUPERADMIN = 7;
 
-export class Account implements AccountInterface {
+export class Accountl implements AccountInterface {
 	id: string = "";
 	username: string;
 	phone: string = "";
@@ -90,9 +92,10 @@ export class Account implements AccountInterface {
 	}
 }
 
-function test() {
-	let hello = new Account('aaron');
-	hello.init();
-	let word = {...hello, xyz: '123'};
-	console.log(JSON.stringify(hello));
-}
+let bookshelf = Bookshelf(knexDbHandler);
+export var Account = bookshelf.Model.extend({
+	tableName: "account",
+	statusCN: function() {
+		return "skkkkk"
+	}
+});

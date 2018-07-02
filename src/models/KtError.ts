@@ -12,12 +12,12 @@ export interface ErrorInterface {
 export class KtError implements ErrorInterface{
 	errorNo: number;
 	errorMsg: string;
-	errorLog?: string;
+	errorLog: string = "";
 
 	constructor() {
 		this.errorNo = Errors.RET_SUCCESS;
 		this.errorLog = "";
-		this.errorMsg = "";
+		this.errorMsg = Error_d2s(Errors.RET_SUCCESS);
 	}
 }
 
