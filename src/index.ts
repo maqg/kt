@@ -23,6 +23,10 @@ router.get('/dashboard/', async(ctx: Context)=>{
     await ctx.render('dashboard');
 });
 
+router.get('/dashboard-doc/', async(ctx: Context)=>{
+    await ctx.render('doc');
+});
+
 app.use(KoaBodyParar());
 app.use(KoaViews("./views", { extension: 'html', map: {html: 'ejs'}}));
 app.use(KoaStatic("./static"));

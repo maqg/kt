@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-server": "tsc -w -p ./tsconfig.json",
     "run-server": "nodemon ./dist/index.js",
-    "dev-dashboard": "webpack --config ./webpack.config.js"
+    "dev-dashboard": "webpack --config ./webpack.config.js",
+    "dev-doc": "webpack --config ./webpack.config.doc.js"
   },
   "keywords": [
     "kt"
@@ -37,7 +38,10 @@
     "md5": "^2.2.1",
     "moment": "^2.22.2",
     "mysql": "^2.15.0",
-    "vue": "^2.5.16"
+    "events": "^3.0.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
     "@types/koa": "^2.0.46",
@@ -46,6 +50,9 @@
     "@types/koa-static": "^4.0.0",
     "@types/koa-views": "^2.0.3",
     "@types/node": "^10.3.6",
+    "@types/react": "^16.4.6",
+    "@types/react-dom": "^16.0.6",
+    "@types/react-router-dom": "^4.2.7",
     "autoprefixer": "^8.6.4",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
@@ -59,12 +66,9 @@
     "ts-loader": "^4.4.1",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2",
+    "typings-for-css-modules-loader": "^1.7.0",
+    "url-loader": "^1.0.1",
     "uuid": "^3.3.2",
-    "vue-class-component": "^6.2.0",
-    "vue-loader": "^15.2.4",
-    "vue-property-decorator": "^7.0.0",
-    "vue-style-loader": "^4.1.0",
-    "vue-template-compiler": "^2.5.16",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8"
   }

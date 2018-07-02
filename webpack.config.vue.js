@@ -1,45 +1,43 @@
-const path = require("path");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const VueLoaderPlugin = require("vue-loader").VueLoaderPlugin;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
+    mode: "development",
     entry: {
-        main: path.join(__dirname, 'dashboard/main.tsx')
+        dashboard: path.join(__dirname, 'dashboard-vue/index.ts')
     },
-    optimization: {
-        splitChunks:{
-            cacheGroups: {
-                vendors: {
-                    name: 'vendor',
-                    test: /[\\/]node_modules[\\/]/,
-                    chunks: "initial"
-                }
-            }
-        }
+    output: {
+        path: path.join(__dirname, 'static/dashboard-vue/'),
+        publicPath: '/dashboard-vue/',
+        filename: "script/[name].js?[hash]"
     },
     watch: true,
-    output: {
-        path: path.join(__dirname, 'static/dashboard/'),
-        filename: "script/[name].js?[hash]",
-        publicPath: '/dashboard/'
-    },
-    mode: "development",
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts','.js', '.vue', '.json', '.config.js'],
+        alias: {
+            'vue$':'vue/dist/vue.esm.js'
+        }
     },
+    devtool: "source-map",
     module: {
         rules: [
             {
-                test: /\.(ts|tsx)?$/,
-                exclude: /node_modules/,
+                test: /\.vue$/,
+                loader: "vue-loader"
+            },
+            {
+                test: /\.ts?$/,
                 loader: "ts-loader",
+                exclude: path.join(__dirname, 'node_modules'),
                 options: {
-                    configFile: path.join("dashboard/tsconfig.json")
+                    configFile: path.join("dashboard-vue/tsconfig.json"),
+                    appendTsSuffixTo: [/\.vue$/]
                 }
             },
             {
-                test:/\.scss?$/,
-                use: [
+                test: /\.scss?$/,
+                use:[
                     MiniCssExtractPlugin.loader,
                     "css-loader",
                     {
@@ -47,7 +45,7 @@ module.exports = {
                         options: {
                             sourceMap: true,
                             config: {
-                                path: path.join(__dirname, 'postcss.config.js')
+                                path: './postcss.config.js'
                             }
                         }
                     },
@@ -71,20 +69,18 @@ module.exports = {
         ]
     },
     devServer: {
-        port: 8000,
-        inline: true,
-        contentBase: "dist"
+        port:8800
     },
-    devtool: "source-map",
     plugins: [
         new MiniCssExtractPlugin({
             filename:"style/[name].css?[hash]",
         }),
         new HtmlWebpackPlugin({
-            template:"./dashboard/index.html",
-            filename: '../../views/dashboard.html',
+            template:"./dashboard-vue/index.html",
+            filename: '../../views/dashboard-vue.html',
             inject: 'body',
-            favicon: path.join(__dirname, "dashboard/static/img/favicon.ico")
-        })
+            favicon: path.join(__dirname, "dashboard-vue/static/img/favicon.ico")
+        }),
+        new VueLoaderPlugin()
     ]
 };

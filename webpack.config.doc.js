@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: {
-        main: path.join(__dirname, 'dashboard/main.tsx')
+        main: path.join(__dirname, 'dashboard/doc-example/main.tsx')
     },
     optimization: {
         splitChunks:{
@@ -19,9 +19,9 @@ module.exports = {
     },
     watch: true,
     output: {
-        path: path.join(__dirname, 'static/dashboard/'),
+        path: path.join(__dirname, 'static/doc/'),
         filename: "script/[name].js?[hash]",
-        publicPath: '/dashboard/'
+        publicPath: '/doc/'
     },
     mode: "development",
     resolve: {
@@ -50,8 +50,9 @@ module.exports = {
                                 path: path.join(__dirname, 'postcss.config.js')
                             }
                         }
-                    },
-                    "sass-loader"
+                    },{
+                        loader: "sass-loader"
+                    }
                 ]
             },
             {
@@ -81,10 +82,10 @@ module.exports = {
             filename:"style/[name].css?[hash]",
         }),
         new HtmlWebpackPlugin({
-            template:"./dashboard/index.html",
-            filename: '../../views/dashboard.html',
+            template:"./dashboard/doc.html",
+            filename: '../../views/doc.html',
             inject: 'body',
-            favicon: path.join(__dirname, "dashboard/static/img/favicon.ico")
+            favicon: path.join(__dirname, "dashboard/doc-example/static/img/favicon.ico")
         })
     ]
 };

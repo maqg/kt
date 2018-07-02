@@ -1,14 +1,74 @@
+// plugin in fontawesome-webfont styles
 @font-face {
   font-family: 'fa';
-  src: url(../font/fontawesome-webfont.eot?v=4.7.0);
-  src: url(../font/fontawesome-webfont.eot?#iefix&v=4.7.0) format('embedded-opentype'),
-  url(../font/fontawesome-webfont.woff2?v=4.7.0) format('woff2'),
-  url(../font/fontawesome-webfont.woff?v=4.7.0) format('woff'),
-  url(../font/fontawesome-webfont.ttf?v=4.7.0) format('truetype');
+  src: url(../font/fontawesome-webfont.eot);
+  src: url(../font/fontawesome-webfont.eot) format('embedded-opentype'),
+    url(../font/fontawesome-webfont.woff2) format('woff2'),
+    url(../font/fontawesome-webfont.woff) format('woff'),
+    url(../font/fontawesome-webfont.ttf) format('truetype');
+
   font-weight: normal;
   font-style: normal;
 }
+@import "base-icons";
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+.rotate-90 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.rotate-180 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.rotate-270 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+.flip-horizontal {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+  -webkit-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+.flip-vertical {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  -webkit-transform: scale(1, -1);
+  -ms-transform: scale(1, -1);
+  transform: scale(1, -1);
+}
+.icon-spin {
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
+}
+.icon-pulse {
+  -webkit-animation: fa-spin 1s infinite steps(8);
+  animation: fa-spin 1s infinite steps(8);
+}
+//sum ui comps themes by @theme
 body{
-  background-color: red;
-  font-family: 'fa', serif;
 }
