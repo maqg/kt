@@ -45,7 +45,7 @@ function httpPost($url, $data, $callback) {
         if (http.readyState == 4 && http.status == 200) {
             $callback(string2Json(http.responseText));
         } else if (http.readyState == 4 && http.status != 200) {
-            alert("编辑API错误！")
+            alert("调用API错误！")
         }
     };
 

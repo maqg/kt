@@ -5,8 +5,8 @@
 
 import {ApiAccount} from "./api_account";
 import {buildErrorResp} from "../models/ApiResponse";
-import {Errors} from "../models/ErrorObj";
-import {transToStr} from "../utils/utils";
+import {Errors} from "../models/KtError";
+import {parseValue, transToStr} from "../utils/utils";
 import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT} from "../config/config";
 
 let ApiList = [];
@@ -16,11 +16,17 @@ let ApiModules = [
 ];
 
 function parseParas(ctx) {
-	if (ctx.request.body.hasOwnProperty("paras")) {
-		return ctx.request.body["paras"];
-	} else {
-		return {};
+	let args = ctx.request.body;
+	let paras = {};
+
+	if (args.hasOwnProperty("paras")) {
+		paras = ctx.request.body["paras"];
 	}
+
+	paras["skey"] = parseValue(args, "skey");
+	paras["session"] = parseValue(args, "session");
+
+	return paras;
 }
 
 class CheckResult {
@@ -33,8 +39,25 @@ class CheckResult {
 	}
 }
 
+function checkSkey(paras) {
+	return paras["skey"] != null;
+}
+
+function checkSession(paras) {
+	return paras["session"] != null;
+}
+
 function checkParas(apiProto, paras): (CheckResult){
 	let apiParas = apiProto["paras"];
+
+	if (!checkSkey(paras)) {
+		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["skey"]);
+	}
+
+	if (!checkSession(paras)) {
+		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["session"]);
+	}
+
 	for (let key in apiParas) {
 		let param = apiParas[key];
 
@@ -50,7 +73,6 @@ function checkParas(apiProto, paras): (CheckResult){
 		if (param["default"] == PARAM_NOT_NULL && (
 			!paras.hasOwnProperty(key) || paras[key] == null || paras[key] == "")) {
 			let errorMsg = "paras " + key + " must be specified";
-			console.log(errorMsg);
 			return new CheckResult(Errors.RET_INVALID_PARAS, errorMsg);
 		}
 
@@ -65,31 +87,31 @@ function checkParas(apiProto, paras): (CheckResult){
 	return new CheckResult(0, "");
 }
 
-function apiDispatcher(ctx) {
+async function apiDispatcher(ctx) {
 
 	let paras = parseParas(ctx);
-	let apiKey = ctx.request.body["api"];
+	let api = ctx.request.body["api"];
 
-	if (!apiKey) {
-		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, "apiKey not specified");
+	if (!api) {
+		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, "api not specified");
 		ctx.body = transToStr(resp);
 		return
 	}
 
-	let api = ApiListMap[apiKey];
-	if (api) {
-		let ret = checkParas(api, paras);
-		if (ret.errorNo != 0) {
-			let resp = buildErrorResp(ret.errorNo, ret.errorLog);
+	let apiProto = ApiListMap[api];
+	if (apiProto) {
+		let retObj = checkParas(apiProto, paras);
+		if (retObj.errorNo != 0) {
+			let resp = buildErrorResp(retObj.errorNo, retObj.errorLog);
 			ctx.body = transToStr(resp);
 			return
 		}
 
-		console.log(paras);
-		let resp = api["service"](paras);
+		let resp = await apiProto["service"](paras);
+		console.log(resp);
 		ctx.body = JSON.stringify(resp);
 	} else {
-		let resp = buildErrorResp(Errors.RET_INVALID_PARAS, apiKey + "not exist");
+		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, apiProto + "not exist");
 		ctx.body = transToStr(resp);
 	}
 }

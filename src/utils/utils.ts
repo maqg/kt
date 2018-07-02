@@ -33,4 +33,12 @@ function transToStr(obj: any) {
 	return JSON.stringify(obj);
 }
 
-export {getUuid, getCurrentDate, getMilliSeconds, toDateStr, toTimeStr, transToStr};
+function parseValue(paras, key) {
+	if (paras.hasOwnProperty(key)) {
+		return paras[key];
+	} else {
+		return null;
+	}
+}
+
+export {getUuid, getCurrentDate, getMilliSeconds, toDateStr, toTimeStr, transToStr, parseValue};

@@ -3,14 +3,14 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {ErrorObj} from "./ErrorObj";
+import {Error_d2s, KtError} from "./KtError";
 
 export class ApiResponse {
-	errorObj: ErrorObj;
+	errorObj: KtError;
 	data: any;
 
 	constructor() {
-		this.errorObj = new ErrorObj();
+		this.errorObj = new KtError();
 		this.data = null;
 	}
 }
@@ -26,6 +26,7 @@ export function buildErrorResp(errorNo, errorLog) {
 	let resp = new ApiResponse();
 	resp.errorObj.errorLog = errorLog ? errorLog:"";
 	resp.errorObj.errorNo = errorNo;
+	resp.errorObj.errorMsg = Error_d2s(errorNo);
 	resp.data = null;
 	return resp;
 }

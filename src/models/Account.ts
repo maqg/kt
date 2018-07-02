@@ -4,6 +4,11 @@
  */
 
 import {toTimeStr} from "../utils/utils";
+import {knexDbHandler} from "../utils/bookshelf";
+import * as Bookshelf from "bookshelf";
+
+export const USER_STATUS_ENABLED = "enabled";
+export const USER_STATUS_DISABLED = "disabled";
 
 export interface TimeInfoInterface {
 	createTime: number;
@@ -35,16 +40,18 @@ export interface AccountObj extends AccountInterface, TimeInfoObj {
 	lastLoginStr: string;
 }
 
-export class Account implements AccountInterface {
-	id: string;
+const ACCOUNT_ROLE_SUPERADMIN = 7;
+
+export class Accountl implements AccountInterface {
+	id: string = "";
 	username: string;
-	phone: string;
-	role: number;
-	status: string;
-	lastLogin: number;
-	createTime: number;
-	updateTime: number;
-	deleteTime: number;
+	phone: string = "";
+	role: number = ACCOUNT_ROLE_SUPERADMIN;
+	status: string = "enabled";
+	lastLogin: number = 0;
+	createTime: number = 0;
+	updateTime: number = 0;
+	deleteTime: number = 0;
 
 	constructor(username: string) {
 		this.username = username;
@@ -85,9 +92,10 @@ export class Account implements AccountInterface {
 	}
 }
 
-function test() {
-	let hello = new Account('aaron');
-	hello.init();
-	let word = {...hello, xyz: '123'};
-	JSON.stringify(hello);
-}
+let bookshelf = Bookshelf(knexDbHandler);
+export var Account = bookshelf.Model.extend({
+	tableName: "account",
+	statusCN: function() {
+		return "skkkkk"
+	}
+});
