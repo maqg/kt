@@ -5,6 +5,9 @@
 
 import {toTimeStr} from "../utils/utils";
 
+export const USER_STATUS_ENABLED = "enabled";
+export const USER_STATUS_DISABLED = "disabled";
+
 export interface TimeInfoInterface {
 	createTime: number;
 	updateTime: number;
@@ -35,16 +38,18 @@ export interface AccountObj extends AccountInterface, TimeInfoObj {
 	lastLoginStr: string;
 }
 
+const ACCOUNT_ROLE_SUPERADMIN = 7;
+
 export class Account implements AccountInterface {
-	id: string;
+	id: string = "";
 	username: string;
-	phone: string;
-	role: number;
-	status: string;
-	lastLogin: number;
-	createTime: number;
-	updateTime: number;
-	deleteTime: number;
+	phone: string = "";
+	role: number = ACCOUNT_ROLE_SUPERADMIN;
+	status: string = "enabled";
+	lastLogin: number = 0;
+	createTime: number = 0;
+	updateTime: number = 0;
+	deleteTime: number = 0;
 
 	constructor(username: string) {
 		this.username = username;

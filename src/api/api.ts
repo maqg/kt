@@ -23,8 +23,8 @@ function parseParas(ctx) {
 		paras = ctx.request.body["paras"];
 	}
 
-	paras["__SKEY__"] = parseValue(args, "__SKEY__");
-	paras["__SESSION__"] = parseValue(args, "__SESSION__");
+	paras["skey"] = parseValue(args, "skey");
+	paras["session"] = parseValue(args, "session");
 
 	return paras;
 }
@@ -40,22 +40,22 @@ class CheckResult {
 }
 
 function checkSkey(paras) {
-	return paras["__SKEY__"] != null;
+	return paras["skey"] != null;
 }
 
 function checkSession(paras) {
-	return paras["__SESSION__"] != null;
+	return paras["session"] != null;
 }
 
 function checkParas(apiProto, paras): (CheckResult){
 	let apiParas = apiProto["paras"];
 
 	if (!checkSkey(paras)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["__SKEY__"]);
+		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["skey"]);
 	}
 
 	if (!checkSession(paras)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["__SESSION__"]);
+		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["session"]);
 	}
 
 	for (let key in apiParas) {
