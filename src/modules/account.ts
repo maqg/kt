@@ -5,12 +5,12 @@
 
 import {ApiResponse} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
-import {Account} from "../models/Account";
+import {models} from "../models/Bookshelf";
 
 async function web_show_accountlist(paras) {
 	let resp = new ApiResponse();
 	let accountList = [];
-	let accounts = await Account.forge().fetchAll();
+	let accounts = await models.Account.forge().fetchAll();
 	for (let account of accounts.toJSON()) {
 		accountList.push(account);
 	}

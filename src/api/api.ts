@@ -8,11 +8,13 @@ import {buildErrorResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {parseValue, transToStr} from "../utils/utils";
 import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT} from "../config/config";
+import {ApiApiTrace} from "./api_trace";
 
 let ApiList = [];
 let ApiListMap = {};
 let ApiModules = [
 	ApiAccount,
+	ApiApiTrace,
 ];
 
 function parseParas(ctx) {
