@@ -84,8 +84,8 @@ CREATE TABLE `promotion` (
 		`startTime` BIGINT NOT NULL DEFAULT '0',
 		`endTime` BIGINT NOT NULL DEFAULT '0',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE promotion ADD INDEX promotion_id (id);
@@ -104,8 +104,8 @@ CREATE TABLE `usercoupon` (
 		`status` VARCHAR(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled,disabled',
 		`ammount` INTEGER NOT NULL DEFAULT '1',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`useTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (userId) REFERENCES user(id),
 		FOREIGN KEY (promotionId) REFERENCES promotion(id)
@@ -128,8 +128,8 @@ CREATE TABLE `rentcharge` (
 		`topHours` INTEGER NOT NULL DEFAULT '24' COMMENT '最大连续骑行时长',
 		`topPrice` INTEGER NOT NULL DEFAULT '2400' COMMENT '最大连续骑行计费，分',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE rentcharge ADD INDEX rentcharge_id (id);
@@ -147,10 +147,10 @@ CREATE TABLE `userrecharge` (
 		`clientIp` VARCHAR(20) NOT NULL DEFAULT '',
 		`rechargeStatus` VARCHAR(16) NOT NULL DEFAULT 'success' COMMENT 'failed',
 		`coupons` INTEGER NOT NULL DEFAULT '0' COMMENT '',
-		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
-		`updateTime` BIGINT NOT NULL DEFAULT '0',
 		`refundTime` BIGINT NOT NULL DEFAULT '0',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (userId) REFERENCES user(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
@@ -171,8 +171,8 @@ CREATE TABLE `bikemodel` (
 		`batteryModel` VARCHAR(64) NOT NULL DEFAULT 'default',
 		`batteryCapacity` INTEGER NOT NULL DEFAULT '30000' COMMENT '毫安时',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE bikemodel ADD INDEX bikemodel_id (id);
@@ -199,8 +199,8 @@ CREATE TABLE `bike` (
 		`floor` VARCHAR(64) NOT NULL DEFAULT '',
 		`lastRent` BIGINT NOT NULL DEFAULT '0',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (modelId) REFERENCES bikemodel(id),
 		FOREIGN KEY (currentUser) REFERENCES user(id),
@@ -239,8 +239,8 @@ CREATE TABLE `order` (
 		`distance` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters',
 		`speed` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters/hour',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (userId) REFERENCES user(id),
 		FOREIGN KEY (bikeId) REFERENCES bike(id)
@@ -295,8 +295,8 @@ CREATE TABLE `battery` (
 		`status` VARCHAR(16) NOT NULL DEFAULT 'online' COMMENT 'online/offline/recharging/unknown',
 		`remark` VARCHAR(200) NOT NULL DEFAULT '',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (bikeId) REFERENCES bike(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
@@ -323,8 +323,8 @@ CREATE TABLE `maintenance` (
 		`images` VARCHAR(1024) NOT NULL DEFAULT '[]',
 		`maintenanceId` VARCHAR(36) NOT NULL DEFAULT '',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (bikeId) REFERENCES bike(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
@@ -348,8 +348,8 @@ CREATE TABLE `worklist` (
 		`remark` VARCHAR(200) NOT NULL DEFAULT '',
 		`confirmTime` BIGINT NOT NULL DEFAULT '0',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		FOREIGN KEY (bikeId) REFERENCES bike(id),
 		FOREIGN KEY (userId) REFERENCES user(id),
