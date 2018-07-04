@@ -49,7 +49,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c7c4a4fdd785fb4870e2eb9ee4b4b7a9','',0,1530687265000,1530687265000,0);
+INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c7c4a4fdd785fb4870e2eb9ee4b4b7a9','',0,1530690379000,1530690379000,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `apitrace` (
 
 LOCK TABLES `apitrace` WRITE;
 /*!40000 ALTER TABLE `apitrace` DISABLE KEYS */;
-INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1530687265000,0,0,'{\"username\": \"admin\"}','{}');
+INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1530690379000,0,0,'{\"username\": \"admin\"}','{}');
 /*!40000 ALTER TABLE `apitrace` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,8 +108,8 @@ CREATE TABLE `battery` (
   `status` varchar(16) NOT NULL DEFAULT 'online' COMMENT 'online/offline/recharging/unknown',
   `remark` varchar(200) NOT NULL DEFAULT '',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `bikeId` (`bikeId`),
   KEY `battery_id` (`id`),
@@ -157,8 +157,8 @@ CREATE TABLE `bike` (
   `floor` varchar(64) NOT NULL DEFAULT '',
   `lastRent` bigint(20) NOT NULL DEFAULT '0',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `modelId` (`modelId`),
   KEY `currentUser` (`currentUser`),
@@ -236,8 +236,8 @@ CREATE TABLE `bikemodel` (
   `batteryModel` varchar(64) NOT NULL DEFAULT 'default',
   `batteryCapacity` int(11) NOT NULL DEFAULT '30000' COMMENT '毫安时',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `bikemodel_id` (`id`),
   KEY `bikemodel_name` (`name`),
@@ -251,7 +251,7 @@ CREATE TABLE `bikemodel` (
 
 LOCK TABLES `bikemodel` WRITE;
 /*!40000 ALTER TABLE `bikemodel` DISABLE KEYS */;
-INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1530687265000,1530687265000,0);
+INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1530690379000,1530690379000,0);
 /*!40000 ALTER TABLE `bikemodel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,8 +277,8 @@ CREATE TABLE `maintenance` (
   `images` varchar(1024) NOT NULL DEFAULT '[]',
   `maintenanceId` varchar(36) NOT NULL DEFAULT '',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `maintenance_id` (`id`),
   KEY `maintenance_bikeid` (`bikeId`),
@@ -326,8 +326,8 @@ CREATE TABLE `order` (
   `distance` int(11) NOT NULL DEFAULT '0' COMMENT 'in meters',
   `speed` int(11) NOT NULL DEFAULT '0' COMMENT 'in meters/hour',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `order_id` (`id`),
   KEY `order_status` (`status`),
@@ -398,8 +398,8 @@ CREATE TABLE `promotion` (
   `startTime` bigint(20) NOT NULL DEFAULT '0',
   `endTime` bigint(20) NOT NULL DEFAULT '0',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `promotion_id` (`id`),
   KEY `promotion_name` (`name`),
@@ -416,7 +416,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1530687265000,0);
+INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1530690379000,0);
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -437,8 +437,8 @@ CREATE TABLE `rentcharge` (
   `topHours` int(11) NOT NULL DEFAULT '24' COMMENT '最大连续骑行时长',
   `topPrice` int(11) NOT NULL DEFAULT '2400' COMMENT '最大连续骑行计费，分',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `rentcharge_id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -450,7 +450,7 @@ CREATE TABLE `rentcharge` (
 
 LOCK TABLES `rentcharge` WRITE;
 /*!40000 ALTER TABLE `rentcharge` DISABLE KEYS */;
-INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1530687265000,1530687265000,0);
+INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1530690379000,1530690379000,0);
 /*!40000 ALTER TABLE `rentcharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -570,8 +570,8 @@ CREATE TABLE `usercoupon` (
   `status` varchar(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled,disabled',
   `ammount` int(11) NOT NULL DEFAULT '1',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `useTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `usercoupon_id` (`id`),
   KEY `usercoupon_userid` (`userId`),
@@ -612,10 +612,10 @@ CREATE TABLE `userrecharge` (
   `clientIp` varchar(20) NOT NULL DEFAULT '',
   `rechargeStatus` varchar(16) NOT NULL DEFAULT 'success' COMMENT 'failed',
   `coupons` int(11) NOT NULL DEFAULT '0',
-  `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
-  `updateTime` bigint(20) NOT NULL DEFAULT '0',
   `refundTime` bigint(20) NOT NULL DEFAULT '0',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `userrecharge_id` (`id`),
   KEY `userrecharge_userid` (`userId`),
@@ -652,8 +652,8 @@ CREATE TABLE `worklist` (
   `remark` varchar(200) NOT NULL DEFAULT '',
   `confirmTime` bigint(20) NOT NULL DEFAULT '0',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
-  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `worklist_id` (`id`),
   KEY `worklist_bikeid` (`bikeId`),
@@ -691,4 +691,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-04 14:54:25
+-- Dump completed on 2018-07-04 15:46:19
