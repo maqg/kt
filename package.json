@@ -24,6 +24,7 @@
     "last 3 iOS versions"
   ],
   "dependencies": {
+    "@types/events": "^1.2.0",
     "bookshelf": "^0.13.3",
     "co": "^4.6.0",
     "ejs": "^2.6.1",

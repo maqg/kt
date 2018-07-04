@@ -55,8 +55,8 @@
 
 		this.bootcssVer = this.isInput ? (this.element.is('.form-control') ? 3 : 2) : ( this.bootcssVer = this.element.is('.input-group') ? 3 : 2 );
 
-		this.component = this.element.is('.date') ? ( this.bootcssVer == 3 ? this.element.find('.input-group-addon .glyphicon-th, .input-group-addon .glyphicon-time, .input-group-addon .glyphicon-calendar').parent() : this.element.find('.add-on .icon-th, .add-on .icon-time, .add-on .icon-calendar').parent()) : false;
-		this.componentReset = this.element.is('.date') ? ( this.bootcssVer == 3 ? this.element.find('.input-group-addon .glyphicon-remove').parent() : this.element.find('.add-on .icon-remove').parent()) : false;
+		this.component = this.element.is('.date') ? ( this.bootcssVer == 3 ? this.element.find('.input-group-addon .glyphicon-th, .input-group-addon .glyphicon-time, .input-group-addon .glyphicon-calendar').parent() : this.element.find('.add-on .u-icon-th, .add-on .u-icon-time, .add-on .u-icon-calendar').parent()) : false;
+		this.componentReset = this.element.is('.date') ? ( this.bootcssVer == 3 ? this.element.find('.input-group-addon .glyphicon-remove').parent() : this.element.find('.add-on .u-icon-remove').parent()) : false;
 		this.hasInput = this.component && this.element.find('input').length;
 		if (this.component && this.component.length === 0) {
 			this.component = false;
@@ -166,7 +166,7 @@
 					.toggleClass('glyphicon-arrow-left glyphicon-arrow-right');
 			} else {
 				this.picker.find('.prev i, .next i')
-					.toggleClass('icon-arrow-left icon-arrow-right');
+					.toggleClass('u-icon-arrow-left u-icon-arrow-right');
 			}
 			;
 
@@ -1577,9 +1577,9 @@
 		},
 		headTemplate:     '<thead>' +
 							  '<tr>' +
-							  '<th class="prev"><i class="icon-arrow-left"/></th>' +
+							  '<th class="prev"><i class="u-icon-arrow-left"/></th>' +
 							  '<th colspan="5" class="switch"></th>' +
-							  '<th class="next"><i class="icon-arrow-right"/></th>' +
+							  '<th class="next"><i class="u-icon-arrow-right"/></th>' +
 							  '</tr>' +
 			'</thead>',
 		headTemplateV3:   '<thead>' +

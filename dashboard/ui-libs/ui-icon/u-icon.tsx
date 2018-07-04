@@ -2,8 +2,8 @@ import * as React from "react";
 import {render} from "react-dom";
 
 const INNER_ICON_FAMILY: string = 'fa';
-const SPIN_CLASS: string ='icon-spin';
-const PULSE_CLASS: string = 'icon-pulse';
+const SPIN_CLASS: string ='u-icon-spin';
+const PULSE_CLASS: string = 'u-icon-pulse';
 
 export interface UIconProps {
     fontFamily?: string,
@@ -12,7 +12,8 @@ export interface UIconProps {
     pulse?: boolean,
     rotate?: 90 | 180 | 270,
     flip?: "horizontal" | "vertical",
-    className?: [string]
+    className?: [string],
+
 }
 export class UIcon extends React.Component<UIconProps>{
     constructor(props: UIconProps) {
