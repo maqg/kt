@@ -23,14 +23,25 @@ let knex = Knex(dbConfig);
 let bookshelf = Bookshelf(knex);
 
 export var models = {
-	Account: null,
-	ApiTrace: null,
-};
-
-models.Account = bookshelf.Model.extend({
+	Account: bookshelf.Model.extend({
 		tableName: "account"
-});
-
-models.ApiTrace = bookshelf.Model.extend({
-	tableName: "apitrace"
-});
+	}),
+	ApiTrace: bookshelf.Model.extend({
+		tableName: "apitrace"
+	}),
+	User: bookshelf.Model.extend({
+		tableName: "user"
+	}),
+	Order: bookshelf.Model.extend({
+		tableName: "order"
+	}),
+	BikeModel: bookshelf.Model.extend({
+		tableName: "bikemodel"
+	}),
+	Bike: bookshelf.Model.extend({
+		tableName: "bike"
+	}),
+	RentCharge: bookshelf.Model.extend({
+		tableName: "rentcharge"
+	}),
+};

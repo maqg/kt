@@ -9,12 +9,16 @@ import {Errors} from "../models/KtError";
 import {parseValue, transToStr} from "../utils/utils";
 import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT} from "../config/config";
 import {ApiApiTrace} from "./api_trace";
+import {ApiRentCharge} from "./api_rentcharge";
+import {ApiBikeModel} from "./api_bikemodel";
 
 let ApiList = [];
 let ApiListMap = {};
 let ApiModules = [
 	ApiAccount,
 	ApiApiTrace,
+	ApiRentCharge,
+	ApiBikeModel,
 ];
 
 function parseParas(ctx) {
@@ -68,7 +72,7 @@ function checkParas(apiProto, paras): (CheckResult){
 		}
 
 		if (param["default"] != PARAM_NOT_NULL && (
-			!paras.hasOwnProperty("default") || paras[key] == null || paras[key] == "")) {
+			!paras.hasOwnProperty(key) || paras[key] == null || paras[key] == "")) {
 			paras[key] = param["default"];
 		}
 
@@ -79,10 +83,7 @@ function checkParas(apiProto, paras): (CheckResult){
 		}
 
 		if (param["default"] == PARAM_TYPE_INT) {
-			if (paras[key] == undefined || paras[key] == null) {
-				paras[key] = 0;
-			}
-			paras[key] = <number>paras[key];
+			paras[key] = <number>(paras[key]);
 		}
 	}
 
@@ -110,7 +111,8 @@ async function apiDispatcher(ctx) {
 		}
 
 		let resp = await apiProto["service"](paras);
-		console.log(resp);
+
+		resp.updateErrorMsg();
 		ctx.body = JSON.stringify(resp);
 	} else {
 		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, apiProto + "not exist");

@@ -13,6 +13,10 @@ export class ApiResponse {
 		this.errorObj = new KtError();
 		this.data = null;
 	}
+
+	updateErrorMsg() {
+		this.errorObj.errorMsg = Error_d2s(this.errorObj.errorNo);
+	}
 }
 
 export function buildSuccessResp(data: any) {
