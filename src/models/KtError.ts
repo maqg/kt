@@ -14,10 +14,10 @@ export class KtError implements ErrorInterface{
 	errorMsg: string;
 	errorLog: string = "";
 
-	constructor() {
-		this.errorNo = Errors.RET_SUCCESS;
+	constructor(errorNo?: number) {
+		this.errorNo = errorNo;
 		this.errorLog = "";
-		this.errorMsg = Error_d2s(Errors.RET_SUCCESS);
+		this.errorMsg = Error_d2s(errorNo);
 	}
 }
 

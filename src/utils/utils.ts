@@ -15,14 +15,14 @@ function getCurrentDate() {
 	return now.getFullYear() + "-" + now.getMonth() + "-" + now.getDay();
 }
 
-function toDateStr(milliSeconds: number) {
+function dateToStr(milliSeconds: number) {
 	let now = new Date(milliSeconds);
 	return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate()
 }
 
-function toTimeStr(milliSeconds: number) {
+function timeToStr(milliSeconds: number) {
 	let now = new Date(milliSeconds);
-	return toDateStr(milliSeconds) + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+	return dateToStr(milliSeconds) + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
 }
 
 function getUuid() {
@@ -41,4 +41,4 @@ function parseValue(paras, key) {
 	}
 }
 
-export {getUuid, getCurrentDate, getMilliSeconds, toDateStr, toTimeStr, transToStr, parseValue};
+export {getUuid, getCurrentDate, getMilliSeconds, dateToStr, timeToStr, transToStr, parseValue};

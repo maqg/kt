@@ -3,23 +3,30 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {ApiResponse} from "../models/ApiResponse";
+import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex, models} from "../models/Bookshelf";
-import {getMilliSeconds, getUuid} from "../utils/utils";
+import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
+
+async function get_bikemodel_byname(name: string) {
+	try {
+		let items = await knex("bikemodel").where("name", "=", name).select();
+		return items[0];
+	} catch (e) {
+		console.log("get bikemodel error " + e.toString());
+		return null;
+	}
+}
 
 export async function web_add_bikemodel(paras) {
 
-	let resp = new ApiResponse();
-
-	let temp = await models.BikeModel.forge({"name": paras["name"]}).fetch();
+	let temp = await get_bikemodel_byname(paras["name"]);
 	if (temp) {
-		resp.errorObj.errorNo = Errors.RET_ITEM_ALREADY_EXIST;
-		resp.errorObj.errorLog = "Bike Model of " + paras["name"] + " Already Exist";
-		return resp;
+		return buildErrorResp(Errors.RET_ITEM_ALREADY_EXIST,
+			"Bike Model of " + paras["name"] + "Already Exist");
 	}
 
-	let bikemodel = new models.BikeModel({
+	let bikemodel = {
 		id: getUuid(),
 		name: paras["name"],
 		brand: paras["brand"],
@@ -30,12 +37,13 @@ export async function web_add_bikemodel(paras) {
 		batteryModel: paras["batteryModel"],
 		createTime: getMilliSeconds(),
 		updateTime: getMilliSeconds()
-	});
-	console.log(bikemodel);
+	};
+
+	let resp = buildSuccessResp();
+
 	try {
-		await bikemodel.save(null, {method: "insert"});
+		await knex("bikemodel").insert(bikemodel);
 	} catch (e) {
-		console.log(e);
 		resp.errorObj.errorNo = Errors.RET_DB_ERR;
 		resp.errorObj.errorLog = "Add bike model of " + paras["name"] + " error " + e;
 	}
@@ -56,28 +64,24 @@ async function get_bikemodel_count() {
 
 export async function web_show_allbikemodels(paras) {
 
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 	let cond = {};
 
 	if (paras["sId"]) {
 		cond["id"] = paras["sId"];
 	}
-	if (paras["sBrand"]) {
-		cond["brand"] = paras["sBrand"]
-	}
-
-	if (paras["sModel"]) {
-		cond["model"] = paras["sModel"]
-	}
-
-	if (paras["sName"]) {
-		cond["name"] = paras["sName"];
-	}
 
 	try {
 		let list = [];
-		let items = await knex("bikemodel").where(cond).select();
+		let items = await knex("bikemodel").where(cond)
+			.where("name", "LIKE", "%" + paras["sName"] + "%")
+			.where("model", "LIKE", "%" + paras["sModel"] + "%")
+			.where("brand", "LIKE", "%" + paras["sBrand"] + "%")
+			.select().limit(paras["limit"]).offset(paras["start"]);
 		for (let item of items) {
+			item["createTimeStr"] = timeToStr(item["createTime"]);
+			item["updateTimeStr"] = timeToStr(item["updateTime"]);
+			item["deleteTimeStr"] = timeToStr(item["deleteTime"]);
 			list.push(item);
 		}
 		resp.data = {
@@ -93,22 +97,32 @@ export async function web_show_allbikemodels(paras) {
 	return resp;
 }
 
-export async function web_show_bikemodel(paras) {
-	let resp = new ApiResponse();
+async function get_bikemodel(id: string) {
+	try {
+		let items = await knex("bikemodel").where("id", "=", id).select();
+		return items[0];
+	} catch (e) {
+		console.log("get bikemodel error " + e.toString());
+		return null;
+	}
+}
 
-	let item = await models.BikeModel.forge({"id": paras["id"]}).fetch();
-	if (!item) {
+export async function web_show_bikemodel(paras) {
+	let resp = buildSuccessResp();
+
+	let bikemodel = await get_bikemodel(paras["id"]);
+	if (!bikemodel) {
 		resp.errorObj.errorNo = Errors.RET_ITEM_NOT_EXIST;
-		resp.errorObj.errorLog = "bike model of " + paras["id"] + " not exist";
+		resp.errorObj.errorLog = "Bike Model of " + paras["id"] + " Not Exist";
 	} else {
-		resp.data = item.toJSON();
+		resp.data = bikemodel;
 	}
 
 	return resp;
 }
 
 export async function web_remove_bikemodel(paras) {
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 
 	let item = await models.BikeModel.forge({"id": paras["id"]}).fetch();
 	if (!item) {
@@ -122,7 +136,7 @@ export async function web_remove_bikemodel(paras) {
 }
 
 export async function web_update_bikemodel(paras) {
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 
 	let item = await models.BikeModel.forge({"id": paras["id"]}).fetch();
 	if (!item) {
