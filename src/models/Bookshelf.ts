@@ -19,7 +19,7 @@ let dbConfig = {
 	}
 };
 
-let knex = Knex(dbConfig);
+export let knex = Knex(dbConfig);
 let bookshelf = Bookshelf(knex);
 
 export var models = {

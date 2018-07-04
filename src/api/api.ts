@@ -11,6 +11,7 @@ import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT} from "../confi
 import {ApiApiTrace} from "./api_trace";
 import {ApiRentCharge} from "./api_rentcharge";
 import {ApiBikeModel} from "./api_bikemodel";
+import {ApiWxApp} from "./api_wxapp";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -19,6 +20,7 @@ let ApiModules = [
 	ApiApiTrace,
 	ApiRentCharge,
 	ApiBikeModel,
+	ApiWxApp,
 ];
 
 function parseParas(ctx) {

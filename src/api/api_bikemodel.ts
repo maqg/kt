@@ -19,7 +19,43 @@ export const ApiBikeModel = {
 			"name": "添加车辆模型",
 			"service": web_add_bikemodel,
 			"key": "APIAddBikeModel",
-			"paras": {},
+			"paras": {
+				"name": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Name",
+					"default": PARAM_NOT_NULL
+				},
+				"brand": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Brand",
+					"default": "",
+				},
+				"model": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "型号",
+					"default": "Default",
+				},
+				"batteryVoltage": {
+					"type": PARAM_TYPE_INT,
+					"desc": "Voltage of Battery，单位mV",
+					"default": 3700,
+				},
+				"batteryBrand": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Brand of Battery",
+					"default": "",
+				},
+				"batteryModel": {
+					"type": PARAM_TYPE_INT,
+					"desc": "Model of Battery",
+					"default": "Default",
+				},
+				"batteryCapacity": {
+					"type": PARAM_TYPE_INT,
+					"desc": "Capacity of Battery",
+					"default": 30000,
+				}
+			},
 		},
 		{
 			"name": "查看所有车辆模型",
@@ -35,6 +71,26 @@ export const ApiBikeModel = {
 					"type": PARAM_TYPE_INT,
 					"desc": "Query Limitation",
 					"default": 15,
+				},
+				"sId": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Name",
+					"default": ""
+				},
+				"sName": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Name",
+					"default": ""
+				},
+				"sBrand": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Brand",
+					"default": "",
+				},
+				"sModel": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "型号",
+					"default": "",
 				},
 			},
 		},
@@ -61,6 +117,41 @@ export const ApiBikeModel = {
 					"type": PARAM_TYPE_STRING,
 					"desc": "Bike Model Id",
 					"default": PARAM_NOT_NULL
+				},
+				"name": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Name",
+					"default": PARAM_NOT_NULL
+				},
+				"brand": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Brand",
+					"default": "",
+				},
+				"model": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "型号",
+					"default": "Default",
+				},
+				"batteryVoltage": {
+					"type": PARAM_TYPE_INT,
+					"desc": "Voltage of Battery，单位mV",
+					"default": 3700,
+				},
+				"batteryBrand": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Brand of Battery",
+					"default": "",
+				},
+				"batteryModel": {
+					"type": PARAM_TYPE_INT,
+					"desc": "Model of Battery",
+					"default": "Default",
+				},
+				"batteryCapacity": {
+					"type": PARAM_TYPE_INT,
+					"desc": "Capacity of Battery",
+					"default": 30000,
 				}
 			},
 		},

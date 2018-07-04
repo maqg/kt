@@ -27,8 +27,6 @@ export async function web_show_rentcharge(paras) {
 export async function web_update_rentcharge(paras) {
 	let resp = new ApiResponse();
 
-	console.log(paras);
-
 	try {
 		await models.RentCharge.forge({"id": RENT_CHARGE_ID}).save(
 			{
