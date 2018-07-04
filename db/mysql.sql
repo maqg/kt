@@ -254,6 +254,132 @@ ALTER TABLE `order` ADD INDEX order_startTime (createTime);
 ALTER TABLE `order` ADD INDEX order_endtime (endTime);
 ALTER TABLE `order` ADD INDEX order_createTime (createTime);
 
+DROP TABLE IF EXISTS `bikelog`;
+CREATE TABLE `bikelog` (
+		`userId` VARCHAR(36) NOT NULL DEFAULT '',
+		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
+		`type` VARCHAR(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		FOREIGN KEY (userId) REFERENCES user(id),
+		FOREIGN KEY (bikeId) REFERENCES bike(id)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE bikelog ADD INDEX bikelog_user (userId);
+ALTER TABLE bikelog ADD INDEX bikelog_bikeid (bikeId);
+ALTER TABLE bikelog ADD INDEX bikelog_type (type);
+ALTER TABLE bikelog ADD INDEX bikelog_createtime (createTime);
+
+DROP TABLE IF EXISTS `orderlog`;
+CREATE TABLE `orderlog` (
+		`orderId` VARCHAR(36) NOT NULL DEFAULT '',
+		`userId` VARCHAR(36) NOT NULL DEFAULT '',
+		`originalFee` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',
+		`currentFee` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',
+		`remark` VARCHAR(200) NOT NULL DEFAULT '',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		FOREIGN KEY (orderId) REFERENCES `order`(id),
+		FOREIGN KEY (userId) REFERENCES user(id)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE orderlog ADD INDEX orderlog_orderid (orderId);
+ALTER TABLE orderlog ADD INDEX orderlog_userid (userId);
+ALTER TABLE orderlog ADD INDEX orderlog_createtime (createTime);
+
+DROP TABLE IF EXISTS `battery`;
+CREATE TABLE `battery` (
+		`id` VARCHAR(36) NOT NULL DEFAULT '',
+		`serial` VARCHAR(50) NOT NULL DEFAULT '',
+		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
+		`manufacturer` VARCHAR(64) NOT NULL DEFAULT '',
+		`capacity` INTEGER NOT NULL DEFAULT '30000',
+		`usageCount` INTEGER NOT NULL DEFAULT '0',
+		`imei` VARCHAR(50) NOT NULL DEFAULT '',
+		`status` VARCHAR(16) NOT NULL DEFAULT 'online' COMMENT 'online/offline/recharging/unknown',
+		`remark` VARCHAR(200) NOT NULL DEFAULT '',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
+		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		PRIMARY KEY (`id`),
+		FOREIGN KEY (bikeId) REFERENCES bike(id)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE battery ADD INDEX battery_id (id);
+ALTER TABLE battery ADD INDEX battery_serial (serial);
+ALTER TABLE battery ADD INDEX battery_imei (imei);
+ALTER TABLE battery ADD INDEX battery_status (status);
+ALTER TABLE battery ADD INDEX battery_manufacturer (manufacturer);
+ALTER TABLE battery ADD INDEX battery_createtime (createTime);
+
+DROP TABLE IF EXISTS `maintenance`;
+CREATE TABLE `maintenance` (
+		`id` VARCHAR(36) NOT NULL DEFAULT '',
+		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
+		`bikeSerial` VARCHAR(50) NOT NULL DEFAULT '',
+		`serialNo` VARCHAR(50) NOT NULL DEFAULT '',
+		`type` VARCHAR(16) NOT NULL DEFAULT 'phone' COMMENT 'phone/routine/app/other',
+		`result` VARCHAR(16) NOT NULL DEFAULT 'new' COMMENT 'finished/remain/new',
+		`parts` VARCHAR(200) NOT NULL DEFAULT '[]' COMMENT '',
+		`remark` VARCHAR(200) NOT NULL DEFAULT '',
+		`longitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '经度',
+		`latitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '纬度',
+		`address` VARCHAR(200) NOT NULL DEFAULT '',
+		`images` VARCHAR(1024) NOT NULL DEFAULT '[]',
+		`maintenanceId` VARCHAR(36) NOT NULL DEFAULT '',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
+		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		PRIMARY KEY (`id`),
+		FOREIGN KEY (bikeId) REFERENCES bike(id)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE maintenance ADD INDEX maintenance_id (id);
+ALTER TABLE maintenance ADD INDEX maintenance_bikeid (bikeId);
+ALTER TABLE maintenance ADD INDEX maintenance_serialno (serialNo);
+ALTER TABLE maintenance ADD INDEX maintenance_maintenanceid (maintenanceId);
+ALTER TABLE maintenance ADD INDEX maintenance_type (type);
+ALTER TABLE maintenance ADD INDEX maintenance_result (result);
+ALTER TABLE maintenance ADD INDEX maintenance_createtime (createTime);
+
+
+DROP TABLE IF EXISTS `worklist`;
+CREATE TABLE `worklist` (
+		`id` VARCHAR(36) NOT NULL DEFAULT '',
+		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
+		`userId` VARCHAR(36) NOT NULL DEFAULT '',
+		`maintenanceId` VARCHAR(36) NOT NULL DEFAULT '',
+		`taskNo` VARCHAR(50) NOT NULL DEFAULT '',
+		`status` VARCHAR(16) NOT NULL DEFAULT 'new' COMMENT 'new/assigned/finished/confirmed',
+		`remark` VARCHAR(200) NOT NULL DEFAULT '',
+		`confirmTime` BIGINT NOT NULL DEFAULT '0',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		`deleteTime` BIGINT NOT NULL DEFAULT '0',
+		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		PRIMARY KEY (`id`),
+		FOREIGN KEY (bikeId) REFERENCES bike(id),
+		FOREIGN KEY (userId) REFERENCES user(id),
+		FOREIGN KEY (maintenanceId) REFERENCES maintenance(id)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE worklist ADD INDEX worklist_id (id);
+ALTER TABLE worklist ADD INDEX worklist_bikeid (bikeId);
+ALTER TABLE worklist ADD INDEX worklist_userid (userId);
+ALTER TABLE worklist ADD INDEX worklist_maintenanceid (maintenanceId);
+ALTER TABLE worklist ADD INDEX worklist_taskno (taskNo);
+ALTER TABLE worklist ADD INDEX worklist_status (status);
+ALTER TABLE worklist ADD INDEX worklist_createtime (createTime);
+ALTER TABLE worklist ADD INDEX worklist_confirmtime (confirmTime);
+
+DROP TABLE IF EXISTS `ridemsg`;
+CREATE TABLE `ridemsg` (
+		`orderId` VARCHAR(36) NOT NULL DEFAULT '',
+		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
+		`heartRate` INTEGER NOT NULL DEFAULT '0',
+		`speed` INTEGER NOT NULL DEFAULT '0' COMMENT 'meters/hour',
+		`calories` INTEGER NOT NULL DEFAULT '0',
+		`seconds` INTEGER NOT NULL DEFAULT '0',
+		`distance` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		FOREIGN KEY (orderId) REFERENCES `order`(id),
+		FOREIGN KEY (bikeId) REFERENCES bike(id)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE ridemsg ADD INDEX ridemsg_orderid (orderId);
+ALTER TABLE ridemsg ADD INDEX ridemsg_bikeid (bikeId);
+ALTER TABLE ridemsg ADD INDEX ridemsg_createtime (createTime);
 
 
 DROP TRIGGER IF EXISTS trigger_delete_user;

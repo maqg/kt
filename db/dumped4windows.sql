@@ -49,7 +49,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c7c4a4fdd785fb4870e2eb9ee4b4b7a9','',0,1530673290000,1530673290000,0);
+INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c7c4a4fdd785fb4870e2eb9ee4b4b7a9','',0,1530687265000,1530687265000,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,8 +86,49 @@ CREATE TABLE `apitrace` (
 
 LOCK TABLES `apitrace` WRITE;
 /*!40000 ALTER TABLE `apitrace` DISABLE KEYS */;
-INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1530673290000,0,0,'{\"username\": \"admin\"}','{}');
+INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1530687265000,0,0,'{\"username\": \"admin\"}','{}');
 /*!40000 ALTER TABLE `apitrace` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `battery`
+--
+
+DROP TABLE IF EXISTS `battery`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `battery` (
+  `id` varchar(36) NOT NULL DEFAULT '',
+  `serial` varchar(50) NOT NULL DEFAULT '',
+  `bikeId` varchar(36) NOT NULL DEFAULT '',
+  `manufacturer` varchar(64) NOT NULL DEFAULT '',
+  `capacity` int(11) NOT NULL DEFAULT '30000',
+  `usageCount` int(11) NOT NULL DEFAULT '0',
+  `imei` varchar(50) NOT NULL DEFAULT '',
+  `status` varchar(16) NOT NULL DEFAULT 'online' COMMENT 'online/offline/recharging/unknown',
+  `remark` varchar(200) NOT NULL DEFAULT '',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
+  `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `bikeId` (`bikeId`),
+  KEY `battery_id` (`id`),
+  KEY `battery_serial` (`serial`),
+  KEY `battery_imei` (`imei`),
+  KEY `battery_status` (`status`),
+  KEY `battery_manufacturer` (`manufacturer`),
+  KEY `battery_createtime` (`createTime`),
+  CONSTRAINT `battery_ibfk_1` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `battery`
+--
+
+LOCK TABLES `battery` WRITE;
+/*!40000 ALTER TABLE `battery` DISABLE KEYS */;
+/*!40000 ALTER TABLE `battery` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -149,6 +190,36 @@ LOCK TABLES `bike` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `bikelog`
+--
+
+DROP TABLE IF EXISTS `bikelog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bikelog` (
+  `userId` varchar(36) NOT NULL DEFAULT '',
+  `bikeId` varchar(36) NOT NULL DEFAULT '',
+  `type` varchar(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  KEY `bikelog_user` (`userId`),
+  KEY `bikelog_bikeid` (`bikeId`),
+  KEY `bikelog_type` (`type`),
+  KEY `bikelog_createtime` (`createTime`),
+  CONSTRAINT `bikelog_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `bikelog_ibfk_2` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bikelog`
+--
+
+LOCK TABLES `bikelog` WRITE;
+/*!40000 ALTER TABLE `bikelog` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bikelog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `bikemodel`
 --
 
@@ -180,8 +251,53 @@ CREATE TABLE `bikemodel` (
 
 LOCK TABLES `bikemodel` WRITE;
 /*!40000 ALTER TABLE `bikemodel` DISABLE KEYS */;
-INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1530673290000,1530673290000,0);
+INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1530687265000,1530687265000,0);
 /*!40000 ALTER TABLE `bikemodel` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `maintenance`
+--
+
+DROP TABLE IF EXISTS `maintenance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `maintenance` (
+  `id` varchar(36) NOT NULL DEFAULT '',
+  `bikeId` varchar(36) NOT NULL DEFAULT '',
+  `bikeSerial` varchar(50) NOT NULL DEFAULT '',
+  `serialNo` varchar(50) NOT NULL DEFAULT '',
+  `type` varchar(16) NOT NULL DEFAULT 'phone' COMMENT 'phone/routine/app/other',
+  `result` varchar(16) NOT NULL DEFAULT 'new' COMMENT 'finished/remain/new',
+  `parts` varchar(200) NOT NULL DEFAULT '[]',
+  `remark` varchar(200) NOT NULL DEFAULT '',
+  `longitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '经度',
+  `latitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '纬度',
+  `address` varchar(200) NOT NULL DEFAULT '',
+  `images` varchar(1024) NOT NULL DEFAULT '[]',
+  `maintenanceId` varchar(36) NOT NULL DEFAULT '',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
+  `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `maintenance_id` (`id`),
+  KEY `maintenance_bikeid` (`bikeId`),
+  KEY `maintenance_serialno` (`serialNo`),
+  KEY `maintenance_maintenanceid` (`maintenanceId`),
+  KEY `maintenance_type` (`type`),
+  KEY `maintenance_result` (`result`),
+  KEY `maintenance_createtime` (`createTime`),
+  CONSTRAINT `maintenance_ibfk_1` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `maintenance`
+--
+
+LOCK TABLES `maintenance` WRITE;
+/*!40000 ALTER TABLE `maintenance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `maintenance` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -236,6 +352,37 @@ LOCK TABLES `order` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `orderlog`
+--
+
+DROP TABLE IF EXISTS `orderlog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `orderlog` (
+  `orderId` varchar(36) NOT NULL DEFAULT '',
+  `userId` varchar(36) NOT NULL DEFAULT '',
+  `originalFee` int(11) NOT NULL DEFAULT '0' COMMENT 'in cents',
+  `currentFee` int(11) NOT NULL DEFAULT '0' COMMENT 'in cents',
+  `remark` varchar(200) NOT NULL DEFAULT '',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  KEY `orderlog_orderid` (`orderId`),
+  KEY `orderlog_userid` (`userId`),
+  KEY `orderlog_createtime` (`createTime`),
+  CONSTRAINT `orderlog_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `order` (`id`),
+  CONSTRAINT `orderlog_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orderlog`
+--
+
+LOCK TABLES `orderlog` WRITE;
+/*!40000 ALTER TABLE `orderlog` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orderlog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `promotion`
 --
 
@@ -269,7 +416,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1530673290000,0);
+INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1530687265000,0);
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,8 +450,41 @@ CREATE TABLE `rentcharge` (
 
 LOCK TABLES `rentcharge` WRITE;
 /*!40000 ALTER TABLE `rentcharge` DISABLE KEYS */;
-INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1530673290000,1530673290000,0);
+INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1530687265000,1530687265000,0);
 /*!40000 ALTER TABLE `rentcharge` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ridemsg`
+--
+
+DROP TABLE IF EXISTS `ridemsg`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ridemsg` (
+  `orderId` varchar(36) NOT NULL DEFAULT '',
+  `bikeId` varchar(36) NOT NULL DEFAULT '',
+  `heartRate` int(11) NOT NULL DEFAULT '0',
+  `speed` int(11) NOT NULL DEFAULT '0' COMMENT 'meters/hour',
+  `calories` int(11) NOT NULL DEFAULT '0',
+  `seconds` int(11) NOT NULL DEFAULT '0',
+  `distance` int(11) NOT NULL DEFAULT '0' COMMENT 'in meters',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  KEY `ridemsg_orderid` (`orderId`),
+  KEY `ridemsg_bikeid` (`bikeId`),
+  KEY `ridemsg_createtime` (`createTime`),
+  CONSTRAINT `ridemsg_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `order` (`id`),
+  CONSTRAINT `ridemsg_ibfk_2` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ridemsg`
+--
+
+LOCK TABLES `ridemsg` WRITE;
+/*!40000 ALTER TABLE `ridemsg` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ridemsg` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -456,6 +636,49 @@ LOCK TABLES `userrecharge` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `worklist`
+--
+
+DROP TABLE IF EXISTS `worklist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `worklist` (
+  `id` varchar(36) NOT NULL DEFAULT '',
+  `bikeId` varchar(36) NOT NULL DEFAULT '',
+  `userId` varchar(36) NOT NULL DEFAULT '',
+  `maintenanceId` varchar(36) NOT NULL DEFAULT '',
+  `taskNo` varchar(50) NOT NULL DEFAULT '',
+  `status` varchar(16) NOT NULL DEFAULT 'new' COMMENT 'new/assigned/finished/confirmed',
+  `remark` varchar(200) NOT NULL DEFAULT '',
+  `confirmTime` bigint(20) NOT NULL DEFAULT '0',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  `deleteTime` bigint(20) NOT NULL DEFAULT '0',
+  `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `worklist_id` (`id`),
+  KEY `worklist_bikeid` (`bikeId`),
+  KEY `worklist_userid` (`userId`),
+  KEY `worklist_maintenanceid` (`maintenanceId`),
+  KEY `worklist_taskno` (`taskNo`),
+  KEY `worklist_status` (`status`),
+  KEY `worklist_createtime` (`createTime`),
+  KEY `worklist_confirmtime` (`confirmTime`),
+  CONSTRAINT `worklist_ibfk_1` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`),
+  CONSTRAINT `worklist_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `worklist_ibfk_3` FOREIGN KEY (`maintenanceId`) REFERENCES `maintenance` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `worklist`
+--
+
+LOCK TABLES `worklist` WRITE;
+/*!40000 ALTER TABLE `worklist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `worklist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping routines for database 'dbkt'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -468,4 +691,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-04 11:01:30
+-- Dump completed on 2018-07-04 14:54:25
