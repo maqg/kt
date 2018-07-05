@@ -12,7 +12,7 @@ import {TB_BIKEMODEL} from "../config/config";
 
 async function get_bikemodel_byname(name: string) {
 	try {
-		let items = await knex("bikemodel").where("name", "=", name).select();
+		let items = await knex(TB_BIKEMODEL).where("name", "=", name).select();
 		if (!items.length) {
 			console.log("bike model of " + name + "not exist");
 			return null;
@@ -45,7 +45,7 @@ export async function web_add_bikemodel(paras) {
 		updateTime: getMilliSeconds()
 	};
 	try {
-		await knex("bikemodel").insert(bikemodel);
+		await knex(TB_BIKEMODEL).insert(bikemodel);
 	} catch (e) {
 		return buildErrorResp(Errors.RET_DB_ERR,
 			"Add bike model of " + paras["name"] + " error " + e.toString());
@@ -56,7 +56,7 @@ export async function web_add_bikemodel(paras) {
 
 async function get_bikemodel_count() {
 	try {
-		let count = await knex("bikemodel").count("id as count");
+		let count = await knex(TB_BIKEMODEL).count("id as count");
 		return count[0]["count"];
 	} catch (e) {
 		console.log("get bikemodel count error " + e.toString());
@@ -75,7 +75,7 @@ export async function web_show_allbikemodels(paras) {
 
 	try {
 		let list = [];
-		let items = await knex("bikemodel").where(cond)
+		let items = await knex(TB_BIKEMODEL).where(cond)
 			.where("name", "LIKE", "%" + paras["sName"] + "%")
 			.where("model", "LIKE", "%" + paras["sModel"] + "%")
 			.where("brand", "LIKE", "%" + paras["sBrand"] + "%")
@@ -99,7 +99,7 @@ export async function web_show_allbikemodels(paras) {
 
 async function get_bikemodel(id: string) {
 	try {
-		let items = await knex("bikemodel").where("id", "=", id).select();
+		let items = await knex(TB_BIKEMODEL).where("id", "=", id).select();
 		if (!items.length) {
 			console.log("bike model of " + id + " not exist");
 			return null;

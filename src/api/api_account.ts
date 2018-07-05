@@ -32,17 +32,17 @@ export const ApiAccount = {
 				},
 				"password": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "账号",
+					"desc": "密码，Base64",
 					"default": PARAM_NOT_NULL
 				},
 				"phone": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "账号",
-					"default": PARAM_NOT_NULL
+					"desc": "Phone Number",
+					"default": ""
 				},
 				"role": {
 					"type": PARAM_TYPE_INT,
-					"desc": "账号",
+					"desc": "Role 3/1",
 					"default": ROLE_ADMIN
 				},
 			},

@@ -8,7 +8,7 @@ import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
 import {TB_ACCOUNT} from "../config/config";
 import {Account, getEncPassword, ROOT_ACCOUNT_ID, ROOT_ACCOUNT_NAME} from "../models/Account";
-import {b64_decode, getMilliSeconds} from "../utils/utils";
+import {b64_decode, getMilliSeconds, getUuid} from "../utils/utils";
 
 async function get_account_count() {
 	try {
@@ -38,7 +38,7 @@ async function get_account_byname(name: string) {
 	try {
 		let items = await knex(TB_ACCOUNT).where("username", "=", name).select();
 		if (!items.length) {
-			console.log("account of " + name + "not exist");
+			console.log("account of " + name + " not exist");
 			return null;
 		}
 		return new Account(items[0]);
@@ -65,7 +65,30 @@ async function get_account_bypassword(name: string, password: string) {
 }
 
 export async function web_add_account(paras) {
-	return buildSuccessResp();
+	let temp = await get_account_byname(paras["username"]);
+	if (temp) {
+		return buildErrorResp(Errors.RET_ITEM_ALREADY_EXIST,
+			"Account of " + paras["username"] + "Already Exist");
+	}
+
+	let obj = {
+		id: getUuid(),
+		username: paras["username"],
+		password: getEncPassword(b64_decode(paras["password"])),
+		phone: paras["phone"],
+		role: paras["role"],
+		createTime: getMilliSeconds(),
+		updateTime: getMilliSeconds()
+	};
+	console.log(obj);
+	try {
+		await knex(TB_ACCOUNT).insert(obj);
+	} catch (e) {
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Add account of " + paras["username"] + " error " + e.toString());
+	}
+
+	return buildSuccessResp()
 }
 
 async function web_show_accountlist(paras) {
