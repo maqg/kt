@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
 		`id` VARCHAR(36) NOT NULL DEFAULT '',
-		`role` INTEGER NOT NULL DEFAULT '7' COMMENT '4:super,3:admin,1:audit',
+		`role` INTEGER NOT NULL DEFAULT '7' COMMENT '7:super,3:admin,1:audit',
 		`status` VARCHAR(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled',
 		`username` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '',
 		`password` VARCHAR(128) NOT NULL DEFAULT '',

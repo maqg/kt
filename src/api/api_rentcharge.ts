@@ -12,13 +12,13 @@ export const ApiRentCharge = {
 		{
 			"name": "查看计费规则",
 			"service": web_show_rentcharge,
-			"key": "APIClearTrace",
+			"key": "APIShowRentCharge",
 			"paras": {},
 		},
 		{
 			"name": "编辑计费规则",
 			"service": web_update_rentcharge,
-			"key": "APIShowAllTrace",
+			"key": "APIUpdateRentCharge",
 			"paras": {
 				"freeDuration": {
 					"type": PARAM_TYPE_INT,
