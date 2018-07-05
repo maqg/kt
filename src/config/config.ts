@@ -23,5 +23,11 @@ export const PARAM_TYPE_INT = "int";
 
 export const PARAM_NOT_NULL = "NotNull";
 
+export const TB_ACCOUNT = "account";
+export const TB_APITRACE = "apitrace";
+export const TB_BIKEMODEL = "bikemodel";
+export const TB_BIKE = "bike";
+export const TB_ORDER = "order";
+
 
 export {Config, API_PREFIX, ApiModuleMap};

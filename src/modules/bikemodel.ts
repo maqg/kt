@@ -5,13 +5,19 @@
 
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
-import {knex, models} from "../models/Bookshelf";
-import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
+import {knex} from "../models/Bookshelf";
+import {getMilliSeconds, getUuid} from "../utils/utils";
+import {BikeModel} from "../models/BikeModel";
+import {TB_BIKEMODEL} from "../config/config";
 
 async function get_bikemodel_byname(name: string) {
 	try {
 		let items = await knex("bikemodel").where("name", "=", name).select();
-		return items[0];
+		if (!items.length) {
+			console.log("bike model of " + name + "not exist");
+			return null;
+		}
+		return new BikeModel(items[0]);
 	} catch (e) {
 		console.log("get bikemodel error " + e.toString());
 		return null;
@@ -38,17 +44,14 @@ export async function web_add_bikemodel(paras) {
 		createTime: getMilliSeconds(),
 		updateTime: getMilliSeconds()
 	};
-
-	let resp = buildSuccessResp();
-
 	try {
 		await knex("bikemodel").insert(bikemodel);
 	} catch (e) {
-		resp.errorObj.errorNo = Errors.RET_DB_ERR;
-		resp.errorObj.errorLog = "Add bike model of " + paras["name"] + " error " + e;
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Add bike model of " + paras["name"] + " error " + e.toString());
 	}
 
-	return resp
+	return buildSuccessResp()
 }
 
 async function get_bikemodel_count() {
@@ -79,10 +82,8 @@ export async function web_show_allbikemodels(paras) {
 			.where("brand", "LIKE", "%" + paras["sBrand"] + "%")
 			.select().limit(paras["limit"]).offset(paras["start"]);
 		for (let item of items) {
-			item["createTimeStr"] = timeToStr(item["createTime"]);
-			item["updateTimeStr"] = timeToStr(item["updateTime"]);
-			item["deleteTimeStr"] = timeToStr(item["deleteTime"]);
-			list.push(item);
+			let bikemodel = new BikeModel(item);
+			list.push(bikemodel.toObj());
 		}
 		resp.data = {
 			"total": await get_bikemodel_count(),
@@ -100,7 +101,11 @@ export async function web_show_allbikemodels(paras) {
 async function get_bikemodel(id: string) {
 	try {
 		let items = await knex("bikemodel").where("id", "=", id).select();
-		return items[0];
+		if (!items.length) {
+			console.log("bike model of " + id + " not exist");
+			return null;
+		}
+		return new BikeModel(items[0]);
 	} catch (e) {
 		console.log("get bikemodel error " + e.toString());
 		return null;
@@ -115,36 +120,56 @@ export async function web_show_bikemodel(paras) {
 		resp.errorObj.errorNo = Errors.RET_ITEM_NOT_EXIST;
 		resp.errorObj.errorLog = "Bike Model of " + paras["id"] + " Not Exist";
 	} else {
-		resp.data = bikemodel;
+		resp.data = bikemodel.toObj();
 	}
 
 	return resp;
 }
 
 export async function web_remove_bikemodel(paras) {
-	let resp = buildSuccessResp();
-
-	let item = await models.BikeModel.forge({"id": paras["id"]}).fetch();
-	if (!item) {
-		resp.errorObj.errorNo = Errors.RET_ITEM_NOT_EXIST;
-		resp.errorObj.errorLog = "bike model of " + paras["id"] + " not exist";
-	} else {
-		resp.data = item.toJSON();
+	console.log(paras);
+	let bikemodel = await get_bikemodel(paras["id"]);
+	if (!bikemodel) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"Bike Model of " + paras["id"] + " Not Exist");
 	}
 
-	return resp;
+	try {
+		await knex(TB_BIKEMODEL).where("id", paras["id"]).del();
+	} catch (e) {
+		console.log(e);
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Failed to remove Bike Model of " + paras["name"] + ", Errors " + e.toString());
+	}
+
+	return buildSuccessResp();
 }
 
 export async function web_update_bikemodel(paras) {
-	let resp = buildSuccessResp();
 
-	let item = await models.BikeModel.forge({"id": paras["id"]}).fetch();
-	if (!item) {
-		resp.errorObj.errorNo = Errors.RET_ITEM_NOT_EXIST;
-		resp.errorObj.errorLog = "apitrace of " + paras["id"] + " not exist";
-	} else {
-		resp.data = item.toJSON();
+	let bikemodel = await get_bikemodel(paras["id"]);
+	if (!bikemodel) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"Bike Model of " + paras["id"] + " Not Exist");
 	}
 
-	return resp;
+	try {
+		await knex(TB_BIKEMODEL).where("id", paras["id"])
+			.update({
+				name: paras["name"],
+				brand: paras["brand"],
+				model: paras["model"],
+				batteryBrand: paras["batteryBrand"],
+				batteryCapacity: paras["batteryCapacity"],
+				batteryModel: paras["batteryModel"],
+				batteryVoltage: paras["batteryVoltage"],
+				updateTime: getMilliSeconds(),
+			})
+	} catch (e) {
+		console.log("Failed to update bike model of " + paras["name"] + ",Errors " + e.toString());
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Failed to update bike model of " + paras["name"] + ",Errors " + e.toString())
+	}
+
+	return buildSuccessResp();
 }

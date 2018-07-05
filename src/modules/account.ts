@@ -3,12 +3,12 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {ApiResponse} from "../models/ApiResponse";
+import {ApiResponse, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {models} from "../models/Bookshelf";
 
 async function web_show_accountlist(paras) {
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 	let accountList = [];
 	let accounts = await models.Account.forge().fetchAll();
 	for (let account of accounts.toJSON()) {
@@ -21,7 +21,7 @@ async function web_show_accountlist(paras) {
 
 async function web_show_allaccounts(paras) {
 	let accouts = [];
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 
 	resp.data = {
 		"total": 10,
@@ -33,7 +33,7 @@ async function web_show_allaccounts(paras) {
 }
 
 async function web_show_accountinfo(paras) {
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 	resp.errorObj.errorNo = Errors.RET_INVALID_PARAS;
 	resp.errorObj.errorLog = "No Such Account Info";
 	resp.data = paras["id"];

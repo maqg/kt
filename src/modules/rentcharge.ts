@@ -3,7 +3,7 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {ApiResponse} from "../models/ApiResponse";
+import {ApiResponse, buildSuccessResp} from "../models/ApiResponse";
 import {models} from "../models/Bookshelf";
 import {Errors} from "../models/KtError";
 import {getMilliSeconds} from "../utils/utils";
@@ -11,7 +11,7 @@ import {getMilliSeconds} from "../utils/utils";
 const RENT_CHARGE_ID = "00000000000000000000000000000000";
 
 export async function web_show_rentcharge(paras) {
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 
 	let item = await models.RentCharge.forge({"id": RENT_CHARGE_ID}).fetch();
 	if (!item) {
@@ -25,7 +25,7 @@ export async function web_show_rentcharge(paras) {
 }
 
 export async function web_update_rentcharge(paras) {
-	let resp = new ApiResponse();
+	let resp = buildSuccessResp();
 
 	try {
 		await models.RentCharge.forge({"id": RENT_CHARGE_ID}).save(
