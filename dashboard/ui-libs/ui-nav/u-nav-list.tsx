@@ -1,7 +1,9 @@
 import * as React from "react";
+import {CSSProperties} from "react";
 
 export class UNavListProps {
-    className?: [string]
+    className?: [string];
+    style?: CSSProperties
 }
 
 export class UNavList extends React.Component<UNavListProps> {
@@ -14,7 +16,7 @@ export class UNavList extends React.Component<UNavListProps> {
         return names.join(" ");
     }
     render() {
-        return <ul className={this.makeClassNames()}>
+        return <ul className={this.makeClassNames()} style={this.props.style}>
             {this.props.children}
         </ul>
     }
