@@ -1,0 +1,22 @@
+.u-nav-list{
+  -webkit-padding-start: 0;
+  overflow: hidden;
+  margin:0;
+  .u-nav-item {
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    .u-nav-link {
+      display: flex;
+      justify-content: flex-end;
+      cursor: pointer;
+    }
+    .sub-nav-list{
+      transition: height .1s;
+      .sub-nav-container {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+}

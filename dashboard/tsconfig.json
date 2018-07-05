@@ -5,6 +5,7 @@
     "sourceMap": true,
     "jsx": "react",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "noImplicitAny": true,
     "lib": [
       "esnext", "dom"

@@ -81,4 +81,9 @@ body{
   color: #555;
   font-family: 'Microsoft YaHei UI', serif;
 }
+#react-root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
 @import "theme-style/default/default";
