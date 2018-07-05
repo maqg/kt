@@ -3,7 +3,7 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {web_show_accountinfo, web_show_accountlist, web_show_allaccounts} from "../modules/account";
+import {web_remove_account, web_show_accountinfo, web_show_accountlist, web_show_allaccounts} from "../modules/account";
 import {PARAM_NOT_NULL, PARAM_TYPE_INT, PARAM_TYPE_STRING} from "../config/config";
 
 const ApiAccount = {
@@ -20,6 +20,16 @@ const ApiAccount = {
 			"service": web_show_allaccounts,
 			"key": "APIShowAllAccounts",
 			"paras": {
+				"sId": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Id of Account",
+					"default": "",
+				},
+				"sUsername": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Userame of User",
+					"default": "",
+				},
 				"start": {
 					"type": PARAM_TYPE_INT,
 					"desc": "Start Query Postion",
@@ -37,6 +47,19 @@ const ApiAccount = {
 			"service": web_show_accountinfo,
 			"role": [],
 			"key": "APIShowAccount",
+			"paras": {
+				"id": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "账号的UUID",
+					"default": PARAM_NOT_NULL
+				}
+			},
+		},
+		{
+			"name": "删除账号",
+			"service": web_remove_account,
+			"role": [],
+			"key": "APIRemoveAccount",
 			"paras": {
 				"id": {
 					"type": PARAM_TYPE_STRING,

@@ -57,7 +57,6 @@ export async function web_add_bikemodel(paras) {
 async function get_bikemodel_count() {
 	try {
 		let count = await knex("bikemodel").count("id as count");
-		console.log(count[0]["count"]);
 		return count[0]["count"];
 	} catch (e) {
 		console.log("get bikemodel count error " + e.toString());
@@ -127,9 +126,8 @@ export async function web_show_bikemodel(paras) {
 }
 
 export async function web_remove_bikemodel(paras) {
-	console.log(paras);
-	let bikemodel = await get_bikemodel(paras["id"]);
-	if (!bikemodel) {
+	let model = await get_bikemodel(paras["id"]);
+	if (!model) {
 		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
 			"Bike Model of " + paras["id"] + " Not Exist");
 	}
@@ -147,8 +145,8 @@ export async function web_remove_bikemodel(paras) {
 
 export async function web_update_bikemodel(paras) {
 
-	let bikemodel = await get_bikemodel(paras["id"]);
-	if (!bikemodel) {
+	let model = await get_bikemodel(paras["id"]);
+	if (!model) {
 		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
 			"Bike Model of " + paras["id"] + " Not Exist");
 	}
