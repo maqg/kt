@@ -3,7 +3,7 @@
  * Created at 07.03.2018 by Henry.Ma
  */
 
-import {PARAM_NOT_NULL, PARAM_TYPE_INT} from "../config/config";
+import {PARAM_NOT_NULL, PARAM_TYPE_INT, PARAM_TYPE_STRING} from "../config/config";
 import {web_clear_apitrace, web_show_alltraces, web_show_apitrace} from "../modules/apitrace";
 
 export const ApiApiTrace = {
@@ -20,6 +20,16 @@ export const ApiApiTrace = {
 			"service": web_show_alltraces,
 			"key": "APIShowAllTrace",
 			"paras": {
+				"sName": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Name",
+					"default": "",
+				},
+				"status": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Status of apitrace",
+					"default": "",
+				},
 				"start": {
 					"type": PARAM_TYPE_INT,
 					"desc": "Start Query Postion",
