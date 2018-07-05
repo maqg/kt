@@ -7,8 +7,8 @@ import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
 import {TB_ACCOUNT} from "../config/config";
-import {Account} from "../models/Account";
-import {getMilliSeconds} from "../utils/utils";
+import {Account, getEncPassword, ROOT_ACCOUNT_ID, ROOT_ACCOUNT_NAME} from "../models/Account";
+import {b64_decode, getMilliSeconds} from "../utils/utils";
 
 async function get_account_count() {
 	try {
@@ -36,7 +36,7 @@ async function get_account(id: string) {
 
 async function get_account_byname(name: string) {
 	try {
-		let items = await knex(TB_ACCOUNT).where("name", "=", name).select();
+		let items = await knex(TB_ACCOUNT).where("username", "=", name).select();
 		if (!items.length) {
 			console.log("account of " + name + "not exist");
 			return null;
@@ -46,6 +46,26 @@ async function get_account_byname(name: string) {
 		console.log("get account error " + e.toString());
 		return null;
 	}
+}
+
+async function get_account_bypassword(name: string, password: string) {
+	try {
+		let items = await knex(TB_ACCOUNT)
+			.where("username", "=", name)
+			.where("password", "=", getEncPassword(password)).select();
+		if (!items.length) {
+			console.log("account of " + name + "not exist");
+			return null;
+		}
+		return new Account(items[0]);
+	} catch (e) {
+		console.log("get account error " + e.toString());
+		return null;
+	}
+}
+
+export async function web_add_account(paras) {
+	return buildSuccessResp();
 }
 
 async function web_show_accountlist(paras) {
@@ -114,6 +134,11 @@ async function web_remove_account(paras) {
 			"Account of " + paras["id"] + " Not Exist");
 	}
 
+	if (model.username == ROOT_ACCOUNT_NAME || paras["id"] == ROOT_ACCOUNT_ID) {
+		return buildErrorResp(Errors.RET_ROOT_USER_PROTECTED,
+			"User of ktadmin is protected")
+	}
+
 	try {
 		await knex(TB_ACCOUNT).where("id", paras["id"]).del();
 	} catch (e) {
@@ -125,7 +150,7 @@ async function web_remove_account(paras) {
 	return buildSuccessResp();
 }
 
-async function web_update_account(paras) {
+async function web_change_password(paras) {
 
 	let model = await get_account(paras["id"]);
 	if (!model) {
@@ -133,21 +158,70 @@ async function web_update_account(paras) {
 			"Account of " + paras["id"] + " Not Exist");
 	}
 
+	let oldInputPassword = getEncPassword(b64_decode(paras["oldPassword"]));
+	let oldOriginalPassword = model.password;
+	if (oldInputPassword != oldOriginalPassword) {
+		return buildErrorResp(Errors.RET_PASSWORD_NOT_MATCH,
+			"Old Password not match");
+	}
+
+	let newPassword = b64_decode(paras["newPassword"]);
 	try {
 		await knex(TB_ACCOUNT).where("id", paras["id"])
 			.update({
-				name: paras["name"],
-				phone: paras["phone"],
-				status: paras["status"],
-				updateTime: getMilliSeconds(),
+				password: getEncPassword(newPassword),
+				updateTime: getMilliSeconds()
 			})
 	} catch (e) {
-		console.log("Failed to update account of " + paras["name"] + ",Errors " + e.toString());
+		console.log("Failed to update account password of " + paras["name"] + ",Errors " + e.toString());
 		return buildErrorResp(Errors.RET_DB_ERR,
-			"Failed to update account of " + paras["name"] + ",Errors " + e.toString())
+			"Failed to update account password of " + paras["name"] + ",Errors " + e.toString())
 	}
 
 	return buildSuccessResp();
 }
 
-export {web_show_accountlist, web_show_allaccounts, web_show_accountinfo, web_remove_account, web_update_account};
+export async function web_reset_password(paras) {
+	let item = get_account(paras["id"]);
+	if (!item) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"Account of " + paras["id"] + " not exist");
+	}
+
+	let plainPassword = b64_decode(paras["password"]);
+
+	try {
+		await knex(TB_ACCOUNT).where("id", paras["id"])
+			.update({
+				password: getEncPassword(plainPassword),
+				updateTime: getMilliSeconds()
+			})
+	} catch (e) {
+		console.log("Failed to update account password of " + paras["name"] + ",Errors " + e.toString());
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Failed to update account password of " + paras["name"] + ",Errors " + e.toString())
+	}
+
+	return buildSuccessResp();
+}
+
+export async function web_login_byaccount(paras) {
+
+	let model = await get_account_byname(paras["username"]);
+	if (!model) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"Account of " + paras["username"] + " Not Exist");
+	}
+
+	let password = b64_decode(paras["password"]);
+
+	model = await get_account_bypassword(paras["username"], password);
+	if (!model) {
+		return buildErrorResp(Errors.RET_PASSWORD_NOT_MATCH,
+			"Password and Username not match for " + paras["username"]);
+	}
+
+	return buildSuccessResp(model.toObj());
+}
+
+export {web_show_accountlist, web_show_allaccounts, web_show_accountinfo, web_remove_account, web_change_password};

@@ -4,6 +4,18 @@
  */
 
 import {timeToStr} from "../utils/utils";
+import {Md5} from 'ts-md5/dist/md5';
+
+export const ROLE_SUPER_ADMIN = 7;
+export const ROLE_ADMIN = 3;
+export const ROLE_AUDIT = 1;
+
+export const ROOT_ACCOUNT_ID = "00000000000000000000000000000000";
+export const ROOT_ACCOUNT_NAME = "ktadmin";
+
+export function getEncPassword(plain: string) {
+	return Md5.hashStr("Octopus" + plain + "Link");
+}
 
 export class Account {
 

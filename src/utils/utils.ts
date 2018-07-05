@@ -4,6 +4,7 @@
  */
 
 import * as uuidv4 from 'uuid/v4';
+import {Base64} from 'js-base64';
 
 // return milliseconds
 function getMilliSeconds() {
@@ -41,4 +42,21 @@ function parseValue(paras, key) {
 	}
 }
 
-export {getUuid, getCurrentDate, getMilliSeconds, dateToStr, timeToStr, transToStr, parseValue};
+function b64_encode_old(src) {
+	return new Buffer(src).toString("base64");
+}
+
+
+function b64_decode_old(src) {
+	return new Buffer(src, "base64").toString();
+}
+
+function b64_encode(src) {
+	return Base64.encode(src);
+}
+
+function b64_decode(src) {
+	return Base64.decode(src);
+}
+
+export {getUuid, getCurrentDate, getMilliSeconds, dateToStr, timeToStr, transToStr, parseValue, b64_decode, b64_encode};

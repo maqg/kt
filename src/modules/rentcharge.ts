@@ -3,7 +3,7 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {ApiResponse, buildSuccessResp} from "../models/ApiResponse";
+import {buildSuccessResp} from "../models/ApiResponse";
 import {models} from "../models/Bookshelf";
 import {Errors} from "../models/KtError";
 import {getMilliSeconds} from "../utils/utils";

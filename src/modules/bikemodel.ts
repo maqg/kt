@@ -114,12 +114,12 @@ async function get_bikemodel(id: string) {
 export async function web_show_bikemodel(paras) {
 	let resp = buildSuccessResp();
 
-	let bikemodel = await get_bikemodel(paras["id"]);
-	if (!bikemodel) {
+	let model = await get_bikemodel(paras["id"]);
+	if (!model) {
 		resp.errorObj.errorNo = Errors.RET_ITEM_NOT_EXIST;
 		resp.errorObj.errorLog = "Bike Model of " + paras["id"] + " Not Exist";
 	} else {
-		resp.data = bikemodel.toObj();
+		resp.data = model.toObj();
 	}
 
 	return resp;

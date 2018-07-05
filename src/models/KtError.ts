@@ -33,6 +33,10 @@ export enum Errors {
 	RET_SKEY_ERR = 6,
 	RET_ITEM_NOT_EXIST = 7,
 	RET_ITEM_ALREADY_EXIST = 8,
+	RET_PASSWORD_NOT_MATCH = 9,
+	RET_ROOT_USER_PROTECTED = 10,
+
+
 
 	RET_MAX_ERR
 }
@@ -50,6 +54,8 @@ export const ErrorMsgs = [
 	"Invalid API Skey", // 6-10
 	"Item Not Exist",
 	"Item Already Exist",
+	"User Not Exist or Password Not Match",
+	"Root User Protected, Cannot Remove",
 
 
 	"MAX ERROR NUMBER"

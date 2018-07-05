@@ -1,4 +1,4 @@
-INSERT INTO account (id,username,password,role,createTime,updateTime) VALUES('00000000000000000000000000000000','ktadmin','c7c4a4fdd785fb4870e2eb9ee4b4b7a9',7,UNIX_TIMESTAMP()*1000,UNIX_TIMESTAMP()*1000);
+INSERT INTO account (id,username,password,role,createTime,updateTime) VALUES('00000000000000000000000000000000','ktadmin','c341cba6a1437624815de477a43240e5',7,UNIX_TIMESTAMP()*1000,UNIX_TIMESTAMP()*1000);
 
 INSERT INTO apitrace VALUES(1,'octlink.kt.v1.account.APILogin','finished','登录账户',UNIX_TIMESTAMP()*1000,0,0,'{"username": "admin"}','{}');
 
