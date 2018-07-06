@@ -49,7 +49,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1530783566000,1530783566000,0);
+INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1530847290000,1530847290000,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `apitrace` (
 
 LOCK TABLES `apitrace` WRITE;
 /*!40000 ALTER TABLE `apitrace` DISABLE KEYS */;
-INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1530783566000,0,0,'{\"username\": \"admin\"}','{}');
+INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1530847290000,0,0,'{\"username\": \"admin\"}','{}');
 /*!40000 ALTER TABLE `apitrace` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +251,7 @@ CREATE TABLE `bikemodel` (
 
 LOCK TABLES `bikemodel` WRITE;
 /*!40000 ALTER TABLE `bikemodel` DISABLE KEYS */;
-INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1530783566000,1530783566000,0);
+INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1530847290000,1530847290000,0);
 /*!40000 ALTER TABLE `bikemodel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -394,7 +394,7 @@ CREATE TABLE `promotion` (
   `type` varchar(32) NOT NULL DEFAULT 'newbie' COMMENT 'newbie/recharge/qrcode/share/invite',
   `name` varchar(128) NOT NULL DEFAULT '',
   `status` varchar(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled,disabled',
-  `ammount` int(11) NOT NULL DEFAULT '1',
+  `amount` int(11) NOT NULL DEFAULT '1',
   `startTime` bigint(20) NOT NULL DEFAULT '0',
   `endTime` bigint(20) NOT NULL DEFAULT '0',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
@@ -416,7 +416,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1530783566000,0);
+INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1530847290000,0);
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -450,7 +450,7 @@ CREATE TABLE `rentcharge` (
 
 LOCK TABLES `rentcharge` WRITE;
 /*!40000 ALTER TABLE `rentcharge` DISABLE KEYS */;
-INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1530783566000,1530783566000,0);
+INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1530847290000,1530847290000,0);
 /*!40000 ALTER TABLE `rentcharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -569,7 +569,7 @@ CREATE TABLE `usercoupon` (
   `userId` varchar(36) NOT NULL DEFAULT '',
   `promotionId` varchar(36) NOT NULL DEFAULT '',
   `status` varchar(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled,disabled',
-  `ammount` int(11) NOT NULL DEFAULT '1',
+  `amount` int(11) NOT NULL DEFAULT '1',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
   `useTime` bigint(20) NOT NULL DEFAULT '0',
   `deleteTime` bigint(20) NOT NULL DEFAULT '0',
@@ -607,8 +607,8 @@ CREATE TABLE `userrecharge` (
   `channel` varchar(50) NOT NULL DEFAULT 'JSAPI' COMMENT 'recharge channel',
   `rechargeId` varchar(50) NOT NULL DEFAULT '',
   `refundId` varchar(50) NOT NULL DEFAULT '',
-  `ammount` int(11) NOT NULL DEFAULT '0' COMMENT '分',
-  `refundAmmount` int(11) NOT NULL DEFAULT '0' COMMENT '分',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '分',
+  `refundAmount` int(11) NOT NULL DEFAULT '0' COMMENT '分',
   `refundFailReason` varchar(512) NOT NULL DEFAULT '',
   `clientIp` varchar(20) NOT NULL DEFAULT '',
   `rechargeStatus` varchar(16) NOT NULL DEFAULT 'success' COMMENT 'failed',
@@ -692,4 +692,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-05 17:39:26
+-- Dump completed on 2018-07-06 11:21:30
