@@ -3,15 +3,17 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
+import * as sha1 from 'js-sha1';
 import {ApiAccount} from "./api_account";
 import {buildErrorResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
-import {parseValue, transToStr} from "../utils/utils";
-import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT} from "../config/config";
+import {getMilliSeconds, transToStr} from "../utils/utils";
+import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT, SessionTimeout, TEST_SKEY} from "../config/config";
 import {ApiApiTrace} from "./api_trace";
 import {ApiRentCharge} from "./api_rentcharge";
 import {ApiBikeModel} from "./api_bikemodel";
 import {ApiWxApp} from "./api_wxapp";
+import {ApiUser} from "./api_user";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -21,20 +23,11 @@ let ApiModules = [
 	ApiRentCharge,
 	ApiBikeModel,
 	ApiWxApp,
+	ApiUser,
 ];
 
 function parseParas(ctx) {
-	let args = ctx.request.body;
-	let paras = {};
-
-	if (args.hasOwnProperty("paras")) {
-		paras = ctx.request.body["paras"];
-	}
-
-	paras["skey"] = parseValue(args, "skey");
-	paras["session"] = parseValue(args, "session");
-
-	return paras;
+	return ctx.request.body;
 }
 
 class CheckResult {
@@ -47,23 +40,64 @@ class CheckResult {
 	}
 }
 
-function checkSkey(paras) {
-	return paras["skey"] != null;
+function createSign(args) {
+
+	let parasStr = "";
+	let params = [];
+
+	console.log(args);
+
+	parasStr += "api=" + args["api"];
+	parasStr += "timestamp=" + args["timestamp"];
+	parasStr += "token=" + args["token"];
+
+	for (let key in args["paras"]) {
+		params.push(key);
+	}
+	params.sort();
+
+	for (let key of params) {
+		parasStr += key + "=" + args["paras"][key];
+	}
+	let sign = sha1(parasStr);
+
+	console.log("got sign " + sign + " of \n" + parasStr);
+
+	return sign;
+}
+
+function checkSkey(args) {
+
+	let now = getMilliSeconds() / 1000;
+	if (Math.abs(now - (args["timestamp"] / 1000)) > SessionTimeout) {
+		console.log("request invalid timestamp ");
+		console.log(args);
+		return false;
+	}
+
+	let sign = createSign(args);
+	if (sign != args["sign"] && args["sign"] != TEST_SKEY) {
+		console.log("got bad input sign " + args["sign"] + ", for " + sign);
+		return false;
+	}
+
+	return true;
 }
 
 function checkSession(paras) {
-	return paras["session"] != null;
+	return paras["token"] != null;
 }
 
-function checkParas(apiProto, paras): (CheckResult){
+function checkParas(apiProto, args): (CheckResult) {
 	let apiParas = apiProto["paras"];
+	let paras = args["paras"];
 
-	if (!checkSkey(paras)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["skey"]);
+	if (!checkSkey(args)) {
+		return new CheckResult(Errors.RET_SKEY_ERR, "bad sign of " + args["sign"]);
 	}
 
-	if (!checkSession(paras)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + paras["session"]);
+	if (!checkSession(args)) {
+		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + args["token"]);
 	}
 
 	for (let key in apiParas) {
@@ -94,8 +128,8 @@ function checkParas(apiProto, paras): (CheckResult){
 
 async function apiDispatcher(ctx) {
 
-	let paras = parseParas(ctx);
-	let api = ctx.request.body["api"];
+	let args = parseParas(ctx);
+	let api = args["api"];
 
 	if (!api) {
 		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, "api not specified");
@@ -105,14 +139,14 @@ async function apiDispatcher(ctx) {
 
 	let apiProto = ApiListMap[api];
 	if (apiProto) {
-		let retObj = checkParas(apiProto, paras);
+		let retObj = checkParas(apiProto, args);
 		if (retObj.errorNo != 0) {
 			let resp = buildErrorResp(retObj.errorNo, retObj.errorLog);
 			ctx.body = transToStr(resp);
 			return
 		}
 
-		let resp = await apiProto["service"](paras);
+		let resp = await apiProto["service"](args["paras"]);
 
 		resp.updateErrorMsg();
 		ctx.body = JSON.stringify(resp);
