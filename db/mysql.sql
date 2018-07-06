@@ -219,12 +219,12 @@ ALTER TABLE bike ADD INDEX bike_createTime (createTime);
 ALTER TABLE bike ADD INDEX bike_lastrent (lastRent);
 
 
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE `order` (
+DROP TABLE IF EXISTS `userorder`;
+CREATE TABLE `userorder` (
 		`id` VARCHAR(36) NOT NULL DEFAULT '',
 		`userId` VARCHAR(36) NOT NULL DEFAULT '',
 		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
-		`orderNo` VARCHAR(50) NOT NULL DEFAULT '',
+		`userorderNo` VARCHAR(50) NOT NULL DEFAULT '',
 		`totalFee` INTEGER NOT NULL DEFAULT '0' COMMENT '分',
 		`cashFee` INTEGER NOT NULL DEFAULT '0' COMMENT '分',
 		`couponFee` INTEGER NOT NULL DEFAULT '0' COMMENT '分',
@@ -245,14 +245,14 @@ CREATE TABLE `order` (
 		FOREIGN KEY (userId) REFERENCES user(id),
 		FOREIGN KEY (bikeId) REFERENCES bike(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
-ALTER TABLE `order` ADD INDEX order_id (id);
-ALTER TABLE `order` ADD INDEX order_status (status);
-ALTER TABLE `order` ADD INDEX order_userid (userId);
-ALTER TABLE `order` ADD INDEX order_bikeid (bikeId);
-ALTER TABLE `order` ADD INDEX order_orderno (orderNo);
-ALTER TABLE `order` ADD INDEX order_startTime (createTime);
-ALTER TABLE `order` ADD INDEX order_endtime (endTime);
-ALTER TABLE `order` ADD INDEX order_createTime (createTime);
+ALTER TABLE `userorder` ADD INDEX userorder_id (id);
+ALTER TABLE `userorder` ADD INDEX userorder_status (status);
+ALTER TABLE `userorder` ADD INDEX userorder_userid (userId);
+ALTER TABLE `userorder` ADD INDEX userorder_bikeid (bikeId);
+ALTER TABLE `userorder` ADD INDEX userorder_userorderno (userorderNo);
+ALTER TABLE `userorder` ADD INDEX userorder_startTime (createTime);
+ALTER TABLE `userorder` ADD INDEX userorder_endtime (endTime);
+ALTER TABLE `userorder` ADD INDEX userorder_createTime (createTime);
 
 DROP TABLE IF EXISTS `bikelog`;
 CREATE TABLE `bikelog` (
@@ -276,7 +276,7 @@ CREATE TABLE `orderlog` (
 		`currentFee` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',
 		`remark` VARCHAR(200) NOT NULL DEFAULT '',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		FOREIGN KEY (orderId) REFERENCES `order`(id),
+		FOREIGN KEY (orderId) REFERENCES `userorder`(id),
 		FOREIGN KEY (userId) REFERENCES user(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE orderlog ADD INDEX orderlog_orderid (orderId);
@@ -374,7 +374,7 @@ CREATE TABLE `ridemsg` (
 		`seconds` INTEGER NOT NULL DEFAULT '0',
 		`distance` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
-		FOREIGN KEY (orderId) REFERENCES `order`(id),
+		FOREIGN KEY (orderId) REFERENCES `userorder`(id),
 		FOREIGN KEY (bikeId) REFERENCES bike(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE ridemsg ADD INDEX ridemsg_orderid (orderId);
