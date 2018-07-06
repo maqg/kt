@@ -14,6 +14,10 @@ const Config = {
 
 const API_PREFIX = "octlink.kt.v1.";
 
+export const TEST_SKEY = "00000000000000000000000000000000";
+
+export const SessionTimeout = 60 * 60; // in seconds
+
 let ApiModuleMap = {};
 
 export const PARAM_TYPE_STRING = "string";

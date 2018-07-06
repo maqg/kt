@@ -154,17 +154,15 @@
 
 
     function commint_request() {
-
-        selectedModule = getSelectedOption("#apiModuleList");
         selectedApi = getSelectedApi();
-
         json = {
-            "module": selectedModule,
             "api": selectedApi["key"],
             "paras": fetch_api_paras(),
-            "session": "00000000000000000000000000000000",
-            "skey": "00000000000000000000000000000000"
+            "token": "00000000000000000000000000000000",
+            "timestamp": new Date().getTime()
         };
+
+        json["sign"] = createSign(json);
 
         bodyStr = JSON.stringify(json);
 
