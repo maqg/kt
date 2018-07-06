@@ -1,0 +1,206 @@
+.u-doc-container {
+  font-size: 15px;
+  line-height: 1.7;
+  overflow: hidden; }
+.u-doc-container > *:first-child {
+  margin-top: 0 !important; }
+.u-doc-container > *:last-child {
+  margin-bottom: 0 !important; }
+.u-doc-container a.absent {
+  color: #c00; }
+.u-doc-container a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+.u-doc-container h1, .u-doc-container h2, .u-doc-container h3, .u-doc-container h4, .u-doc-container h5, .u-doc-container h6 {
+  margin: 1em 0 15px;
+  padding: 0;
+  font-weight: bold;
+  line-height: 1.7;
+  cursor: text;
+  position: relative; }
+.u-doc-container h1 .octicon-link, .u-doc-container h2 .octicon-link, .u-doc-container h3 .octicon-link, .u-doc-container h4 .octicon-link, .u-doc-container h5 .octicon-link, .u-doc-container h6 .octicon-link {
+  display: none;
+  color: #000; }
+.u-doc-container h1:hover a.anchor, .u-doc-container h2:hover a.anchor, .u-doc-container h3:hover a.anchor, .u-doc-container h4:hover a.anchor, .u-doc-container h5:hover a.anchor, .u-doc-container h6:hover a.anchor {
+  text-decoration: none;
+  line-height: 1;
+  padding-left: 0;
+  margin-left: -22px;
+  top: 15%; }
+.u-doc-container h1:hover a.anchor .octicon-link, .u-doc-container h2:hover a.anchor .octicon-link, .u-doc-container h3:hover a.anchor .octicon-link, .u-doc-container h4:hover a.anchor .octicon-link, .u-doc-container h5:hover a.anchor .octicon-link, .u-doc-container h6:hover a.anchor .octicon-link {
+  display: inline-block; }
+.u-doc-container h1 tt, .u-doc-container h1 code, .u-doc-container h2 tt, .u-doc-container h2 code, .u-doc-container h3 tt, .u-doc-container h3 code, .u-doc-container h4 tt, .u-doc-container h4 code, .u-doc-container h5 tt, .u-doc-container h5 code, .u-doc-container h6 tt, .u-doc-container h6 code {
+  font-size: inherit; }
+.u-doc-container h1 {
+  font-size: 2.5em;
+  border-bottom: 1px solid #ddd; }
+.u-doc-container h2 {
+  font-size: 2em;
+  border-bottom: 1px solid #eee; }
+.u-doc-container h3 {
+  font-size: 1.5em; }
+.u-doc-container h4 {
+  font-size: 1.2em; }
+.u-doc-container h5 {
+  font-size: 1em; }
+.u-doc-container h6 {
+  color: #777;
+  font-size: 1em; }
+.u-doc-container p,
+.u-doc-container blockquote,
+.u-doc-container ul, .u-doc-container ol, .u-doc-container dl,
+.u-doc-container table,
+.u-doc-container pre {
+  margin: 15px 0; }
+.u-doc-container hr {
+  background: transparent;
+  border: 0 none;
+  color: #ccc;
+  height: 4px;
+  padding: 0;
+  margin: 15px 0; }
+.u-doc-container li p.first {
+  display: inline-block; }
+.u-doc-container ul, .u-doc-container ol {
+  padding-left: 30px; }
+.u-doc-container ul.no-list, .u-doc-container ol.no-list {
+  list-style-type: none;
+  padding: 0; }
+.u-doc-container ul ul,
+.u-doc-container ul ol,
+.u-doc-container ol ol,
+.u-doc-container ol ul {
+  margin-top: 0;
+  margin-bottom: 0; }
+.u-doc-container dl {
+  padding: 0; }
+.u-doc-container dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin-top: 15px; }
+.u-doc-container dl dd {
+  margin-bottom: 15px;
+  padding: 0 15px; }
+.u-doc-container blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777; }
+.u-doc-container blockquote > :first-child {
+  margin-top: 0px; }
+.u-doc-container blockquote > :last-child {
+  margin-bottom: 0px; }
+.u-doc-container table {
+  width: 100%;
+  overflow: auto;
+  display: block;
+  border-spacing: 0;
+  border-collapse: collapse; }
+.u-doc-container table th {
+  font-weight: bold; }
+.u-doc-container table th, .u-doc-container table td {
+  border: 1px solid #ddd;
+  padding: 6px 13px; }
+.u-doc-container table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff; }
+.u-doc-container table tr:nth-child(2n) {
+  background-color: #f8f8f8; }
+.u-doc-container img {
+  max-width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+.u-doc-container span.frame {
+  display: block;
+  overflow: hidden; }
+.u-doc-container span.frame > span {
+  border: 1px solid #ddd;
+  display: block;
+  float: left;
+  overflow: hidden;
+  margin: 13px 0 0;
+  padding: 7px;
+  width: auto; }
+.u-doc-container span.frame span img {
+  display: block;
+  float: left; }
+.u-doc-container span.frame span span {
+  clear: both;
+  color: #333;
+  display: block;
+  padding: 5px 0 0; }
+.u-doc-container span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+.u-doc-container span.align-center > span {
+  display: block;
+  overflow: hidden;
+  margin: 13px auto 0;
+  text-align: center; }
+.u-doc-container span.align-center span img {
+  margin: 0 auto;
+  text-align: center; }
+.u-doc-container span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+.u-doc-container span.align-right > span {
+  display: block;
+  overflow: hidden;
+  margin: 13px 0 0;
+  text-align: right; }
+.u-doc-container span.align-right span img {
+  margin: 0;
+  text-align: right; }
+.u-doc-container span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+.u-doc-container span.float-left span {
+  margin: 13px 0 0; }
+.u-doc-container span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+.u-doc-container span.float-right > span {
+  display: block;
+  overflow: hidden;
+  margin: 13px auto 0;
+  text-align: right; }
+.u-doc-container code, .u-doc-container tt {
+  margin: 0 2px;
+  padding: 0px 5px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+.u-doc-container code {
+  white-space: nowrap; }
+.u-doc-container pre > code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+.u-doc-container .highlight pre, .u-doc-container pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+.u-doc-container pre code, .u-doc-container pre tt {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none; }

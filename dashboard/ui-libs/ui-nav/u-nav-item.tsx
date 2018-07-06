@@ -1,6 +1,5 @@
 import * as React from "react";
 import {NavLink} from "react-router-dom";
-import {UNavList} from "./u-nav-list";
 import {UIcon} from "../ui-icon";
 
 export interface UNavItemProps {
@@ -24,22 +23,14 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
             isExpand: false,
             isHover: false,
             isDown: false,
-            title: this.props.children?"展开":"",
+            title: "展开",
         }
     }
     componentDidMount(){
-        if(this.subContainer){
-            this.setState({
-                isExpand: this.props.expand
-            })
-        }
-    }
-    private getContainerHeight():number{
-        if(this.state.isExpand && this.subContainer) {
-            return this.subContainer.offsetHeight;
-        } else {
-            return 0;
-        }
+        this.setState({
+            isExpand: this.props.expand,
+            title: this.props.expand ?"收起":"展开"
+        })
     }
     private makeAClassName(): string {
         let names = ['u-nav-link'];
@@ -87,10 +78,9 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
             })
         }
     }
-
     render() {
         if (this.props.children) {
-            return <li className={this.makeLiClassName()}>
+            return <li className={this.makeLiClassName()} title={this.state.title}>
                 <a className={this.makeAClassName()}
                    onClick={()=>{this.onNavClick()}}
                    onMouseDown={()=>{this.onMouseDown()}}
@@ -103,16 +93,14 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
                         <UIcon iconName={'angle-right'}/>
                     </span>
                 </a>
-                <UNavList className={['sub-nav-list']} style={{height: this.getContainerHeight() + "px"}}>
-                    <span className={'sub-nav-container'} ref={(ref)=>{this.subContainer = ref}} >
+                <ul className={'sub-nav-list'}>
                         {this.props.children}
-                    </span>
-                </UNavList>
+                </ul>
             </li>
         } else {
             return <li className={this.makeLiClassName()}>
                 <NavLink className={this.makeAClassName()}
-                         to={this.props.path || ''} replace
+                         to={this.props.path || ''} replace exact
                          onMouseDown={()=>{this.onMouseDown()}}
                          onMouseUp={()=>{this.onMouseUp()}}
                          onMouseEnter={()=>{this.onMouseEnter()}}
