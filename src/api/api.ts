@@ -14,6 +14,7 @@ import {ApiRentCharge} from "./api_rentcharge";
 import {ApiBikeModel} from "./api_bikemodel";
 import {ApiWxApp} from "./api_wxapp";
 import {ApiUser} from "./api_user";
+import {ApiUserOrder} from "./api_userorder";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -24,6 +25,7 @@ let ApiModules = [
 	ApiBikeModel,
 	ApiWxApp,
 	ApiUser,
+	ApiUserOrder,
 ];
 
 function parseParas(ctx) {

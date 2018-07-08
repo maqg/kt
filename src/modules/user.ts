@@ -6,9 +6,10 @@
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
-import {TB_USER} from "../config/config";
+import {TB_ACCOUNT, TB_USER} from "../config/config";
 import {User} from "../models/User";
 import {getMilliSeconds} from "../utils/utils";
+import {getEncPassword} from "../models/Account";
 
 async function get_user_count() {
 	try {
@@ -36,7 +37,7 @@ async function get_user(id: string) {
 
 async function get_account_byopenid(openId: string) {
 	try {
-		let items = await knex(TB_USER).where("openId", "=", openId).select();
+		let items = await knex(TB_USER).where("bikeId", "=", openId).select();
 		if (!items.length) {
 			console.log("account of " + openId + " not exist");
 			return null;
@@ -53,7 +54,7 @@ async function get_account_byopenid(openId: string) {
 
 async function get_account_byunionid(unionId: string) {
 	try {
-		let items = await knex(TB_USER).where("unionId", "=", unionId).select();
+		let items = await knex(TB_USER).where("userId", "=", unionId).select();
 		if (!items.length) {
 			console.log("user of " + unionId + " not exist");
 			return null;
@@ -63,11 +64,6 @@ async function get_account_byunionid(unionId: string) {
 		console.log("get user error " + e.toString());
 		return null;
 	}
-}
-
-async function web_get_userinfo(paras) {
-	// TBD
-	return buildSuccessResp();
 }
 
 async function web_show_user(paras) {
@@ -86,12 +82,12 @@ async function web_show_allusers(paras) {
 		cond["id"] = paras["id"];
 	}
 
-	if (paras["unionId"]) {
-		cond["unionId"] = paras["unionId"];
+	if (paras["userId"]) {
+		cond["userId"] = paras["userId"];
 	}
 
-	if (paras["openId"]) {
-		cond["openId"] = paras["openId"];
+	if (paras["bikeId"]) {
+		cond["bikeId"] = paras["bikeId"];
 	}
 
 	if (paras["phone"]) {
@@ -105,10 +101,14 @@ async function web_show_allusers(paras) {
 			.where("createTime", ">", paras["startTime"])
 			.where("createTime", "<", paras["endTime"] ? paras["endTime"]: getMilliSeconds())
 			.select().limit(paras["limit"]).offset(paras["start"]);
+
 		for (let item of items) {
 			let model = new User(item);
-			list.push(model.toObj());
+			let modelObj = model.toObj();
+			modelObj["unpaied"] =  get_user_unpaied_info(model.id);
+			list.push(modelObj);
 		}
+
 		return buildSuccessResp({
 			"total": await get_user_count(),
 			"count": list.length,
@@ -122,4 +122,36 @@ async function web_show_allusers(paras) {
 
 }
 
-export {web_get_userinfo, web_show_user, web_show_allusers};
+
+function get_user_unpaied_info(userId: string) {
+	return 0;
+}
+
+
+/*
+ * Update User's status to "enabled,disabled,or deleted"
+ */
+export async function web_update_userstatus(paras) {
+	let model = await get_user(paras["id"]);
+	if (!model) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"User of " + paras["id"] + " Not Exist")
+	}
+
+
+	try {
+		await knex(TB_USER).where("id", paras["id"])
+			.update({
+				status: paras["status"],
+				updateTime: getMilliSeconds()
+			})
+	} catch (e) {
+		console.log("Failed to update user status of " + paras["nickname"] + ",Errors " + e.toString());
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Failed to update user status of " + paras["nickname"] + ",Errors " + e.toString())
+	}
+
+	return buildSuccessResp();
+}
+
+export {web_show_user, web_show_allusers};
