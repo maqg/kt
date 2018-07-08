@@ -224,7 +224,7 @@ CREATE TABLE `userorder` (
 		`id` VARCHAR(36) NOT NULL DEFAULT '',
 		`userId` VARCHAR(36) NOT NULL DEFAULT '',
 		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
-		`userorderNo` VARCHAR(50) NOT NULL DEFAULT '',
+		`orderNo` VARCHAR(50) NOT NULL DEFAULT '',
 		`totalFee` INTEGER NOT NULL DEFAULT '0' COMMENT '分',
 		`cashFee` INTEGER NOT NULL DEFAULT '0' COMMENT '分',
 		`couponFee` INTEGER NOT NULL DEFAULT '0' COMMENT '分',
@@ -249,7 +249,7 @@ ALTER TABLE `userorder` ADD INDEX userorder_id (id);
 ALTER TABLE `userorder` ADD INDEX userorder_status (status);
 ALTER TABLE `userorder` ADD INDEX userorder_userid (userId);
 ALTER TABLE `userorder` ADD INDEX userorder_bikeid (bikeId);
-ALTER TABLE `userorder` ADD INDEX userorder_userorderno (userorderNo);
+ALTER TABLE `userorder` ADD INDEX userorder_userorderno (orderNo);
 ALTER TABLE `userorder` ADD INDEX userorder_startTime (createTime);
 ALTER TABLE `userorder` ADD INDEX userorder_endtime (endTime);
 ALTER TABLE `userorder` ADD INDEX userorder_createTime (createTime);
