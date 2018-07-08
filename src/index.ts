@@ -30,12 +30,9 @@ router.get('/dashboard-doc/', async(ctx: Context)=>{
 app.use(KoaBodyParar());
 app.use(KoaViews("./views", { extension: 'html', map: {html: 'ejs'}}));
 app.use(KoaStatic("./static"));
-
 app.use(router.routes());
 app.use(router.allowedMethods());
-
 initApis();
-
 app.listen(Config.Port);
 
 console.log("Listen on Port " + Config.Port);

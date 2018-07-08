@@ -23,6 +23,8 @@ export class DocLayout extends React.Component<any>{
                         <UNavItem label={'图标组件'} graph={<UIcon iconName={'modx'}/>} path={'/icon/icon-component'}/>
                         <UNavItem label={'内部图标'} graph={<UIcon iconName={'braille'}/>} path={'/icon/icon-map'}/>
                     </UNavItem>
+                    <UNavItem label={'理平台'} graph={<UIcon iconName={'star'}/>} path={'/'}/>
+                    <UNavItem label={'KT 理平台'} graph={<UIcon iconName={'star'}/>} path={'/'}/>
                 </UNavList>}}/>
 
             </nav>

@@ -1,9 +1,7 @@
 import * as React from "react";
-import {render} from "react-dom";
-
 const INNER_ICON_FAMILY: string = 'fa';
-const SPIN_CLASS: string ='u-icon-spin';
-const PULSE_CLASS: string = 'u-icon-pulse';
+const SPIN_CLASS: string ='icon-spin';
+const PULSE_CLASS: string = 'icon-pulse';
 
 export interface UIconProps {
     fontFamily?: string,

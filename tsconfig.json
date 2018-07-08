@@ -4,6 +4,7 @@
     "target": "esnext",
     "allowJs": false,
     "sourceMap": true,
+    "moduleResolution": "node",
     "lib": ["esnext"],
     "outDir": "dist"
   },

@@ -1,7 +1,7 @@
-import * as React from "react";
 import * as hljs from "highlight.js";
 import * as marked from "marked";
 import 'highlight.js/styles/tomorrow-night-eighties.css';
+import * as React from "react";
 
 export interface UDocProps {
     text: string

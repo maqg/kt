@@ -93,8 +93,11 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
                         <UIcon iconName={'angle-right'}/>
                     </span>
                 </a>
-                <ul className={'sub-nav-list'}>
+                <ul className={'sub-nav-list'}  style={{maxHeight: (this.subContainer&&this.state.isExpand)?this.subContainer.offsetHeight+"px":0}}>
+                    <div className={'sub-list-container'} ref={(ref)=>{this.subContainer = ref}}>
                         {this.props.children}
+                    </div>
+
                 </ul>
             </li>
         } else {
