@@ -15,6 +15,7 @@ const Config = {
 const API_PREFIX = "octlink.kt.v1.";
 
 export const TEST_SKEY = "00000000000000000000000000000000";
+export const TEST_TOKEN = "00000000000000000000000000000000";
 
 export const SessionTimeout = 60 * 60; // in seconds
 
@@ -37,6 +38,7 @@ export const TB_ORDERLOG = "orderlog";
 export const TB_BIKE = "bike";
 export const TB_BIKELOG = "bikelog";
 export const TB_USERORDER = "userorder";
+export const TB_SESSION = "session";
 
 
 export {Config, API_PREFIX, ApiModuleMap};

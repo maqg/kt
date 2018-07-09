@@ -6,10 +6,9 @@
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
-import {TB_ACCOUNT, TB_USER} from "../config/config";
+import {TB_USER} from "../config/config";
 import {User} from "../models/User";
 import {getMilliSeconds} from "../utils/utils";
-import {getEncPassword} from "../models/Account";
 
 async function get_user_count() {
 	try {
@@ -35,7 +34,7 @@ async function get_user(id: string) {
 	}
 }
 
-async function get_account_byopenid(openId: string) {
+async function get_user_byopenid(openId: string) {
 	try {
 		let items = await knex(TB_USER).where("bikeId", "=", openId).select();
 		if (!items.length) {
@@ -52,7 +51,7 @@ async function get_account_byopenid(openId: string) {
 	}
 }
 
-async function get_account_byunionid(unionId: string) {
+async function get_user_byunionid(unionId: string) {
 	try {
 		let items = await knex(TB_USER).where("userId", "=", unionId).select();
 		if (!items.length) {
@@ -97,7 +96,7 @@ async function web_show_allusers(paras) {
 	try {
 		let list = [];
 		let items = await knex(TB_USER).where(cond)
-			.where("nickname", "LIKE", "%" + paras["sNickname"] + "%")
+			.where("currentUser", "LIKE", "%" + paras["sNickname"] + "%")
 			.where("createTime", ">", paras["startTime"])
 			.where("createTime", "<", paras["endTime"] ? paras["endTime"]: getMilliSeconds())
 			.select().limit(paras["limit"]).offset(paras["start"]);
@@ -122,14 +121,12 @@ async function web_show_allusers(paras) {
 
 }
 
-
 function get_user_unpaied_info(userId: string) {
 	return 0;
 }
 
-
 /*
- * Update User's status to "enabled,disabled,or deleted"
+ * Update User's username to "enabled,disabled,or deleted"
  */
 export async function web_update_userstatus(paras) {
 	let model = await get_user(paras["id"]);
@@ -146,9 +143,9 @@ export async function web_update_userstatus(paras) {
 				updateTime: getMilliSeconds()
 			})
 	} catch (e) {
-		console.log("Failed to update user status of " + paras["nickname"] + ",Errors " + e.toString());
+		console.log("Failed to update user username of " + paras["currentUser"] + ",Errors " + e.toString());
 		return buildErrorResp(Errors.RET_DB_ERR,
-			"Failed to update user status of " + paras["nickname"] + ",Errors " + e.toString())
+			"Failed to update user username of " + paras["currentUser"] + ",Errors " + e.toString())
 	}
 
 	return buildSuccessResp();

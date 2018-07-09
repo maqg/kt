@@ -94,7 +94,7 @@ export const ApiUserOrder = {
 				},
 				"why": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "Why to change status of this order, at least 4 words",
+					"desc": "Why to change username of this order, at least 4 words",
 					"default": PARAM_NOT_NULL,
 				}
 			}

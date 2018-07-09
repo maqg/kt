@@ -50,7 +50,7 @@ export async function web_show_alltraces(paras) {
 	}
 
 	if (paras["status"]) {
-		cond["status"] = paras["status"];
+		cond["username"] = paras["status"];
 	}
 
 	try {

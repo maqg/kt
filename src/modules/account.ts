@@ -9,6 +9,7 @@ import {knex} from "../models/Bookshelf";
 import {TB_ACCOUNT} from "../config/config";
 import {Account, getEncPassword, ROOT_ACCOUNT_ID, ROOT_ACCOUNT_NAME} from "../models/Account";
 import {b64_decode, getMilliSeconds, getUuid} from "../utils/utils";
+import {newSession} from "../models/Session";
 
 async function get_account_count() {
 	try {
@@ -244,7 +245,13 @@ export async function web_login_byaccount(paras) {
 			"Password and Username not match for " + paras["username"]);
 	}
 
-	return buildSuccessResp(model.toObj());
+	let session = await newSession(model.id, model.username, model.role);
+	if (!session) {
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Create New Session Error For User " + model.username);
+	}
+
+	return buildSuccessResp(session.toObj());
 }
 
 export {web_show_accountlist, web_show_allaccounts, web_show_accountinfo, web_remove_account, web_change_password};
