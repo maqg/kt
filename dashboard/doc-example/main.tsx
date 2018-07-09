@@ -11,6 +11,7 @@ import './static/style/doc-md.scss';
 import {UIconCompView} from "./views/u-icon-comp-view";
 import * as hljs from "highlight.js";
 import {UIconMapView} from "./views/u-icon-map";
+import {UComponentView} from "./views/u-component-view";
 
 export class DocLayout extends React.Component<any>{
     constructor(props: any){
@@ -35,7 +36,7 @@ export class DocLayout extends React.Component<any>{
             </nav>
             <main className={'doc-main'}>
                 <Switch>
-                    <Route path="/" exact replace render={()=>{return <div>Hello World</div>}}/>
+                    <Route path="/" exact replace component={UComponentView}/>
                     <Route path="/icon" exact render={()=>{return <Redirect to={'/icon/icon-component'}/>}} />
                     <Route path="/icon/icon-component"  component={UIconCompView} />
                     <Route path="/icon/icon-map"  component={UIconMapView} />
