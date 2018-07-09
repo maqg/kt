@@ -255,13 +255,13 @@ CREATE TABLE `bikelog` (
 		`userId` VARCHAR(36) NOT NULL DEFAULT '',
 		`username` VARCHAR(128) NOT NULL DEFAULT '',
 		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
-		`type` VARCHAR(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
+		`action` VARCHAR(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
 		`createTime` BIGINT NOT NULL DEFAULT '0'
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE bikelog ADD INDEX bikelog_user (userId);
 ALTER TABLE bikelog ADD INDEX bikelog_username (username);
 ALTER TABLE bikelog ADD INDEX bikelog_bikeid (bikeId);
-ALTER TABLE bikelog ADD INDEX bikelog_type (type);
+ALTER TABLE bikelog ADD INDEX bikelog_type (action);
 ALTER TABLE bikelog ADD INDEX bikelog_createtime (createTime);
 
 DROP TABLE IF EXISTS `orderlog`;
@@ -367,6 +367,25 @@ CREATE TABLE `ridemsg` (
 ALTER TABLE ridemsg ADD INDEX ridemsg_orderid (orderId);
 ALTER TABLE ridemsg ADD INDEX ridemsg_bikeid (bikeId);
 ALTER TABLE ridemsg ADD INDEX ridemsg_createtime (createTime);
+
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE `session` (
+		`id` VARCHAR(36) NOT NULL DEFAULT '',
+		`userId` VARCHAR(36) NOT NULL DEFAULT '',
+		`userType` TINYINT NOT NULL DEFAULT '0' COMMENT '7:superadmin,3:admin,1:audit,0:user',
+		`username` VARCHAR(128) NOT NULL DEFAULT '',
+		`cookie` VARCHAR(200) NOT NULL DEFAULT '',
+		`createTime` BIGINT NOT NULL DEFAULT '0',
+		`updateTime` BIGINT NOT NULL DEFAULT '0',
+		`expireTime` BIGINT NOT NULL DEFAULT '0',
+		PRIMARY KEY (`id`)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE session ADD INDEX session_id (id);
+ALTER TABLE session ADD INDEX session_userid (userId);
+ALTER TABLE session ADD INDEX session_username (username);
+ALTER TABLE session ADD INDEX session_createtime (createTime);
+ALTER TABLE session ADD INDEX session_updatetime (updateTime);
+ALTER TABLE session ADD INDEX session_expiretime (expireTime);
 
 
 DROP TRIGGER IF EXISTS trigger_delete_user;

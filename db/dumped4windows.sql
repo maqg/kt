@@ -49,7 +49,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1531109206000,1531109206000,0);
+INSERT INTO `account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1531117742000,1531117742000,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `apitrace` (
 
 LOCK TABLES `apitrace` WRITE;
 /*!40000 ALTER TABLE `apitrace` DISABLE KEYS */;
-INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1531109206000,0,0,'{\"username\": \"admin\"}','{}');
+INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1531117742000,0,0,'{\"username\": \"admin\"}','{}');
 /*!40000 ALTER TABLE `apitrace` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -195,12 +195,12 @@ CREATE TABLE `bikelog` (
   `userId` varchar(36) NOT NULL DEFAULT '',
   `username` varchar(128) NOT NULL DEFAULT '',
   `bikeId` varchar(36) NOT NULL DEFAULT '',
-  `type` varchar(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
+  `action` varchar(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
   KEY `bikelog_user` (`userId`),
   KEY `bikelog_username` (`username`),
   KEY `bikelog_bikeid` (`bikeId`),
-  KEY `bikelog_type` (`type`),
+  KEY `bikelog_type` (`action`),
   KEY `bikelog_createtime` (`createTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -247,7 +247,7 @@ CREATE TABLE `bikemodel` (
 
 LOCK TABLES `bikemodel` WRITE;
 /*!40000 ALTER TABLE `bikemodel` DISABLE KEYS */;
-INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1531109206000,1531109206000,0);
+INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1531117742000,1531117742000,0);
 /*!40000 ALTER TABLE `bikemodel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,7 +359,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1531109206000,0);
+INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1531117742000,0);
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -393,7 +393,7 @@ CREATE TABLE `rentcharge` (
 
 LOCK TABLES `rentcharge` WRITE;
 /*!40000 ALTER TABLE `rentcharge` DISABLE KEYS */;
-INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1531109206000,1531109206000,0);
+INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1531117742000,1531117742000,0);
 /*!40000 ALTER TABLE `rentcharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -426,6 +426,42 @@ CREATE TABLE `ridemsg` (
 LOCK TABLES `ridemsg` WRITE;
 /*!40000 ALTER TABLE `ridemsg` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ridemsg` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `session`
+--
+
+DROP TABLE IF EXISTS `session`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `session` (
+  `id` varchar(36) NOT NULL DEFAULT '',
+  `userId` varchar(36) NOT NULL DEFAULT '',
+  `userType` tinyint(4) NOT NULL DEFAULT '0' COMMENT '7:superadmin,3:admin,1:audit,0:user',
+  `username` varchar(128) NOT NULL DEFAULT '',
+  `cookie` varchar(200) NOT NULL DEFAULT '',
+  `createTime` bigint(20) NOT NULL DEFAULT '0',
+  `updateTime` bigint(20) NOT NULL DEFAULT '0',
+  `expireTime` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `session_id` (`id`),
+  KEY `session_userid` (`userId`),
+  KEY `session_username` (`username`),
+  KEY `session_createtime` (`createTime`),
+  KEY `session_updatetime` (`updateTime`),
+  KEY `session_expiretime` (`expireTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `session`
+--
+
+LOCK TABLES `session` WRITE;
+/*!40000 ALTER TABLE `session` DISABLE KEYS */;
+INSERT INTO `session` VALUES ('00000000000000000000000000000000','c9b7c22a0ae911e7af10525400659eb7',7,'ktadmin','{\"id\": \"\",\"name\":\"ktadmin\",\"role\":7}',1529563789591,0,1844923789591);
+/*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -680,4 +716,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-09 12:06:46
+-- Dump completed on 2018-07-09 14:29:02
