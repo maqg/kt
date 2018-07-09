@@ -1,5 +1,6 @@
 # Keep Trying Frame
 
+- git config --global credential.helper store
 - node > 8.0
 - npm init
 - npm install -g cnpm --registry=https://registry.npm.taobao.org

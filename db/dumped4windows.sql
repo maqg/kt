@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.59, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: dbkt
 -- ------------------------------------------------------
--- Server version	5.6.22
+-- Server version	5.5.59-0+deb8u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -49,7 +49,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1531056391000,1531056391000,0);
+INSERT INTO `account` VALUES ('00000000000000000000000000000000',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1531109206000,1531109206000,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `apitrace` (
 
 LOCK TABLES `apitrace` WRITE;
 /*!40000 ALTER TABLE `apitrace` DISABLE KEYS */;
-INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1531056391000,0,0,'{\"username\": \"admin\"}','{}');
+INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1531109206000,0,0,'{\"username\": \"admin\"}','{}');
 /*!40000 ALTER TABLE `apitrace` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,14 +111,12 @@ CREATE TABLE `battery` (
   `updateTime` bigint(20) NOT NULL DEFAULT '0',
   `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `bikeId` (`bikeId`),
   KEY `battery_id` (`id`),
   KEY `battery_serial` (`serial`),
   KEY `battery_imei` (`imei`),
   KEY `battery_status` (`status`),
   KEY `battery_manufacturer` (`manufacturer`),
-  KEY `battery_createtime` (`createTime`),
-  CONSTRAINT `battery_ibfk_1` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+  KEY `battery_createtime` (`createTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -161,8 +159,6 @@ CREATE TABLE `bike` (
   `deleteTime` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `modelId` (`modelId`),
-  KEY `currentUser` (`currentUser`),
-  KEY `lastUser` (`lastUser`),
   KEY `bike_id` (`id`),
   KEY `bike_serial` (`serial`),
   KEY `bike_imei` (`imei`),
@@ -174,9 +170,7 @@ CREATE TABLE `bike` (
   KEY `bike_batterystatus` (`batteryStatus`),
   KEY `bike_createTime` (`createTime`),
   KEY `bike_lastrent` (`lastRent`),
-  CONSTRAINT `bike_ibfk_1` FOREIGN KEY (`modelId`) REFERENCES `bikemodel` (`id`),
-  CONSTRAINT `bike_ibfk_2` FOREIGN KEY (`currentUser`) REFERENCES `user` (`id`),
-  CONSTRAINT `bike_ibfk_3` FOREIGN KEY (`lastUser`) REFERENCES `user` (`id`)
+  CONSTRAINT `bike_ibfk_1` FOREIGN KEY (`modelId`) REFERENCES `bikemodel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -186,6 +180,7 @@ CREATE TABLE `bike` (
 
 LOCK TABLES `bike` WRITE;
 /*!40000 ALTER TABLE `bike` DISABLE KEYS */;
+INSERT INTO `bike` VALUES ('00000000000000000000000000000000','01004331231','00000000000000000000000000000000','','','imei123',0.000000,0.000000,100,'enabled','free','online','locked','sufficient','Beijing','F1',1530612627000,1530612627000,1530612627000,0);
 /*!40000 ALTER TABLE `bike` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,15 +193,15 @@ DROP TABLE IF EXISTS `bikelog`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bikelog` (
   `userId` varchar(36) NOT NULL DEFAULT '',
+  `username` varchar(128) NOT NULL DEFAULT '',
   `bikeId` varchar(36) NOT NULL DEFAULT '',
   `type` varchar(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
   KEY `bikelog_user` (`userId`),
+  KEY `bikelog_username` (`username`),
   KEY `bikelog_bikeid` (`bikeId`),
   KEY `bikelog_type` (`type`),
-  KEY `bikelog_createtime` (`createTime`),
-  CONSTRAINT `bikelog_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-  CONSTRAINT `bikelog_ibfk_2` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+  KEY `bikelog_createtime` (`createTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -216,6 +211,7 @@ CREATE TABLE `bikelog` (
 
 LOCK TABLES `bikelog` WRITE;
 /*!40000 ALTER TABLE `bikelog` DISABLE KEYS */;
+INSERT INTO `bikelog` VALUES ('15e9a5f0-8037-11e8-98e3-525437f07951','Henry.Ma','00000000000000000000000000000000','unlock',1530612627000),('15e9a5f0-8037-11e8-98e3-525437f07952','谁是药神？','00000000000000000000000000000000','lock',1530612627000);
 /*!40000 ALTER TABLE `bikelog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +247,7 @@ CREATE TABLE `bikemodel` (
 
 LOCK TABLES `bikemodel` WRITE;
 /*!40000 ALTER TABLE `bikemodel` DISABLE KEYS */;
-INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1531056391000,1531056391000,0);
+INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1531109206000,1531109206000,0);
 /*!40000 ALTER TABLE `bikemodel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -286,8 +282,7 @@ CREATE TABLE `maintenance` (
   KEY `maintenance_maintenanceid` (`maintenanceId`),
   KEY `maintenance_type` (`type`),
   KEY `maintenance_result` (`result`),
-  KEY `maintenance_createtime` (`createTime`),
-  CONSTRAINT `maintenance_ibfk_1` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+  KEY `maintenance_createtime` (`createTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -309,16 +304,14 @@ DROP TABLE IF EXISTS `orderlog`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `orderlog` (
   `orderId` varchar(36) NOT NULL DEFAULT '',
-  `userId` varchar(36) NOT NULL DEFAULT '',
+  `account` varchar(128) NOT NULL DEFAULT '',
   `originalFee` int(11) NOT NULL DEFAULT '0' COMMENT 'in cents',
   `currentFee` int(11) NOT NULL DEFAULT '0' COMMENT 'in cents',
   `remark` varchar(200) NOT NULL DEFAULT '',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
   KEY `orderlog_orderid` (`orderId`),
-  KEY `orderlog_userid` (`userId`),
-  KEY `orderlog_createtime` (`createTime`),
-  CONSTRAINT `orderlog_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `userorder` (`id`),
-  CONSTRAINT `orderlog_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  KEY `orderlog_accountid` (`account`),
+  KEY `orderlog_createtime` (`createTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -328,6 +321,7 @@ CREATE TABLE `orderlog` (
 
 LOCK TABLES `orderlog` WRITE;
 /*!40000 ALTER TABLE `orderlog` DISABLE KEYS */;
+INSERT INTO `orderlog` VALUES ('00000000000000000000000000000000','admin',200,0,'测试减免费用',1530612627000),('00000000000000000000000000000001','admin',400,200,'测试减免费用',1530612627000);
 /*!40000 ALTER TABLE `orderlog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -365,7 +359,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1531056391000,0);
+INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1531109206000,0);
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -399,7 +393,7 @@ CREATE TABLE `rentcharge` (
 
 LOCK TABLES `rentcharge` WRITE;
 /*!40000 ALTER TABLE `rentcharge` DISABLE KEYS */;
-INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1531056391000,1531056391000,0);
+INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1531109206000,1531109206000,0);
 /*!40000 ALTER TABLE `rentcharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -421,9 +415,7 @@ CREATE TABLE `ridemsg` (
   `createTime` bigint(20) NOT NULL DEFAULT '0',
   KEY `ridemsg_orderid` (`orderId`),
   KEY `ridemsg_bikeid` (`bikeId`),
-  KEY `ridemsg_createtime` (`createTime`),
-  CONSTRAINT `ridemsg_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `userorder` (`id`),
-  CONSTRAINT `ridemsg_ibfk_2` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`)
+  KEY `ridemsg_createtime` (`createTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -494,7 +486,7 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_user AFTER DELETE ON user FOR EACH ROW
 BEGIN
@@ -528,9 +520,7 @@ CREATE TABLE `usercoupon` (
   KEY `usercoupon_promotionid` (`promotionId`),
   KEY `usercoupon_status` (`status`),
   KEY `usercoupon_createTime` (`createTime`),
-  KEY `usercoupon_usetime` (`useTime`),
-  CONSTRAINT `usercoupon_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-  CONSTRAINT `usercoupon_ibfk_2` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`)
+  KEY `usercoupon_usetime` (`useTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -591,6 +581,7 @@ CREATE TABLE `userorder` (
 
 LOCK TABLES `userorder` WRITE;
 /*!40000 ALTER TABLE `userorder` DISABLE KEYS */;
+INSERT INTO `userorder` VALUES ('00000000000000000000000000000000','15e9a5f0-8037-11e8-98e3-525437f07951','00000000000000000000000000000000','order-12345',200,200,0,1530612627000,1530612727000,1213,0.000000,0.000000,'Beijing','new',34,5000,22300,1530612627000,1530612627000,0),('00000000000000000000000000000001','15e9a5f0-8037-11e8-98e3-525437f07952','00000000000000000000000000000000','order-12345',400,400,0,1530612627000,1530612727000,1233,0.000000,0.000000,'Beijing','new',34,5000,22300,1530612627000,1530612627000,0);
 /*!40000 ALTER TABLE `userorder` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -663,10 +654,7 @@ CREATE TABLE `worklist` (
   KEY `worklist_taskno` (`taskNo`),
   KEY `worklist_status` (`status`),
   KEY `worklist_createtime` (`createTime`),
-  KEY `worklist_confirmtime` (`confirmTime`),
-  CONSTRAINT `worklist_ibfk_1` FOREIGN KEY (`bikeId`) REFERENCES `bike` (`id`),
-  CONSTRAINT `worklist_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-  CONSTRAINT `worklist_ibfk_3` FOREIGN KEY (`maintenanceId`) REFERENCES `maintenance` (`id`)
+  KEY `worklist_confirmtime` (`confirmTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -692,4 +680,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-08 21:26:31
+-- Dump completed on 2018-07-09 12:06:46

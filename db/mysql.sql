@@ -106,9 +106,7 @@ CREATE TABLE `usercoupon` (
 		`createTime` BIGINT NOT NULL DEFAULT '0',
 		`useTime` BIGINT NOT NULL DEFAULT '0',
 		`deleteTime` BIGINT NOT NULL DEFAULT '0',
-		PRIMARY KEY (`id`),
-		FOREIGN KEY (userId) REFERENCES user(id),
-		FOREIGN KEY (promotionId) REFERENCES promotion(id)
+		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE usercoupon ADD INDEX usercoupon_id (id);
 ALTER TABLE usercoupon ADD INDEX usercoupon_userid (userId);
@@ -202,9 +200,7 @@ CREATE TABLE `bike` (
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
 		`deleteTime` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
-		FOREIGN KEY (modelId) REFERENCES bikemodel(id),
-		FOREIGN KEY (currentUser) REFERENCES user(id),
-		FOREIGN KEY (lastUser) REFERENCES user(id)
+		FOREIGN KEY (modelId) REFERENCES bikemodel(id)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE bike ADD INDEX bike_id (id);
 ALTER TABLE bike ADD INDEX bike_serial (serial);
@@ -257,13 +253,13 @@ ALTER TABLE `userorder` ADD INDEX userorder_createTime (createTime);
 DROP TABLE IF EXISTS `bikelog`;
 CREATE TABLE `bikelog` (
 		`userId` VARCHAR(36) NOT NULL DEFAULT '',
+		`username` VARCHAR(128) NOT NULL DEFAULT '',
 		`bikeId` VARCHAR(36) NOT NULL DEFAULT '',
 		`type` VARCHAR(16) NOT NULL DEFAULT 'open' COMMENT 'open/close',
-		`createTime` BIGINT NOT NULL DEFAULT '0',
-		FOREIGN KEY (userId) REFERENCES user(id),
-		FOREIGN KEY (bikeId) REFERENCES bike(id)
+		`createTime` BIGINT NOT NULL DEFAULT '0'
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE bikelog ADD INDEX bikelog_user (userId);
+ALTER TABLE bikelog ADD INDEX bikelog_username (username);
 ALTER TABLE bikelog ADD INDEX bikelog_bikeid (bikeId);
 ALTER TABLE bikelog ADD INDEX bikelog_type (type);
 ALTER TABLE bikelog ADD INDEX bikelog_createtime (createTime);
@@ -271,16 +267,14 @@ ALTER TABLE bikelog ADD INDEX bikelog_createtime (createTime);
 DROP TABLE IF EXISTS `orderlog`;
 CREATE TABLE `orderlog` (
 		`orderId` VARCHAR(36) NOT NULL DEFAULT '',
-		`userId` VARCHAR(36) NOT NULL DEFAULT '',
+		`account` VARCHAR(128) NOT NULL DEFAULT '',
 		`originalFee` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',
 		`currentFee` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',
 		`remark` VARCHAR(200) NOT NULL DEFAULT '',
-		`createTime` BIGINT NOT NULL DEFAULT '0',
-		FOREIGN KEY (orderId) REFERENCES `userorder`(id),
-		FOREIGN KEY (userId) REFERENCES user(id)
+		`createTime` BIGINT NOT NULL DEFAULT '0'
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE orderlog ADD INDEX orderlog_orderid (orderId);
-ALTER TABLE orderlog ADD INDEX orderlog_userid (userId);
+ALTER TABLE orderlog ADD INDEX orderlog_accountid (account);
 ALTER TABLE orderlog ADD INDEX orderlog_createtime (createTime);
 
 DROP TABLE IF EXISTS `battery`;
@@ -297,8 +291,7 @@ CREATE TABLE `battery` (
 		`createTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
 		`deleteTime` BIGINT NOT NULL DEFAULT '0',
-		PRIMARY KEY (`id`),
-		FOREIGN KEY (bikeId) REFERENCES bike(id)
+		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE battery ADD INDEX battery_id (id);
 ALTER TABLE battery ADD INDEX battery_serial (serial);
@@ -325,8 +318,7 @@ CREATE TABLE `maintenance` (
 		`createTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
 		`deleteTime` BIGINT NOT NULL DEFAULT '0',
-		PRIMARY KEY (`id`),
-		FOREIGN KEY (bikeId) REFERENCES bike(id)
+		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE maintenance ADD INDEX maintenance_id (id);
 ALTER TABLE maintenance ADD INDEX maintenance_bikeid (bikeId);
@@ -350,10 +342,7 @@ CREATE TABLE `worklist` (
 		`createTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
 		`deleteTime` BIGINT NOT NULL DEFAULT '0',
-		PRIMARY KEY (`id`),
-		FOREIGN KEY (bikeId) REFERENCES bike(id),
-		FOREIGN KEY (userId) REFERENCES user(id),
-		FOREIGN KEY (maintenanceId) REFERENCES maintenance(id)
+		PRIMARY KEY (`id`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE worklist ADD INDEX worklist_id (id);
 ALTER TABLE worklist ADD INDEX worklist_bikeid (bikeId);
@@ -373,9 +362,7 @@ CREATE TABLE `ridemsg` (
 		`calories` INTEGER NOT NULL DEFAULT '0',
 		`seconds` INTEGER NOT NULL DEFAULT '0',
 		`distance` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters',
-		`createTime` BIGINT NOT NULL DEFAULT '0',
-		FOREIGN KEY (orderId) REFERENCES `userorder`(id),
-		FOREIGN KEY (bikeId) REFERENCES bike(id)
+		`createTime` BIGINT NOT NULL DEFAULT '0'
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE ridemsg ADD INDEX ridemsg_orderid (orderId);
 ALTER TABLE ridemsg ADD INDEX ridemsg_bikeid (bikeId);

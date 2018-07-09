@@ -15,6 +15,8 @@ import {ApiBikeModel} from "./api_bikemodel";
 import {ApiWxApp} from "./api_wxapp";
 import {ApiUser} from "./api_user";
 import {ApiUserOrder} from "./api_userorder";
+import {ApiOrderLog} from "./api_orderlog";
+import {ApiBikeLog} from "./api_bikelog";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -26,6 +28,8 @@ let ApiModules = [
 	ApiWxApp,
 	ApiUser,
 	ApiUserOrder,
+	ApiOrderLog,
+	ApiBikeLog,
 ];
 
 function parseParas(ctx) {
@@ -184,12 +188,12 @@ function initApis() {
 
 			ApiList.push(api);
 
-			let apiKey = API_PREFIX + api["key"];
+			let apiKey = API_PREFIX + apiModule.module + "." + api["key"];
 			ApiListMap[apiKey] = api;
 
 			ApiModuleMap[apiModule["module"]]["protos"][api["key"]] = {
 				"name": api["name"],
-				"key": API_PREFIX + api["key"],
+				"key": apiKey,
 				"paras": parasMap2List(api["paras"])
 			};
 		}
