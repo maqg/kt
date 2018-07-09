@@ -7,11 +7,15 @@ import {UNavItem, UNavList} from "../ui-libs";
 import {UIcon} from "../ui-libs/ui-icon";
 import './static/style/doc-layout.scss';
 import './static/style/doc-md.scss';
-import {UIconCompView} from "./components/u-icon-comp-view";
+
+import {UIconCompView} from "./views/u-icon-comp-view";
+import * as hljs from "highlight.js";
+import {UIconMapView} from "./views/u-icon-map";
 
 export class DocLayout extends React.Component<any>{
     constructor(props: any){
         super(props);
+        hljs.initHighlightingOnLoad();
     }
     render() {
         return <div className={'doc-layout'}>
@@ -23,8 +27,9 @@ export class DocLayout extends React.Component<any>{
                         <UNavItem label={'图标组件'} graph={<UIcon iconName={'modx'}/>} path={'/icon/icon-component'}/>
                         <UNavItem label={'内部图标'} graph={<UIcon iconName={'braille'}/>} path={'/icon/icon-map'}/>
                     </UNavItem>
-                    <UNavItem label={'理平台'} graph={<UIcon iconName={'star'}/>} path={'/'}/>
-                    <UNavItem label={'KT 理平台'} graph={<UIcon iconName={'star'}/>} path={'/'}/>
+                    <UNavItem label={'系统按钮'} graph={<UIcon iconName={'star'}/>} expand={data.location.pathname.split('/')[1] === 'button'}>
+                        <UNavItem label={'按钮组件'} graph={<UIcon iconName={'modx'}/>} path={'/icon/icon-component'}/>
+                    </UNavItem>
                 </UNavList>}}/>
 
             </nav>
@@ -33,7 +38,7 @@ export class DocLayout extends React.Component<any>{
                     <Route path="/" exact replace render={()=>{return <div>Hello World</div>}}/>
                     <Route path="/icon" exact render={()=>{return <Redirect to={'/icon/icon-component'}/>}} />
                     <Route path="/icon/icon-component"  component={UIconCompView} />
-                    <Route path="/icon/icon-map"  render={()=>{return <div>图标列表</div>}} />
+                    <Route path="/icon/icon-map"  component={UIconMapView} />
                     <Redirect to={'/'}/>
                 </Switch>
             </main>

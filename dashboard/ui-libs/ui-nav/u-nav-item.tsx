@@ -1,12 +1,13 @@
 import * as React from "react";
 import {NavLink} from "react-router-dom";
 import {UIcon} from "../ui-icon";
+import {MouseEvent} from "react";
 
 export interface UNavItemProps {
     graph?: any,
     label?: string,
     path?: string,
-    className?: [string],
+    className?: string[],
     expand?:boolean
 }
 export interface UNavItemStates {
@@ -53,19 +54,24 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
         }
         return names.join(" ");
     }
-    private onMouseEnter() {
+    private onMouseEnter(e: MouseEvent) {
+        e.preventDefault();
         this.setState({isHover: true});
     }
-    private onMouseLeave() {
+    private onMouseLeave(e: MouseEvent) {
+        e.preventDefault();
         this.setState({isHover: false, isDown: false});
     }
-    private onMouseDown() {
+    private onMouseDown(e: MouseEvent) {
+        e.preventDefault();
         this.setState({isDown: true});
     }
-    private onMouseUp() {
+    private onMouseUp(e: MouseEvent) {
+        e.preventDefault();
         this.setState({isDown: false});
     }
-    private onNavClick() {
+    private onNavClick(e: MouseEvent) {
+        e.preventDefault();
         if (this.state.isExpand) {
             this.setState({
                isExpand: false,
@@ -82,11 +88,11 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
         if (this.props.children) {
             return <li className={this.makeLiClassName()} title={this.state.title}>
                 <a className={this.makeAClassName()}
-                   onClick={()=>{this.onNavClick()}}
-                   onMouseDown={()=>{this.onMouseDown()}}
-                   onMouseUp={()=>{this.onMouseUp()}}
-                   onMouseEnter={()=>{this.onMouseEnter()}}
-                   onMouseLeave={()=>{this.onMouseLeave()}}>
+                   onClick={(e)=>{this.onNavClick(e)}}
+                   onMouseDown={(e)=>{this.onMouseDown(e)}}
+                   onMouseUp={(e)=>{this.onMouseUp(e)}}
+                   onMouseEnter={(e)=>{this.onMouseEnter(e)}}
+                   onMouseLeave={(e)=>{this.onMouseLeave(e)}}>
                     {this.props.graph && <span className={'graph'}>{this.props.graph}</span>}
                     {this.props.label && <span className={'label'}>{this.props.label}</span>}
                     <span className={'tail'}>
@@ -104,10 +110,10 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
             return <li className={this.makeLiClassName()}>
                 <NavLink className={this.makeAClassName()}
                          to={this.props.path || ''} replace exact
-                         onMouseDown={()=>{this.onMouseDown()}}
-                         onMouseUp={()=>{this.onMouseUp()}}
-                         onMouseEnter={()=>{this.onMouseEnter()}}
-                         onMouseLeave={()=>{this.onMouseLeave()}}>
+                         onMouseDown={(e)=>{this.onMouseDown(e)}}
+                         onMouseUp={(e)=>{this.onMouseUp(e)}}
+                         onMouseEnter={(e)=>{this.onMouseEnter(e)}}
+                         onMouseLeave={(e)=>{this.onMouseLeave(e)}}>
                     {this.props.graph && <span className={'graph'}>{this.props.graph}</span>}
                     {this.props.label && <span className={'label'}>{this.props.label}</span>}
                 </NavLink>

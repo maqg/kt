@@ -2,7 +2,7 @@ import * as React from "react";
 import {CSSProperties} from "react";
 
 export class UNavListProps {
-    className?: [string];
+    className?: string[];
     style?: CSSProperties
 }
 
