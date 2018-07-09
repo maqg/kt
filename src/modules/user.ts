@@ -96,7 +96,7 @@ async function web_show_allusers(paras) {
 	try {
 		let list = [];
 		let items = await knex(TB_USER).where(cond)
-			.where("currentUser", "LIKE", "%" + paras["sNickname"] + "%")
+			.where("nickname", "LIKE", "%" + paras["sNickname"] + "%")
 			.where("createTime", ">", paras["startTime"])
 			.where("createTime", "<", paras["endTime"] ? paras["endTime"]: getMilliSeconds())
 			.select().limit(paras["limit"]).offset(paras["start"]);

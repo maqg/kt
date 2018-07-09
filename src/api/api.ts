@@ -18,6 +18,7 @@ import {ApiUserOrder} from "./api_userorder";
 import {ApiOrderLog} from "./api_orderlog";
 import {ApiBikeLog} from "./api_bikelog";
 import {ApiBike} from "./api_bike";
+import {getSession} from "../models/Session";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -93,7 +94,18 @@ function checkSkey(args) {
 }
 
 function checkSession(paras) {
-	return paras["token"] != null;
+	if (!paras["token"]) {
+		console.log("toke not speicied");
+		return false;
+	}
+
+	let session = getSession(paras["token"]);
+	if (!session) {
+		console.log("Session of " + paras["token"] + " Not Exist or Expired");
+		return false;
+	}
+
+	return true;
 }
 
 function checkParas(apiProto, args): (CheckResult) {

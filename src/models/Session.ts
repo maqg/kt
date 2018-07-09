@@ -38,7 +38,7 @@ export class Session {
 
 		if (obj) {
 			this.id = obj["id"];
-			this.cookie = obj["cookie"];
+			this.cookie = JSON.parse(obj["cookie"]);
 			this.userId = obj["userId"];
 			this.userType = obj["userType"];
 			this.username = obj["username"];
@@ -53,16 +53,23 @@ export class Session {
 		obj["createTimeStr"] = timeToStr(this.createTime);
 		obj["updateTimeStr"] = timeToStr(this.updateTime);
 		obj["expireTimeStr"] = timeToStr(this.expireTime);
+		obj["cookie"] = this.cookie; // formating cookie
 		return obj;
 	}
 }
 
 export async function getSession(token) {
 	try {
-		let items = await knex(TB_SESSION).where("id", "=", token).select();
+		let items = await knex(TB_SESSION).where("id", "=", token)
+			.where("expireTime", ">", getMilliSeconds())
+			.select();
 		if (!items.length) {
 			console.log("session of " + token + " not exist");
 			return null;
+		}
+
+		if (token != TEST_TOKEN) { // update token expire time
+			items[0].update();
 		}
 		return new Session(items[0]);
 	} catch (e) {
