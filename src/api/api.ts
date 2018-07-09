@@ -188,12 +188,12 @@ function initApis() {
 
 			ApiList.push(api);
 
-			let apiKey = API_PREFIX + api["key"];
+			let apiKey = API_PREFIX + apiModule.module + "." + api["key"];
 			ApiListMap[apiKey] = api;
 
 			ApiModuleMap[apiModule["module"]]["protos"][api["key"]] = {
 				"name": api["name"],
-				"key": API_PREFIX + api["key"],
+				"key": apiKey,
 				"paras": parasMap2List(api["paras"])
 			};
 		}

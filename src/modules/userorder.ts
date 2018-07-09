@@ -85,14 +85,9 @@ async function web_show_allorders(paras) {
 		cond["bikeId"] = paras["bikeId"];
 	}
 
-	if (paras["phone"]) {
-		cond["phone"] = paras["phone"];
-	}
-
 	try {
 		let list = [];
 		let items = await knex(TB_USERORDER).where(cond)
-			.where("nickname", "LIKE", "%" + paras["sNickname"] + "%")
 			.where("createTime", ">", paras["startTime"])
 			.where("createTime", "<", paras["endTime"] ? paras["endTime"]: getMilliSeconds())
 			.select().limit(paras["limit"]).offset(paras["start"]);

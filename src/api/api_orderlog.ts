@@ -26,9 +26,9 @@ export const ApiOrderLog = {
 					"desc": "Order No",
 					"default": "",
 				},
-				"accountId": {
+				"account": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "Account UUID",
+					"desc": "Account Name",
 					"default": "",
 				},
 				"startTime": {

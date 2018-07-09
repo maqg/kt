@@ -1,0 +1,31 @@
+.u-icon-map-view{
+  display: flex;
+  flex-direction: column;
+  >input{
+    margin-bottom: 20px;
+    height: 20px;
+  }
+  .match-icon-map {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .u-icon-item {
+    padding: 10px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .u-icon {
+      font-size: 30px;
+      padding-bottom: 10px;
+    }
+    .u-icon-name {
+      font-size: 12px;
+      .isKey{
+        color: #0099ff;
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ import {BikeLog} from "../models/BikeLog";
 
 async function get_bikelog_count() {
 	try {
-		let count = await knex(TB_BIKELOG).count("id as count");
+		let count = await knex(TB_BIKELOG).count("userId as count");
 		return count[0]["count"];
 	} catch (e) {
 		console.log("get account count error " + e.toString());
@@ -28,14 +28,20 @@ async function web_show_allbikelogs(paras) {
 		cond["userId"] = paras["userId"];
 	}
 
-	if (paras["orderId"]) {
-		cond["userId"] = paras["orderId"];
+	if (paras["bikeId"]) {
+		cond["bikeId"] = paras["bikeId"];
 	}
+
+	if (paras["type"]) {
+		cond["type"] = paras["type"];
+	}
+
+	console.log(cond);
 
 	try {
 		let list = [];
 		let items = await knex(TB_BIKELOG).where(cond)
-			.where("username", "LIKE", paras["username"])
+			.where("username", "LIKE", "%" + paras["username"] + "%")
 			.where("createTime", ">", paras["startTime"])
 			.where("createTime", "<", paras["endTime"] ? paras["endTime"]: getMilliSeconds())
 			.select().limit(paras["limit"]).offset(paras["start"]);

@@ -26,7 +26,7 @@ async function web_show_allorderlogs(paras) {
 	let cond = {};
 
 	if (paras["account"]) {
-		cond["username"] = paras["account"];
+		cond["account"] = paras["account"];
 	}
 
 	if (paras["orderId"]) {

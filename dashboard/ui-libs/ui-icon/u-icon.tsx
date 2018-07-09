@@ -10,7 +10,7 @@ export interface UIconProps {
     pulse?: boolean,
     rotate?: 90 | 180 | 270,
     flip?: "horizontal" | "vertical",
-    className?: [string],
+    className?: string[],
 
 }
 export class UIcon extends React.Component<UIconProps>{
