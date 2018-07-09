@@ -14,21 +14,26 @@ export const ApiBikeLog = {
 			"name": "根据条件查询订单操作记录",
 			"service": web_show_allbikelogs,
 			"role": [ROLE_SUPER_ADMIN, ROLE_ADMIN],
-			"key": "APIShowAllOrderLog",
+			"key": "APIShowAllBikeLog",
 			"paras": {
-				"orderId": {
+				"userId": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "Order UUID",
+					"desc": "User UUID",
 					"default": "",
 				},
-				"orderNo": {
+				"username": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "Order No",
+					"desc": "User Name",
 					"default": "",
 				},
-				"accountId": {
+				"bikeId": {
 					"type": PARAM_TYPE_STRING,
-					"desc": "Account UUID",
+					"desc": "Bike UUID",
+					"default": "",
+				},
+				"type": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Bike Action lock/unlock",
 					"default": "",
 				},
 				"startTime": {
