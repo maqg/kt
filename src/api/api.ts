@@ -93,15 +93,22 @@ function checkSkey(args) {
 	return true;
 }
 
-function checkSession(paras) {
-	if (!paras["token"]) {
+function checkSession(args) {
+
+	let api = args["api"];
+	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount") {
+		console.log("No need to do session check for account login");
+		return true;
+	}
+
+	if (!args["token"]) {
 		console.log("toke not speicied");
 		return false;
 	}
 
-	let session = getSession(paras["token"]);
+	let session = getSession(args["token"]);
 	if (!session) {
-		console.log("Session of " + paras["token"] + " Not Exist or Expired");
+		console.log("Session of " + args["token"] + " Not Exist or Expired");
 		return false;
 	}
 

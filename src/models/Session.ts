@@ -7,7 +7,7 @@ import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
 import {knex} from "./Bookshelf";
 import {TB_SESSION, TEST_TOKEN} from "../config/config";
 
-export const EXPIRE_TIMEOUT = 30 * 24 * 60 * 60 * 1000;
+export const EXPIRE_TIMEOUT = (30 * 24 * 60 * 60 * 1000);
 
 export class Session {
 
@@ -43,8 +43,8 @@ export class Session {
 			this.userType = obj["userType"];
 			this.username = obj["username"];
 			this.createTime = obj["createTime"];
-			this.updateTime = obj["createTime"];
-			this.expireTime = obj["createTime"];
+			this.updateTime = obj["updateTime"];
+			this.expireTime = obj["expireTime"];
 		}
 	}
 
@@ -68,10 +68,11 @@ export async function getSession(token) {
 			return null;
 		}
 
+		let session = new Session(items[0]);
 		if (token != TEST_TOKEN) { // update token expire time
-			items[0].update();
+			session.update();
 		}
-		return new Session(items[0]);
+		return session;
 	} catch (e) {
 		console.log("get session error " + e.toString());
 		return null;
@@ -91,7 +92,7 @@ export async function newSession(userId: string, username: string, role: number)
 		}),
 		createTime: getMilliSeconds(),
 		updateTime: getMilliSeconds(),
-		expireTime: getMilliSeconds() + EXPIRE_TIMEOUT
+		expireTime: (getMilliSeconds() + EXPIRE_TIMEOUT)
 	};
 	try {
 		await knex(TB_SESSION).insert(obj);
