@@ -33,7 +33,9 @@ export const TB_APITRACE = "apitrace";
 export const TB_BIKEMODEL = "bikemodel";
 export const TB_RENTCHARGE = "rentcharge";
 export const TB_USER = "user";
+export const TB_ORDERLOG = "orderlog";
 export const TB_BIKE = "bike";
+export const TB_BIKELOG = "bikelog";
 export const TB_USERORDER = "userorder";
 
 
