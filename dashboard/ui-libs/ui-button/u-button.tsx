@@ -23,14 +23,14 @@ export class UButton extends Component<UButtonProps, UButtonStates>{
             isFocus: false
         }
     }
-    onMouseEnter(e:MouseEvent) {
+    private onMouseEnter(e:MouseEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.setState({
             isHover: true
         })
     }
-    onMouseLeave(e: MouseEvent) {
+    private onMouseLeave(e: MouseEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.setState({
@@ -38,40 +38,40 @@ export class UButton extends Component<UButtonProps, UButtonStates>{
             isDown: false
         })
     }
-    onMouseDown(e: MouseEvent) {
+    private onMouseDown(e: MouseEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.setState({
             isDown: true
         })
     }
-    onMouseUp(e: MouseEvent) {
+    private onMouseUp(e: MouseEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.setState({
             isDown: false
         })
     }
-    onFocus(e: FocusEvent) {
+    private onFocus(e: FocusEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.setState({
             isFocus: true
         })
     }
-    onBlur(e: FocusEvent) {
+    private onBlur(e: FocusEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.setState({
             isFocus: false
         })
     };
-    onClick(e: MouseEvent) {
+    private onClick(e: MouseEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
         this.props.onClick && this.props.onClick(e);
     }
-    makeClassName() {
+    private makeClassName() {
         let names = ['u-button'];
         if(this.props.disabled) {
             names.push('disabled');
@@ -87,8 +87,8 @@ export class UButton extends Component<UButtonProps, UButtonStates>{
             }
         }
         if (this.props.className) {
-            let uniqueNmaes = Array.from(new Set(this.props.className));
-            names.push(...uniqueNmaes);
+            let uniqueNames = Array.from(new Set(this.props.className));
+            names.push(...uniqueNames);
         }
         return names.join(' ');
     }

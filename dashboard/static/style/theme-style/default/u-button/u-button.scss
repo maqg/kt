@@ -1,5 +1,5 @@
 .u-button {
-  transition: all .2s;
+  transition: color,background-color,border .2s;
   display: flex;
   padding: 5px 15px;
   font-size: 14px;
@@ -10,11 +10,15 @@
   border-radius: 2px;
   cursor: pointer;
   color: #555;
+
   >.graph{
     font-size: 18px;
     padding-right: 10px;
     display: flex;
     justify-content: center;
+  }
+  >.label {
+    font-size: 16px;
   }
   &.hover {
     background-color: #fff;
@@ -22,7 +26,13 @@
     border-color: #bbb;
   }
   &.down {
-    box-shadow: 0 0 20px rgba(0,0,0, .2) inset;
+    transition: box-shadow .5s;
+    animation: buttonDown .5s backwards;
+  }
+  &:focus,&.focus {
+    outline: none;
+    background-color: #fff;
+    border: 1px dashed #2b669a;
   }
   &.disabled{
     cursor: auto;
@@ -32,4 +42,12 @@
     text-shadow: 1px 1px #FFF
   }
 
+}
+@keyframes buttonDown {
+  0% {
+    box-shadow: 0 0 0 rgba(0,0,0,.8);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0,0,0,0);
+  }
 }

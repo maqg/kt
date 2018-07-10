@@ -1,0 +1,56 @@
+.u-text-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 5px 15px;
+  background-color: #f0f0f0;
+  transition: all .2s;
+  color: #555;
+  .graph {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .label {
+    cursor: pointer;
+    padding-right: 10px;
+    font-size: 16px;
+    user-select: none;
+  }
+  .input {
+    flex-grow: 1;
+    font-size: 14px;
+    padding: 5px 10px;
+    vertical-align: bottom;
+    background-color: transparent;
+    color: #444;
+    border:0;
+    &:focus {
+      outline: none;
+    }
+  }
+  &.hover {
+    background-color: #fff;
+    color: #333;
+    border-color: #bbb;
+  }
+  &.focus {
+    border: 1px dashed #2b669a;
+    background-color: #fff;
+  }
+  &.disabled{
+    cursor: auto;
+    background-color: #ccc;
+    border: 1px solid #ccc;
+    color: #777;
+    text-shadow: 1px 1px #FFF
+  }
+  &.error{
+    border: 1px dashed #ff3300;
+    background-color: #ffdddd;
+  }
+}
