@@ -17,6 +17,8 @@ import {ApiUser} from "./api_user";
 import {ApiUserOrder} from "./api_userorder";
 import {ApiOrderLog} from "./api_orderlog";
 import {ApiBikeLog} from "./api_bikelog";
+import {ApiBike} from "./api_bike";
+import {getSession} from "../models/Session";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -30,6 +32,7 @@ let ApiModules = [
 	ApiUserOrder,
 	ApiOrderLog,
 	ApiBikeLog,
+	ApiBike,
 ];
 
 function parseParas(ctx) {
@@ -72,38 +75,56 @@ function createSign(args) {
 	return sign;
 }
 
-function checkSkey(args) {
+function checkSignature(args): number {
 
 	let now = getMilliSeconds() / 1000;
 	if (Math.abs(now - (args["timestamp"] / 1000)) > SessionTimeout) {
-		console.log("request invalid timestamp ");
 		console.log(args);
-		return false;
+		return Errors.RET_SESSION_EXPIRED;
 	}
 
 	let sign = createSign(args);
 	if (sign != args["sign"] && args["sign"] != TEST_SKEY) {
 		console.log("got bad input sign " + args["sign"] + ", for " + sign);
+		return Errors.RET_INVALID_SIGNATURE;
+	}
+
+	return 0;
+}
+
+function checkToken(args) {
+
+	let api = args["api"];
+	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount") {
+		console.log("No need to do session check for account login");
+		return true;
+	}
+
+	if (!args["token"]) {
+		console.log("toke not speicied");
+		return false;
+	}
+
+	let session = getSession(args["token"]);
+	if (!session) {
+		console.log("Session of " + args["token"] + " Not Exist or Expired");
 		return false;
 	}
 
 	return true;
 }
 
-function checkSession(paras) {
-	return paras["token"] != null;
-}
-
 function checkParas(apiProto, args): (CheckResult) {
 	let apiParas = apiProto["paras"];
 	let paras = args["paras"];
 
-	if (!checkSkey(args)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad sign of " + args["sign"]);
+	let ret = checkSignature(args);
+	if (ret != 0) {
+		return new CheckResult(ret, "bad sign of " + args["sign"]);
 	}
 
-	if (!checkSession(args)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + args["token"]);
+	if (!checkToken(args)) {
+		return new CheckResult(Errors.RET_INVALID_TOKEN, "bad skey of " + args["token"]);
 	}
 
 	for (let key in apiParas) {

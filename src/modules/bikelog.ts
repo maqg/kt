@@ -9,6 +9,7 @@ import {knex} from "../models/Bookshelf";
 import {TB_BIKELOG} from "../config/config";
 import {getMilliSeconds} from "../utils/utils";
 import {BikeLog} from "../models/BikeLog";
+import {Bike} from "../models/Bike";
 
 async function get_bikelog_count() {
 	try {
@@ -33,7 +34,7 @@ async function web_show_allbikelogs(paras) {
 	}
 
 	if (paras["type"]) {
-		cond["type"] = paras["type"];
+		cond["batterySurplus"] = paras["type"];
 	}
 
 	console.log(cond);
@@ -43,7 +44,7 @@ async function web_show_allbikelogs(paras) {
 		let items = await knex(TB_BIKELOG).where(cond)
 			.where("username", "LIKE", "%" + paras["username"] + "%")
 			.where("createTime", ">", paras["startTime"])
-			.where("createTime", "<", paras["endTime"] ? paras["endTime"]: getMilliSeconds())
+			.where("createTime", "<", paras["endTime"] ? paras["endTime"] : getMilliSeconds())
 			.select().limit(paras["limit"]).offset(paras["start"]);
 
 		for (let item of items) {
@@ -63,27 +64,20 @@ async function web_show_allbikelogs(paras) {
 	}
 }
 
-async function add_bikelog(bike, currentFee: number,
-                                   accountId: string, remark: string) {
-
-	if (remark.length < 4) {
-		return buildErrorResp(Errors.RET_INVALID_PARAS,
-			"bikeId of order log is too short, must big than 4 " + remark);
-	}
-
+async function add_bikelog(bike: Bike, userId: string,
+                           username: string, action: string) {
 	let obj = {
-		orderId: bike.id,
-		originalFee: bike.cashFee,
-		currentFee: currentFee,
-		accountId: accountId,
-		createTime: getMilliSeconds(),
-		remark: remark,
+		userId: userId,
+		username: username,
+		bikeId: bike.id,
+		action: action,
+		createTime: getMilliSeconds()
 	};
 	try {
 		await knex(TB_BIKELOG).insert(obj);
 	} catch (e) {
 		return buildErrorResp(Errors.RET_DB_ERR,
-			"Add orderlog of " + bike.orderNo + " error " + e.toString());
+			"Add bikelog of " + bike.id + " error " + e.toString());
 	}
 
 	return buildSuccessResp();

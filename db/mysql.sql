@@ -48,7 +48,7 @@ CREATE TABLE `user` (
 		`status` VARCHAR(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled',
 		`gender` TINYINT NOT NULL DEFAULT '0' COMMENT '0:Male, 1: Female, 2: Other',
 		`nickname` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '',
-		`avatar` VARCHAR(200) NOT NULL DEFAULT '' COMMENT 'url of avatar',
+		`avatar` VARCHAR(200) NOT NULL DEFAULT '' COMMENT 'url of lastUser',
 		`phone` VARCHAR(20) NOT NULL DEFAULT '' COMMENT 'Phone Number',
 		`coupons` INTEGER NOT NULL DEFAULT '0' COMMENT '优惠券数量',
 		`cash` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',

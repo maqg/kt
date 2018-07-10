@@ -251,7 +251,7 @@ export const ApiWxApp = {
 				},
 				"unlockType": {
 					"type": PARAM_TYPE_INT,
-					"desc": "Unlock type,0: GPRS, 1: Blue Tooth",
+					"desc": "Unlock batterySurplus,0: GPRS, 1: Blue Tooth",
 					"default": 0,
 				}
 			},

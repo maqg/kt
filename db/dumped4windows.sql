@@ -479,7 +479,7 @@ CREATE TABLE `user` (
   `status` varchar(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled',
   `gender` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:Male, 1: Female, 2: Other',
   `nickname` varchar(128) NOT NULL DEFAULT '',
-  `avatar` varchar(200) NOT NULL DEFAULT '' COMMENT 'url of avatar',
+  `avatar` varchar(200) NOT NULL DEFAULT '' COMMENT 'url of lastUser',
   `phone` varchar(20) NOT NULL DEFAULT '' COMMENT 'Phone Number',
   `coupons` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券数量',
   `cash` int(11) NOT NULL DEFAULT '0' COMMENT 'in cents',

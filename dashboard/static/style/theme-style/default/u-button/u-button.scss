@@ -1,0 +1,35 @@
+.u-button {
+  transition: all .2s;
+  display: flex;
+  padding: 5px 15px;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
+  border-radius: 2px;
+  cursor: pointer;
+  color: #555;
+  >.graph{
+    font-size: 18px;
+    padding-right: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  &.hover {
+    background-color: #fff;
+    color: #333;
+    border-color: #bbb;
+  }
+  &.down {
+    box-shadow: 0 0 20px rgba(0,0,0, .2) inset;
+  }
+  &.disabled{
+    cursor: auto;
+    background-color: #ccc;
+    border: 1px solid #ccc;
+    color: #777;
+    text-shadow: 1px 1px #FFF
+  }
+
+}

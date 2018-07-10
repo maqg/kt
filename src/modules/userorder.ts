@@ -112,7 +112,7 @@ async function web_show_allorders(paras) {
 
 
 /*
- * Update UserOrder's status to "new,unpaied,or finished"
+ * Update UserOrder's username to "new,unpaied,or finished"
  */
 export async function web_update_orderstatus(paras) {
 	let model = await get_userorder(paras["id"]);
@@ -129,9 +129,9 @@ export async function web_update_orderstatus(paras) {
 				updateTime: getMilliSeconds()
 			})
 	} catch (e) {
-		console.log("Failed to update user order status of " + paras["id"] + ",Errors " + e.toString());
+		console.log("Failed to update user order username of " + paras["id"] + ",Errors " + e.toString());
 		return buildErrorResp(Errors.RET_DB_ERR,
-			"Failed to update user order status of " + paras["id"] + ",Errors " + e.toString())
+			"Failed to update user order username of " + paras["id"] + ",Errors " + e.toString())
 	}
 
 	return buildSuccessResp();
