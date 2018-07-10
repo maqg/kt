@@ -19,6 +19,7 @@ import {ApiOrderLog} from "./api_orderlog";
 import {ApiBikeLog} from "./api_bikelog";
 import {ApiBike} from "./api_bike";
 import {getSession} from "../models/Session";
+import {ApiRideMsg} from "./api_ridemsg";
 
 let ApiList = [];
 let ApiListMap = {};
@@ -33,6 +34,7 @@ let ApiModules = [
 	ApiOrderLog,
 	ApiBikeLog,
 	ApiBike,
+	ApiRideMsg,
 ];
 
 function parseParas(ctx) {

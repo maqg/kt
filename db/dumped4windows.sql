@@ -526,7 +526,7 @@ UNLOCK TABLES;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_user AFTER DELETE ON user FOR EACH ROW
 BEGIN
-DELETE FROM usercoupon WHERE userId=old.id;
+DELETE FROM usercoupon WHERE orderId=old.id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;

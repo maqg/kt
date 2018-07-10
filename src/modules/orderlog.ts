@@ -30,7 +30,7 @@ async function web_show_allorderlogs(paras) {
 	}
 
 	if (paras["orderId"]) {
-		cond["userId"] = paras["orderId"];
+		cond["orderId"] = paras["orderId"];
 	}
 
 	try {

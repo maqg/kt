@@ -39,6 +39,10 @@ export const TB_BIKE = "bike";
 export const TB_BIKELOG = "bikelog";
 export const TB_USERORDER = "userorder";
 export const TB_SESSION = "session";
+export const TB_RIDEMSG = "ridemsg";
+export const TB_WORKLIST = "worklist";
+export const TB_MAINTENANCE = "maintenance";
+export const TB_BATTERY = "battery";
 
 
 export {Config, API_PREFIX, ApiModuleMap};
