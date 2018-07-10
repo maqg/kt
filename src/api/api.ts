@@ -75,25 +75,24 @@ function createSign(args) {
 	return sign;
 }
 
-function checkSkey(args) {
+function checkSignature(args): number {
 
 	let now = getMilliSeconds() / 1000;
 	if (Math.abs(now - (args["timestamp"] / 1000)) > SessionTimeout) {
-		console.log("request invalid timestamp ");
 		console.log(args);
-		return false;
+		return Errors.RET_SESSION_EXPIRED;
 	}
 
 	let sign = createSign(args);
 	if (sign != args["sign"] && args["sign"] != TEST_SKEY) {
 		console.log("got bad input sign " + args["sign"] + ", for " + sign);
-		return false;
+		return Errors.RET_INVALID_SIGNATURE;
 	}
 
-	return true;
+	return 0;
 }
 
-function checkSession(args) {
+function checkToken(args) {
 
 	let api = args["api"];
 	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount") {
@@ -119,12 +118,13 @@ function checkParas(apiProto, args): (CheckResult) {
 	let apiParas = apiProto["paras"];
 	let paras = args["paras"];
 
-	if (!checkSkey(args)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad sign of " + args["sign"]);
+	let ret = checkSignature(args);
+	if (ret != 0) {
+		return new CheckResult(ret, "bad sign of " + args["sign"]);
 	}
 
-	if (!checkSession(args)) {
-		return new CheckResult(Errors.RET_SKEY_ERR, "bad skey of " + args["token"]);
+	if (!checkToken(args)) {
+		return new CheckResult(Errors.RET_INVALID_TOKEN, "bad skey of " + args["token"]);
 	}
 
 	for (let key in apiParas) {

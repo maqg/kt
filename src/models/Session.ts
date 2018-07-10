@@ -60,9 +60,8 @@ export class Session {
 
 export async function getSession(token) {
 	try {
-		let items = await knex(TB_SESSION).where("id", "=", token)
-			.where("expireTime", ">", getMilliSeconds())
-			.select();
+		//.where("expireTime", ">", getMilliSeconds())
+		let items = await knex(TB_SESSION).where("id", "=", token)	.select();
 		if (!items.length) {
 			console.log("session of " + token + " not exist");
 			return null;

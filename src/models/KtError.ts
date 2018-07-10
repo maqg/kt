@@ -30,11 +30,14 @@ export enum Errors {
 	RET_SYSTEM_ERR = 4,
 	RET_NO_API_KEY = 5,
 
-	RET_SKEY_ERR = 6,
+	RET_INVALID_TOKEN = 6,
 	RET_ITEM_NOT_EXIST = 7,
 	RET_ITEM_ALREADY_EXIST = 8,
 	RET_PASSWORD_NOT_MATCH = 9,
 	RET_ROOT_USER_PROTECTED = 10,
+
+	RET_SESSION_EXPIRED = 11,
+	RET_INVALID_SIGNATURE = 12,
 
 
 
@@ -51,11 +54,14 @@ export const ErrorMsgs = [
 	"API Key Not Specified",
 
 
-	"Invalid API Skey", // 6-10
+	"Invalid Token", // 6-10
 	"Item Not Exist",
 	"Item Already Exist",
 	"User Not Exist or Password Not Match",
 	"Root User Protected, Cannot Remove",
+
+	"Session Expired", // 11-15
+	"Invalid Signature",
 
 
 	"MAX ERROR NUMBER"
