@@ -3,7 +3,7 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
+import {getMilliSeconds, getUuid} from "../utils/utils";
 import {knex} from "./Bookshelf";
 import {TB_SESSION, TEST_TOKEN} from "../config/config";
 
@@ -33,6 +33,10 @@ export class Session {
 		}
 	}
 
+	async delete() {
+		await knex(TB_SESSION).where("id", "=", this.id).del();
+	}
+
 	constructor(obj?: any) {
 		this.rawdata = obj;
 
@@ -49,29 +53,24 @@ export class Session {
 	}
 
 	public toObj() {
-		let obj = this.rawdata;
-		obj["createTimeStr"] = timeToStr(this.createTime);
-		obj["updateTimeStr"] = timeToStr(this.updateTime);
-		obj["expireTimeStr"] = timeToStr(this.expireTime);
-		obj["cookie"] = this.cookie; // formating cookie
-		return obj;
+		return {
+			"cookie": this.cookie,
+			"token": this.id,
+			"userId": this.userId,
+			"role": this.userType,
+			"username": this.username
+		}
 	}
 }
 
 export async function getSession(token) {
 	try {
-		//.where("expireTime", ">", getMilliSeconds())
 		let items = await knex(TB_SESSION).where("id", "=", token)	.select();
 		if (!items.length) {
 			console.log("session of " + token + " not exist");
 			return null;
 		}
-
-		let session = new Session(items[0]);
-		if (token != TEST_TOKEN) { // update token expire time
-			session.update();
-		}
-		return session;
+		return new Session(items[0]);
 	} catch (e) {
 		console.log("get session error " + e.toString());
 		return null;

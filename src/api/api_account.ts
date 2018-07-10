@@ -6,7 +6,7 @@
 import {
 	web_add_account,
 	web_change_password,
-	web_login_byaccount,
+	web_login_byaccount, web_logout,
 	web_remove_account,
 	web_reset_password,
 	web_show_accountinfo,
@@ -163,6 +163,19 @@ export const ApiAccount = {
 				"password": {
 					"type": PARAM_TYPE_STRING,
 					"desc": "密码，Base64",
+					"default": PARAM_NOT_NULL
+				}
+			},
+		},
+		{
+			"name": "退出",
+			"service": web_logout,
+			"role": [],
+			"key": "APILogout",
+			"paras": {
+				"token": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Token String",
 					"default": PARAM_NOT_NULL
 				}
 			},

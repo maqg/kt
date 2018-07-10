@@ -9,7 +9,7 @@ import {knex} from "../models/Bookshelf";
 import {TB_ACCOUNT} from "../config/config";
 import {Account, getEncPassword, ROOT_ACCOUNT_ID, ROOT_ACCOUNT_NAME} from "../models/Account";
 import {b64_decode, getMilliSeconds, getUuid} from "../utils/utils";
-import {newSession} from "../models/Session";
+import {getSession, newSession} from "../models/Session";
 
 async function get_account_count() {
 	try {
@@ -252,6 +252,14 @@ export async function web_login_byaccount(paras) {
 	}
 
 	return buildSuccessResp(session.toObj());
+}
+
+export async function web_logout(paras) {
+	let session = await getSession(paras["token"]);
+	if (session) {
+		session.delete();
+	}
+	return buildSuccessResp();
 }
 
 export {web_show_accountlist, web_show_allaccounts, web_show_accountinfo, web_remove_account, web_change_password};
