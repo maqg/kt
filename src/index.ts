@@ -6,7 +6,7 @@ import * as KoaBodyParar from 'koa-bodyparser'
 import * as KoaViews from 'koa-views'
 
 import {Config} from './config/config'
-import {apiDispatcher, initApis, runApiTest} from "./api/api";
+import {apiDispatcher, initApis, runApiTest, runWXApiTest, wxApiDispatcher} from "./api/api";
 
 const app = new Koa();
 const router = new Router();
@@ -17,6 +17,14 @@ router.get('/api/test/', async(ctx, next) => {
 
 router.post('/api/', async(ctx, next) => {
 	await apiDispatcher(ctx);
+});
+
+router.get('/wxapi/test/', async(ctx, next) => {
+	await runWXApiTest(ctx, next)
+});
+
+router.post('/wxapi/', async(ctx, next) => {
+	await wxApiDispatcher(ctx);
 });
 
 router.get('/dashboard/', async(ctx: Context)=>{

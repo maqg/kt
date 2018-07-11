@@ -64,6 +64,10 @@
 
 <script>
 
+    var g_api_type = "<%= API_TYPE %>";
+    var g_api_url = "/api/";
+    var g_create_sign_func = createSign;
+
     function getSelectedApi() {
         selectedModule = getSelectedOption("#apiModuleList");
         selectedApi = getSelectedOption("#apiList");
@@ -162,11 +166,11 @@
             "timestamp": new Date().getTime()
         };
 
-        json["sign"] = createSign(json);
+        json["sign"] = g_create_sign_func(json);
 
         bodyStr = JSON.stringify(json);
 
-        httpPost("/api/", bodyStr, function (resJson) {
+        httpPost(g_api_url, bodyStr, function (resJson) {
             $("#requestBody").html(JSON.stringify(json, null, 4));
             $("#responseBody").html(JSON.stringify(resJson, null, 4));
         });
@@ -183,6 +187,11 @@
 
     var $hidenNode = $("#hidenString");
     var JsonObj = JSON.parse($hidenNode.html());
+
+    if (g_api_type === "wxapi") {
+        g_api_url = "/wxapi/";
+        g_create_sign_func = createSignWx;
+    }
 
     initModuleList();
 

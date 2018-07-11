@@ -117,7 +117,7 @@ export async function web_get_promotionlist(paras) {
 export async function web_fetch_nearbybikes(paras) {
 	return buildSuccessResp(
 		{
-			"total": 10,
+			"total": 1,
 			"count": 1,
 			"data": [
 				{

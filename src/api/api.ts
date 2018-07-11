@@ -8,7 +8,15 @@ import {ApiAccount} from "./api_account";
 import {buildErrorResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {getMilliSeconds, transToStr} from "../utils/utils";
-import {API_PREFIX, ApiModuleMap, PARAM_NOT_NULL, PARAM_TYPE_INT, SessionTimeout, TEST_SKEY} from "../config/config";
+import {
+	API_PREFIX,
+	ApiModuleMap,
+	ApiWxModuleMap, ModuleWxApp,
+	PARAM_NOT_NULL,
+	PARAM_TYPE_INT,
+	SessionTimeout,
+	TEST_SKEY
+} from "../config/config";
 import {ApiApiTrace} from "./api_trace";
 import {ApiRentCharge} from "./api_rentcharge";
 import {ApiBikeModel} from "./api_bikemodel";
@@ -22,14 +30,14 @@ import {getSession} from "../models/Session";
 import {ApiRideMsg} from "./api_ridemsg";
 import {ApiBattery} from "./api_battery";
 
-let ApiList = [];
 let ApiListMap = {};
+let ApiWxListMap = {};
+
 let ApiModules = [
 	ApiAccount,
 	ApiApiTrace,
 	ApiRentCharge,
 	ApiBikeModel,
-	ApiWxApp,
 	ApiUser,
 	ApiUserOrder,
 	ApiOrderLog,
@@ -38,6 +46,10 @@ let ApiModules = [
 	ApiRideMsg,
 	ApiBattery,
 ];
+
+let WxApiModules = {
+	ApiWxApp,
+};
 
 function parseParas(ctx) {
 	return ctx.request.body;
@@ -63,6 +75,10 @@ function createSign(args) {
 	parasStr += "api=" + args["api"];
 	parasStr += "timestamp=" + args["timestamp"];
 	parasStr += "token=" + args["token"];
+
+	if (args["api"].split(".")[3] == ModuleWxApp) {
+		parasStr += "WXAPP";
+	}
 
 	for (let key in args["paras"]) {
 		params.push(key);
@@ -169,6 +185,37 @@ async function apiDispatcher(ctx) {
 	}
 
 	let apiProto = ApiListMap[api];
+
+	if (apiProto) {
+		let retObj = checkParas(apiProto, args);
+		if (retObj.errorNo != 0) {
+			let resp = buildErrorResp(retObj.errorNo, retObj.errorLog);
+			ctx.body = transToStr(resp);
+			return
+		}
+
+		let resp = await apiProto["service"](args["paras"]);
+
+		resp.updateErrorMsg();
+		ctx.body = JSON.stringify(resp);
+	} else {
+		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, apiProto + "not exist");
+		ctx.body = transToStr(resp);
+	}
+}
+
+async function wxApiDispatcher(ctx) {
+
+	let args = parseParas(ctx);
+	let api = args["api"];
+
+	if (!api) {
+		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, "api not specified");
+		ctx.body = transToStr(resp);
+		return
+	}
+
+	let apiProto = ApiWxListMap[api];
 	if (apiProto) {
 		let retObj = checkParas(apiProto, args);
 		if (retObj.errorNo != 0) {
@@ -202,6 +249,7 @@ function parasMap2List(paras) {
 
 
 function initApis() {
+	
 	for (let apiModule of ApiModules) {
 
 		ApiModuleMap[apiModule["module"]] = {
@@ -210,8 +258,6 @@ function initApis() {
 		};
 
 		for (let api of apiModule["apis"]) {
-
-			ApiList.push(api);
 
 			let apiKey = API_PREFIX + apiModule.module + "." + api["key"];
 			ApiListMap[apiKey] = api;
@@ -223,10 +269,31 @@ function initApis() {
 			};
 		}
 	}
+	
+	// for WX APIs
+
+	ApiWxModuleMap[ApiWxApp.module] = {
+		"name": ApiWxApp["module"],
+		"protos": {}
+	};
+	for (let api of ApiWxApp["apis"]) {
+		let apiKey = API_PREFIX + ApiWxApp.module + "." + api["key"];
+		ApiWxListMap[apiKey] = api;
+
+		ApiWxModuleMap[ApiWxApp.module]["protos"][api["key"]] = {
+			"name": api["name"],
+			"key": apiKey,
+			"paras": parasMap2List(api["paras"])
+		};
+	} 
 }
 
 async function runApiTest(ctx, next) {
-	await ctx.render('apitest', {TITLE: "Keep Trying", APICONFIG: JSON.stringify(ApiModuleMap)});
+	await ctx.render('apitest', {TITLE: "Keep Trying", APICONFIG: JSON.stringify(ApiModuleMap), API_TYPE: "api"});
 }
 
-export {ApiList, apiDispatcher, initApis, runApiTest}
+async function runWXApiTest(ctx, next) {
+	await ctx.render('apitest', {TITLE: "WXAPI", APICONFIG: JSON.stringify(ApiWxModuleMap), API_TYPE: "wxapi"});
+}
+
+export {apiDispatcher, initApis, runApiTest, runWXApiTest, wxApiDispatcher}
