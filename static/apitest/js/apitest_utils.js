@@ -156,3 +156,28 @@ function createSign(paras) {
 
     return sign;
 }
+
+function createSignWx(paras) {
+
+    let parasStr = "";
+    let params = [];
+
+    parasStr += "api=" + paras["api"];
+    parasStr += "timestamp=" + paras["timestamp"];
+    parasStr += "token=" + paras["token"];
+    parasStr += "WXAPP";
+
+    for (var key in paras["paras"]) {
+        params.push(key);
+    }
+    params.sort();
+
+    for (var key of params) {
+        parasStr += key + "=" + paras["paras"][key];
+    }
+    var sign = SHA2(parasStr);
+
+    console.log("got sign " + sign + " of " + parasStr);
+
+    return sign;
+}

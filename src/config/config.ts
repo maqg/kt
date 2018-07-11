@@ -19,7 +19,10 @@ export const TEST_TOKEN = "00000000000000000000000000000000";
 
 export const SessionTimeout = 60 * 60; // in seconds
 
+export const ModuleWxApp = "wxapp";
+
 let ApiModuleMap = {};
+let ApiWxModuleMap = {};
 
 export const PARAM_TYPE_STRING = "string";
 export const PARAM_TYPE_INTLIST = "intlist";
@@ -45,4 +48,5 @@ export const TB_MAINTENANCE = "maintenance";
 export const TB_BATTERY = "battery";
 
 
-export {Config, API_PREFIX, ApiModuleMap};
+
+export {Config, API_PREFIX, ApiModuleMap, ApiWxModuleMap};
