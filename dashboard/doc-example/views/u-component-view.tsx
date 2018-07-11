@@ -1,15 +1,26 @@
 import * as React from 'react';
-import {Component, MouseEvent, Ref, RefObject} from "react";
+import {Component, MouseEvent, RefObject} from "react";
 import {UIcon} from "../../ui-libs/ui-icon";
-import {UButton} from "../../ui-libs/ui-button/u-button";
-import {UTextInput} from "../../ui-libs/ui-text-input/u-text-input";
+import {UButton} from "../../ui-libs";
+import {UTextInput} from "../../ui-libs";
+import {LoginApi} from "../../util-tools/api/login-api";
+import {withRouter} from "react-router";
 
 export class UComponentView extends Component{
     ref:RefObject<UButton> = React.createRef();
-    click(e: MouseEvent) {
-        console.log(this.ref);
+    async click(e: MouseEvent) {
+        let api: LoginApi = new LoginApi();
+        let resp;
+        try{
+            resp = await  api.doLogin({
+                username: "ktadmin",
+                password: "ktadmin"
+            });
+        } catch (e) {
+            console.error(e.errorMsg);
+        }
+        console.log(resp);
     }
-
     render() {
         return <div className={'u-component-view'}>
             <div className={'name'}>UIcon</div>
