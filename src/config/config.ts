@@ -14,6 +14,10 @@ const Config = {
 
 const API_PREFIX = "octlink.kt.v1.";
 
+// For WxApp
+export const WxAppId = "wx614e25b3dd901958";
+export const WxAppSecretKey = "abcd38cdd7a344d1dccff597b8468928d3d";
+
 export const TEST_SKEY = "00000000000000000000000000000000";
 export const TEST_TOKEN = "00000000000000000000000000000000";
 

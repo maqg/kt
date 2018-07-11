@@ -59,16 +59,6 @@ export const ApiWxApp = {
 					"desc": "iv of User",
 					"default": PARAM_NOT_NULL,
 				},
-				"timestamp": {
-					"type": PARAM_TYPE_STRING,
-					"desc": "Timestamp of User",
-					"default": PARAM_NOT_NULL,
-				},
-				"sign": {
-					"type": PARAM_TYPE_STRING,
-					"desc": "Sign of User",
-					"default": PARAM_NOT_NULL,
-				}
 			}
 		},
 		{

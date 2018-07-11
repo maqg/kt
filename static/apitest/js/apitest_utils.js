@@ -140,7 +140,7 @@ function createSign(paras) {
 
     parasStr += "api=" + paras["api"];
     parasStr += "timestamp=" + paras["timestamp"];
-    
+
     if (paras.hasOwnProperty("token")) {
         parasStr += "token=" + paras["token"];
     }

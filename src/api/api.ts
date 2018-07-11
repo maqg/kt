@@ -74,7 +74,10 @@ function createSign(args) {
 
 	parasStr += "api=" + args["api"];
 	parasStr += "timestamp=" + args["timestamp"];
-	parasStr += "token=" + args["token"];
+
+	if (args.hasOwnProperty("token")) {
+		parasStr += "token=" + args["token"];
+	}
 
 	if (args["api"].split(".")[3] == ModuleWxApp) {
 		parasStr += "WXAPP";
