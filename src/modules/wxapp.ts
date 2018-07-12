@@ -38,7 +38,7 @@ async function get_openid(paras) {
 
 export async function web_get_userinfo(paras) {
 
-	let sessionInfo = get_openid(paras);
+	let sessionInfo = await get_openid(paras);
 	if (!sessionInfo) {
 		return buildErrorResp(Errors.RET_WX_LOGIN_ERR,
 			"Login from WeiXin Error with Code " + paras["code"]);

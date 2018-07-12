@@ -30,6 +30,10 @@ export class Bike {
 	address: string;
 	floor: string;
 
+	manTimes: number;
+	usageTimes: number;
+
+	lastRent: number;
 	createTime: number;
 	updateTime: number;
 	deleteTime: number;
@@ -48,6 +52,9 @@ export class Bike {
 			this.longitude = obj["longitude"];
 			this.latitude = obj["latitude"];
 
+			this.usageTimes = obj["usageTimes"];
+			this.manTimes = obj["manTimes"];
+
 			this.status = obj["status"];
 			this.rentStatus = obj["rentStatus"];
 			this.onlineStatus = obj["onlineStatus"];
@@ -57,6 +64,7 @@ export class Bike {
 			this.createTime = obj["createTime"];
 			this.updateTime = obj["createTime"];
 			this.deleteTime = obj["createTime"];
+			this.lastRent = obj["lastRent"];
 		}
 	}
 
@@ -66,6 +74,7 @@ export class Bike {
 		obj["createTimeStr"] = timeToStr(this.createTime);
 		obj["updateTimeStr"] = timeToStr(this.updateTime);
 		obj["deleteTimeStr"] = timeToStr(this.deleteTime);
+		obj["lastRentTimeStr"] = timeToStr(this.lastRent);
 
 		return obj;
 	}

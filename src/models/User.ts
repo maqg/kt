@@ -23,6 +23,13 @@ export class User {
 	avatar: string;
 	phone: string;
 
+	city: string;
+	province: string;
+	country: string;
+
+	times: number;
+	distance: number;
+
 	coupons: number;
 	cash: number;
 
@@ -48,8 +55,15 @@ export class User {
 			this.status = obj["status"];
 			this.gender = obj["gender"];
 			this.avatar = obj["avatar"];
+			this.city = obj["city"];
+			this.province = obj["province"];
+			this.country = obj["country"];
+
 			this.coupons = obj["coupons"];
 			this.cash = obj["cash"];
+
+			this.times = obj["times"]; // times for usage of bike
+			this.distance = obj["distance"]; // in meters
 
 			this.registerLongitude = obj["registerLongitude"];
 			this.registerLatitude = obj["registerLatitude"];

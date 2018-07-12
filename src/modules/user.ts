@@ -146,8 +146,11 @@ export async function add_user(paras, sessionInfo) {
 	let obj = {
 		id: getUuid(),
 		openId: sessionInfo["openid"],
-		unionId: sessionInfo["unionId"],
+		unionId: sessionInfo["unionid"],
 		nickname: rawData["nickName"],
+		city: rawData["city"],
+		province: rawData["province"],
+		country: rawData["country"],
 		gender: rawData["gender"],
 		avatar: rawData["avatarUrl"],
 		type: USER_TYPE_WX,
