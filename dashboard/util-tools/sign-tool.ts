@@ -78,7 +78,10 @@ export class SignTool {
 
         parasStr += "api=" + paras["api"];
         parasStr += "timestamp=" + paras["timestamp"];
-        parasStr += "token=" + paras["token"];
+
+        if (paras.hasOwnProperty("token")) {
+            parasStr += "token=" + paras["token"];
+        }
 
         for (let key in paras["paras"]) {
             params.push(key);

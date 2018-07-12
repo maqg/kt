@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ChangeEvent, Component, FocusEvent, MouseEvent, RefObject} from "react";
+import {Component, FocusEvent, FormEvent, MouseEvent, RefObject} from "react";
 
 export interface UTextInputProps {
     graph?: any,
@@ -76,9 +76,9 @@ export class UTextInput extends Component<UTextInputProps, UTextInputStates>{
             isFocus: false
         })
     }
-    private onInputChange(e: ChangeEvent<HTMLInputElement>) {
+    private onInputChange(e: FormEvent<HTMLInputElement>) {
         e.preventDefault();
-        let value = e.target.value;
+        let value = e.currentTarget.value;
         this.props.onChange && this.props.onChange(value);
         this.setState({
             value: value
@@ -99,7 +99,7 @@ export class UTextInput extends Component<UTextInputProps, UTextInputStates>{
                    disabled={this.props.disabled}
                    type={this.props.isPassword?"password":"text"}
                    value={this.state.value}
-                   onChange={(e)=>{this.onInputChange(e)}}
+                   onInput={(e)=>{this.onInputChange(e)}}
                    onBlur={(e)=>this.onBlur(e)}
                    onFocus={(e)=>this.onFocus(e)}/>
         </div>
