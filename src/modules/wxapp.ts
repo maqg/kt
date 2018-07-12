@@ -3,25 +3,71 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {buildSuccessResp} from "../models/ApiResponse";
+import * as SuperAgent from 'superagent';
+
+import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {getMilliSeconds, getUuid} from "../utils/utils";
+import {WxAppId, WxAppSecretKey} from "../config/config";
+import {Errors} from "../models/KtError";
+import {add_user, get_user_byunionid} from "./user";
+import {newSession} from "../models/Session";
+import {ROLE_USER} from "../models/Account";
+
+const WXAPP_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session'
+
+/*
+ {"session_key":"S4kU3sBz1PkTKXe8or11Vg==",
+ "openid":"ogwml5JCtzayTiZqw5ZzRCdrIgQs",
+ "unionid":"oQnhh0Xi4Ilj9Jz-GSgRhX-Vb8yM"}
+ */
+async function get_openid(paras) {
+	try {
+		let response = await SuperAgent.get(WXAPP_SESSION_URL)
+			.query({
+				appid: WxAppId,
+				secret: WxAppSecretKey,
+				js_code: paras["code"],
+				grant_type: 'authorization_code'
+			});
+		return JSON.parse(response.text);
+	} catch (e) {
+		console.log("Get OpenId and UionId Error " + e.toString());
+		return null;
+	}
+}
 
 export async function web_get_userinfo(paras) {
-	let resp = buildSuccessResp();
-	resp.data = {
-		"token": getUuid(),
+
+	let sessionInfo = get_openid(paras);
+	if (!sessionInfo) {
+		return buildErrorResp(Errors.RET_WX_LOGIN_ERR,
+			"Login from WeiXin Error with Code " + paras["code"]);
+	}
+
+	let user = await get_user_byunionid(sessionInfo["unionid"]);
+	if (!user) {
+		user = await add_user(paras, sessionInfo);
+	}
+	if (!user) {
+		return buildErrorResp(Errors.RET_WX_LOGIN_ERR,
+			"Failed to create New User " + JSON.stringify(sessionInfo))
+	}
+
+	let session = await newSession(user.id, user.nickname, ROLE_USER);
+
+	return buildSuccessResp({
+		"token": session.id,
 		"unfinishedOrder": "",
 		"cash": 1400, // balance
 		"coupons": 10,
-		"phone": "15011329430",
-		"nickname": "Henry.Ma",
-		"gender": "Male",
-		"openId": "thissssdssopenid",
-		"unionId": "thissssdssopenid",
-		"watermark": "???",
-		"avatar": "http://ssssssssssssssssssssssssss/fda/fda"
-	};
-	return resp;
+		"phone": user.phone,
+		"nickname": user.nickname,
+		"gender": user.gender,
+		"openId": user.openId,
+		"unionId": user.unionId,
+		"watermark": "",
+		"avatar": user.avatar
+	});
 }
 
 export async function web_bind_phone(paras) {

@@ -38,8 +38,7 @@ export enum Errors {
 
 	RET_SESSION_EXPIRED = 11,
 	RET_INVALID_SIGNATURE = 12,
-
-
+	RET_WX_LOGIN_ERR = 13,
 
 	RET_MAX_ERR
 }
@@ -53,7 +52,6 @@ export const ErrorMsgs = [
 	"System Error",
 	"API Key Not Specified",
 
-
 	"Invalid Token", // 6-10
 	"Item Not Exist",
 	"Item Already Exist",
@@ -62,7 +60,7 @@ export const ErrorMsgs = [
 
 	"Session Expired", // 11-15
 	"Invalid Signature",
-
+	"Login From WeiXin Error",
 
 	"MAX ERROR NUMBER"
 ];

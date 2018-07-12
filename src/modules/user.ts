@@ -7,8 +7,8 @@ import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
 import {TB_USER} from "../config/config";
-import {User} from "../models/User";
-import {getMilliSeconds} from "../utils/utils";
+import {User, USER_TYPE_WX} from "../models/User";
+import {getMilliSeconds, getUuid} from "../utils/utils";
 
 async function get_user_count() {
 	try {
@@ -51,7 +51,7 @@ async function get_user_byopenid(openId: string) {
 	}
 }
 
-async function get_user_byunionid(unionId: string) {
+export async function get_user_byunionid(unionId: string) {
 	try {
 		let items = await knex(TB_USER).where("userId", "=", unionId).select();
 		if (!items.length) {
@@ -123,6 +123,48 @@ async function web_show_allusers(paras) {
 
 function get_user_unpaied_info(userId: string) {
 	return 0;
+}
+
+/*
+{
+	code: '021OWkwf1G1ocz0hpUwf1eSywf1OWkww',
+	signature: 'dcc431240f0743d27e37517715435e9000e4ad1d',
+	rawData: {
+		"nickName": "Henry.Ma",
+		"gender": 1,
+		"language": "zh_CN",
+		"city": "朝阳",
+		"province": "北京",
+		"country": "中国",
+		"avatarUrl": "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epsiaA2IfhyXZDFiavZKwV3WePACIeg9Y38x4aVTl9O7Op2umN2D0uPKic3Fo1dlNP0OgHJQL0NK6LDA/132"
+	},
+	encryptedData: 'gtYhqvx5fuNRtf1uHsgc9d2KpqXS8C/uIgm2XU9lS1n5Fxtg0FR6VZyC2vZfeZtGPhgoFKT7slvi5M2QcHpdLYELs++nJgCa8xCR8WFRwREtDuo+eMuMZU6D9BKMyTnhJBlk2DWaJ0Zu4gcS4lSOOQke3jrb/ta9WBsIgwdxGZg/Sd7qDVHmRHcKXW18/tOYnIMtPtmaFaKUIXRMbCvGr8sasy/AgC+B9cd23x9xfVwReTdrbwk8VPY94jxPFDJI9UFvLSLhPy5OlUiHgVI4LJB/iQMQ9SjTdwAPqCczEH5if+3fxQn+l10aHQ5SFS+DlvImbWknkp4DGfsvrTQ2KmW6GzHY1pKhFeg0wwrQ1y6jftLvFgtRhw+CQAM/nO+CaSDYBzdTjL+R1jqw9yYcRkddzyLiMPfNbCVNgxGGh/xitGhAlOeFNOaD/Oc1YNYeEigvqVHYN5N6tZmvHH6mnFi26sKmISW95hNx/7xqvfT6k+xfd7QTlcr+WqoydbNNC1X22FclzoARjO/ohFtT0w==',
+	iv: 'wliLOmRddjYtveECBKKd/g=='
+}
+ */
+export async function add_user(paras, sessionInfo) {
+
+	let rawData = JSON.parse(paras["rawData"]);
+
+	let obj = {
+		id: getUuid(),
+		openId: sessionInfo["openid"],
+		unionId: sessionInfo["unionId"],
+		nickname: rawData["username"],
+		gender: rawData["gender"],
+		avatar: rawData["avatarUrl"],
+		type: USER_TYPE_WX,
+		createTime: getMilliSeconds(),
+		updateTime: getMilliSeconds()
+	};
+	try {
+		await knex(TB_USER).insert(obj);
+	} catch (e) {
+		console.log("Add User of " + rawData["nickname"] + " error " + e.toString());
+		return null;
+	}
+
+	return await get_user(obj["id"]);
 }
 
 /*

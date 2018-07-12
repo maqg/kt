@@ -5,6 +5,9 @@
 
 import {timeToStr} from "../utils/utils";
 
+export const USER_TYPE_WX = 1;
+export const USER_TYPE_OTHER = 2;
+
 
 export class User {
 
