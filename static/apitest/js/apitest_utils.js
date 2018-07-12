@@ -140,7 +140,10 @@ function createSign(paras) {
 
     parasStr += "api=" + paras["api"];
     parasStr += "timestamp=" + paras["timestamp"];
-    parasStr += "token=" + paras["token"];
+
+    if (paras.hasOwnProperty("token")) {
+        parasStr += "token=" + paras["token"];
+    }
 
     for (var key in paras["paras"]) {
         params.push(key);
@@ -164,7 +167,11 @@ function createSignWx(paras) {
 
     parasStr += "api=" + paras["api"];
     parasStr += "timestamp=" + paras["timestamp"];
-    parasStr += "token=" + paras["token"];
+
+    if (paras.hasOwnProperty("token")) {
+        parasStr += "token=" + paras["token"];
+    }
+
     parasStr += "WXAPP";
 
     for (var key in paras["paras"]) {

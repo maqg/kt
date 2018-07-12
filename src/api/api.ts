@@ -74,7 +74,10 @@ function createSign(args) {
 
 	parasStr += "api=" + args["api"];
 	parasStr += "timestamp=" + args["timestamp"];
-	parasStr += "token=" + args["token"];
+
+	if (args.hasOwnProperty("token")) {
+		parasStr += "token=" + args["token"];
+	}
 
 	if (args["api"].split(".")[3] == ModuleWxApp) {
 		parasStr += "WXAPP";
@@ -115,8 +118,9 @@ function checkSignature(args): number {
 function checkToken(args) {
 
 	let api = args["api"];
-	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount") {
-		console.log("No need to do session check for account login");
+	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount"
+		|| api == API_PREFIX + ApiWxApp.module + ".APIGetUserInfo") {
+		console.log("No need to do session check for login apis");
 		return true;
 	}
 
