@@ -1,6 +1,7 @@
 INSERT INTO account (id,username,password,role,createTime,updateTime) VALUES('c9b7c22a0ae911e7af10525400659eb7','ktadmin','c341cba6a1437624815de477a43240e5',7,UNIX_TIMESTAMP()*1000,UNIX_TIMESTAMP()*1000);
 
 INSERT INTO session VALUES ('00000000000000000000000000000000','c9b7c22a0ae911e7af10525400659eb7',7,'ktadmin','{"id": "","name":"ktadmin","role":7}',1529563789591,0,1844923789591);
+INSERT INTO session VALUES ('00000000000000000000000000000001','15e9a5f0-8037-11e8-98e3-525437f07951',7,'Henry.Ma','{"id": "15e9a5f0-8037-11e8-98e3-525437f07951","name":"Henry.Ma","role":1}',1529563789591,0,1844923789591);
 
 INSERT INTO apitrace VALUES(1,'octlink.kt.v1.account.APILogin','finished','登录账户',UNIX_TIMESTAMP()*1000,0,0,'{"username": "admin"}','{}');
 
