@@ -35,7 +35,7 @@ export class ApiTools implements APIRequest {
         this.preRequest();
         let ret: AxiosResponse;
         try{
-            ret = await axios.post('api/', this);
+            ret = await axios.post('/api/', this);
         } catch (e) {
             let error = new ErrorObj();
             error.errorMsg = e.message;

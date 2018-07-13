@@ -96,6 +96,7 @@ class LoginView extends React.Component<RouteComponentProps<any>, LoginViewState
                         <div className={'password-input'}>
                             <UTextInput
                                 label={'密码'}
+                                isPassword={true}
                                 disabled={this.state.formDisabled}
                                 onChange={(v)=>this.passwordEdit(v)}
                                 placeholder={'输入密码'}

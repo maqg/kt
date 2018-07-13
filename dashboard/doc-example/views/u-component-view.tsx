@@ -5,6 +5,7 @@ import {UButton} from "../../ui-libs";
 import {UTextInput} from "../../ui-libs";
 import {LoginApi} from "../../util-tools/api/login-api";
 import {withRouter} from "react-router";
+import {NavLink} from "react-router-dom";
 
 export class UComponentView extends Component{
     ref:RefObject<UButton> = React.createRef();
@@ -39,6 +40,7 @@ export class UComponentView extends Component{
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'} disabled={true}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'} isError={true}/>
             </div>
+            <NavLink to={'/icon/icon-map'}>123123123123</NavLink>
         </div>
     }
 }
