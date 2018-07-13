@@ -107,9 +107,39 @@ async function web_show_allorders(paras) {
 		return buildErrorResp(Errors.RET_DB_ERR,
 			"Query from Db error for all users " + e.toString());
 	}
-
 }
 
+export async function web_show_userorders(paras) {
+
+	let cond = {};
+
+	// TBD: add user filter
+
+	if (paras["userId"]) {
+		cond["userId"] = paras["userId"];
+	}
+
+	try {
+		let list = [];
+		let items = await knex(TB_USERORDER).where(cond)
+			.select().limit(paras["limit"]).offset(paras["start"]);
+
+		for (let item of items) {
+			let model = new UserOrder(item);
+			list.push(model.toObj());
+		}
+
+		return buildSuccessResp({
+			"total": await get_userorder_count(),
+			"count": list.length,
+			"data": list
+		});
+	} catch (e) {
+		console.log("Query from Db error for all users " + e.toString());
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Query from Db error for all users " + e.toString());
+	}
+}
 
 /*
  * Update UserOrder's username to "new,unpaied,or finished"

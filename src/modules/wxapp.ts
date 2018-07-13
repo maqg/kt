@@ -12,6 +12,8 @@ import {Errors} from "../models/KtError";
 import {add_user, get_user, get_user_byunionid} from "./user";
 import {newSession} from "../models/Session";
 import {ROLE_USER} from "../models/Account";
+import {get_nearby_bikes} from "./bike";
+import {web_show_useroder, web_show_userorders} from "./userorder";
 
 const WXAPP_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session'
 
@@ -58,8 +60,8 @@ export async function web_get_userinfo(paras) {
 	return buildSuccessResp({
 		"token": session.id,
 		"unfinishedOrder": "",
-		"cash": 1400, // balance
-		"coupons": 10,
+		"cash": user.cash,
+		"coupons": user.coupons,
 		"phone": user.phone,
 		"nickname": user.nickname,
 		"gender": user.gender,
@@ -194,26 +196,18 @@ export async function web_get_promotionlist(paras) {
 }
 
 export async function web_fetch_nearbybikes(paras) {
-	return buildSuccessResp(
-		{
-			"total": 1,
-			"count": 1,
-			"data": [
-				{
-					"longitude": 0.000000,
-					"latitude": 0.0000000,
-					"address": "北京市朝阳区安定路1号奥体中心",
-					"floor": "体育场2265一层看台",
-					"availableCount": 3,
-					"totalCount": 10,
-					"picUrl": "https://sssss.com/ssss.png",
-				},
-			]
-		}
-	);
+	return get_nearby_bikes(paras);
 }
 
 export async function web_post_repairinfo(paras) {
+	return buildSuccessResp();
+}
+
+export async function web_lock_bike(paras) {
+	return buildSuccessResp();
+}
+
+export async function web_send_ridemsg(paras) {
 	return buildSuccessResp();
 }
 
@@ -228,6 +222,8 @@ export async function web_unlock_bike(paras) {
 }
 
 export async function web_fetch_rentinfo(paras) {
+	paras["id"] = "00000000000000000000000000000000";
+	return web_show_useroder(paras);
 	return buildSuccessResp(
 		{
 			"createTime": getMilliSeconds(),
@@ -252,6 +248,7 @@ export async function web_fetch_rentinfo(paras) {
 }
 
 export async function web_fetch_rentlist(paras) {
+	return web_show_userorders(paras);
 	return buildSuccessResp(
 		{
 			"total": 10,

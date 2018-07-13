@@ -88,7 +88,50 @@ async function web_show_allbikes(paras) {
 		return buildErrorResp(Errors.RET_DB_ERR,
 			"Query from Db error for all users " + e.toString());
 	}
+}
 
+async function web_show_bike(paras) {
+	let model = await get_bike(paras["id"]);
+	if (!model) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"Bike of " + paras["id"] + " Not Exist")
+	}
+	return buildSuccessResp(model.toObj());
+}
+
+/*
+{
+        "start": 0,
+        "limit": 15,
+        "longitude": "0.000000",
+        "latitude": "0.000000",
+        "distance": 1000
+ },
+ */
+export async function get_nearby_bikes(paras) {
+
+	let cond = {};
+
+	try {
+		let list = [];
+		let items = await knex(TB_BIKE).where(cond)
+			.select().limit(paras["limit"]).offset(paras["start"]);
+
+		for (let item of items) {
+			let model = new Bike(item);
+			list.push(model.toObj());
+		}
+
+		return buildSuccessResp({
+			"total": await get_bike_count(),
+			"count": list.length,
+			"data": list
+		});
+	} catch (e) {
+		console.log("Query from Db error for all users " + e.toString());
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Query from Db error for all users " + e.toString());
+	}
 }
 
 /*
