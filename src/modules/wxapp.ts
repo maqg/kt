@@ -6,7 +6,7 @@
 import * as SuperAgent from 'superagent';
 
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
-import {getMilliSeconds, getUuid} from "../utils/utils";
+import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
 import {WxAppId, WxAppSecretKey} from "../config/config";
 import {Errors} from "../models/KtError";
 import {add_user, get_user, get_user_byunionid} from "./user";
@@ -138,15 +138,17 @@ export async function web_get_capitals(paras) {
 			"data": [
 				{
 					"createTime": getMilliSeconds(),
+					"createTimeStr": timeToStr(getMilliSeconds()),
 					"serialNumber": "xxx00223131323",
 					"user": "Henry.Ma",
-					"totalAmount": 200, // in cents
-					"payAmount": 200, // in cents
+					"totalAmount": 2000, // in cents
+					"payAmount": 2000, // in cents
 					"describe": "xxx",
 					"payStatus": true,
 					"payTime": getMilliSeconds(),
-					"refundStatus": true,
-					"refundAmount": 100, // in cents
+					"refundStatus": false,
+					"tradeType": 0, // 0: recharge, 1: refund
+					"refundAmount": 0, // in cents
 				},
 			]
 		}
@@ -165,10 +167,20 @@ export async function web_get_couponlist(paras) {
 			"data": [
 				{
 					"serial": getUuid(),
+					"cbType": 0, // 0: cash, 1: discount
 					"createTime": getMilliSeconds(),
+					"expireTimeStr": timeToStr(getMilliSeconds()),
 					"isValid": true,
-					"amount": 100,
-				}
+					"amount": 500,
+				},
+				{
+					"serial": getUuid(),
+					"cbType": 0, // 0: cash, 1: discount
+					"createTime": getMilliSeconds(),
+					"expireTimeStr": timeToStr(getMilliSeconds()),
+					"isValid": true,
+					"amount": 300,
+				},
 			]
 		}
 	);
