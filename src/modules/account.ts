@@ -92,9 +92,12 @@ export async function web_add_account(paras) {
 	return buildSuccessResp()
 }
 
+import * as sha1 from 'js-sha1';
+
 async function web_show_accountlist(paras) {
 	let resp = buildSuccessResp();
 
+	console.log(sha1("你好吗"));
 	try {
 		let list = [];
 		let items = await knex(TB_ACCOUNT).select("id", "username", "role");
