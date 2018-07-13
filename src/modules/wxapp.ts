@@ -224,56 +224,8 @@ export async function web_unlock_bike(paras) {
 export async function web_fetch_rentinfo(paras) {
 	paras["id"] = "00000000000000000000000000000000";
 	return web_show_useroder(paras);
-	return buildSuccessResp(
-		{
-			"createTime": getMilliSeconds(),
-			"bikeSerial": "01033013032",
-			"unlockType": 1,
-			"longitude": 0.000000,
-			"latitude": 0.000000,
-			"address": "北京市朝阳区安定路1号奥体中心",
-			"floor": "体育场2265一层看台",
-			"distance": 2000, // in metres
-			"calories": 233,
-			"heartRate": 80,
-			"speed": 200000,
-			"isReturned": true,
-			"returnTime": getMilliSeconds(),
-			"totalTime": 19021, // in seconds
-			"totalAmount": 100, // in cents
-			"payAmount": 100,
-			"payCoupon": 0,
-		}
-	);
 }
 
 export async function web_fetch_rentlist(paras) {
 	return web_show_userorders(paras);
-	return buildSuccessResp(
-		{
-			"total": 10,
-			"count": 1,
-			"data": [
-				{
-					"createTime": getMilliSeconds(),
-					"bikeSerial": "01033013032",
-					"unlockType": 1,
-					"longitude": 0.000000,
-					"latitude": 0.000000,
-					"address": "北京市朝阳区安定路1号奥体中心",
-					"floor": "体育场2265一层看台",
-					"distance": 2000, // in metres
-					"calories": 233,
-					"heartRate": 80,
-					"speed": 200000,
-					"isReturned": true,
-					"returnTime": getMilliSeconds(),
-					"totalTime": 19021, // in seconds
-					"totalAmount": 100, // in cents
-					"payAmount": 100,
-					"payCoupon": 0,
-				},
-			]
-		}
-	);
 }

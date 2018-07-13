@@ -29,6 +29,7 @@ import {ApiBike} from "./api_bike";
 import {getSession} from "../models/Session";
 import {ApiRideMsg} from "./api_ridemsg";
 import {ApiBattery} from "./api_battery";
+import {ApiPromotion} from "./api_promotion";
 
 let ApiListMap = {};
 let ApiWxListMap = {};
@@ -45,6 +46,7 @@ let ApiModules = [
 	ApiBike,
 	ApiRideMsg,
 	ApiBattery,
+	ApiPromotion,
 ];
 
 let WxApiModules = {

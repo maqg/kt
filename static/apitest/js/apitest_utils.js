@@ -155,7 +155,7 @@ function createSign(paras) {
     }
     var sign = SHA2(parasStr);
 
-    console.log("got sign " + sign + " of " + parasStr);
+    console.log("get sign " + sign + " of " + parasStr);
 
     return sign;
 }

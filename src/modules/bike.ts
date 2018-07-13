@@ -90,15 +90,6 @@ async function web_show_allbikes(paras) {
 	}
 }
 
-async function web_show_bike(paras) {
-	let model = await get_bike(paras["id"]);
-	if (!model) {
-		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
-			"Bike of " + paras["id"] + " Not Exist")
-	}
-	return buildSuccessResp(model.toObj());
-}
-
 /*
 {
         "start": 0,
