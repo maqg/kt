@@ -35,6 +35,10 @@ router.get('/dashboard-doc/', async(ctx: Context)=>{
     await ctx.render('doc');
 });
 
+router.get('', async(ctx: Context)=>{
+	ctx.body = "Welcome to Keep Trying";
+});
+
 app.use(KoaBodyParar());
 app.use(KoaViews("./views", { extension: 'html', map: {html: 'ejs'}}));
 app.use(KoaStatic("./static"));

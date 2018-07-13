@@ -39,24 +39,9 @@ export const ApiWxApp = {
 					"desc": "Code of User",
 					"default": PARAM_NOT_NULL,
 				},
-				"signature": {
-					"type": PARAM_TYPE_STRING,
-					"desc": "Signature of User",
-					"default": PARAM_NOT_NULL,
-				},
 				"rawData": {
 					"type": PARAM_TYPE_STRING,
 					"desc": "rawData of User",
-					"default": PARAM_NOT_NULL,
-				},
-				"encryptedData": {
-					"type": PARAM_TYPE_STRING,
-					"desc": "Code of User",
-					"default": PARAM_NOT_NULL,
-				},
-				"iv": {
-					"type": PARAM_TYPE_STRING,
-					"desc": "iv of User",
 					"default": PARAM_NOT_NULL,
 				},
 			}

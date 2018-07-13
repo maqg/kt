@@ -1,20 +1,18 @@
-import * as hljs from "highlight.js";
 import * as React from "react";
 import {HashRouter} from "react-router-dom";
 import {render} from "react-dom";
 import {Redirect, Route, Switch} from "react-router";
 import {AuthTool} from "./util-tools/auth-tool";
-import {LoginView} from "./views/login-view";
+import LoginView from "./views/login-view/login-view";
 import {MainView} from "./views/main-view";
+import './static/style/style.scss';
 
 export class KTDashboard extends React.Component<any>{
     constructor(props: any){
         super(props);
-        hljs.initHighlightingOnLoad();
     }
     render() {
-        return <div className={'kt-layout'}>
-            <Switch>
+        return <Switch>
             <Route path={'/auth'} exact render={()=> {return <Redirect to={"/auth/login"}/>}}/>
             <Route path={'/auth/login'} exact render={()=>{
                 if (AuthTool.hasAuth()) {
@@ -32,7 +30,6 @@ export class KTDashboard extends React.Component<any>{
             }}/>
             <Route render={()=>{return <Redirect to={'/main'}/>}}/>
             </Switch>
-        </div>
     }
 }
 render(<HashRouter>

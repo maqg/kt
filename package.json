@@ -74,6 +74,7 @@
     "postcss-loader": "^2.1.5",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
+    "superagent": "^3.8.3",
     "ts-loader": "^4.4.1",
     "ts-md5": "^1.2.4",
     "ts-node": "^7.0.0",

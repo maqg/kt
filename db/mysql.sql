@@ -48,12 +48,17 @@ CREATE TABLE `user` (
 		`status` VARCHAR(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled',
 		`gender` TINYINT NOT NULL DEFAULT '0' COMMENT '0:Male, 1: Female, 2: Other',
 		`nickname` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '',
+		`country` VARCHAR(32) NOT NULL DEFAULT '中国' COMMENT '',
+		`province` VARCHAR(32) NOT NULL DEFAULT '北京' COMMENT '',
+		`city` VARCHAR(32) NOT NULL DEFAULT '北京' COMMENT '',
 		`avatar` VARCHAR(200) NOT NULL DEFAULT '' COMMENT 'url of lastUser',
 		`phone` VARCHAR(20) NOT NULL DEFAULT '' COMMENT 'Phone Number',
 		`coupons` INTEGER NOT NULL DEFAULT '0' COMMENT '优惠券数量',
 		`cash` INTEGER NOT NULL DEFAULT '0' COMMENT 'in cents',
-		`registerLongitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '经度',
-		`registerLatitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '纬度',
+		`times` INTEGER NOT NULL DEFAULT '0' COMMENT 'Bike Usage Times',
+		`distance` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters',
+		`longitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '经度',
+		`latitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '纬度',
 		`lastLogin` BIGINT NOT NULL DEFAULT '0',
 		`lastRent` BIGINT NOT NULL DEFAULT '0',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
@@ -65,8 +70,9 @@ ALTER TABLE user ADD INDEX user_id (id);
 ALTER TABLE user ADD INDEX user_unionid (unionId);
 ALTER TABLE user ADD INDEX user_openid (openId);
 ALTER TABLE user ADD INDEX user_cash (cash);
-ALTER TABLE user ADD INDEX user_registerLongitude (registerLongitude);
-ALTER TABLE user ADD INDEX user_registerLatitude (registerLatitude);
+ALTER TABLE user ADD INDEX user_city (city);
+ALTER TABLE user ADD INDEX user_province (province);
+ALTER TABLE user ADD INDEX user_longitude (longitude, latitude);
 ALTER TABLE user ADD INDEX user_state (status);
 ALTER TABLE user ADD INDEX user_name (nickname);
 ALTER TABLE user ADD INDEX user_phone (phone);
@@ -187,6 +193,8 @@ CREATE TABLE `bike` (
 		`imei` VARCHAR(50) NOT NULL DEFAULT '',
 		`longitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '经度',
 		`latitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '纬度',
+		`usageTimes` INTEGER NOT NULL DEFAULT '0' COMMENT 'Bike Usage Times',
+		`manTimes` INTEGER NOT NULL DEFAULT '0' COMMENT 'Bike Maintenance Times',
 		`batterySurplus` INTEGER NOT NULL DEFAULT '0' COMMENT '',
 		`status` VARCHAR(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled/deleted/maint',
 		`rentStatus` VARCHAR(16) NOT NULL DEFAULT 'free' COMMENT 'occupied',
@@ -207,6 +215,7 @@ ALTER TABLE bike ADD INDEX bike_serial (serial);
 ALTER TABLE bike ADD INDEX bike_imei (imei);
 ALTER TABLE bike ADD INDEX bike_batterySurplus (batterySurplus);
 ALTER TABLE bike ADD INDEX bike_status (status);
+ALTER TABLE bike ADD INDEX bike_position (longitude, latitude);
 ALTER TABLE bike ADD INDEX bike_rentstatus (rentStatus);
 ALTER TABLE bike ADD INDEX bike_onlinestatus (onlineStatus);
 ALTER TABLE bike ADD INDEX bike_lockstatus (lockStatus);

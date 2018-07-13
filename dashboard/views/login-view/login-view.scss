@@ -1,0 +1,86 @@
+.kt-login-view {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background-color: #f0f0f0;
+  .panel-center{
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 360px;
+    justify-content: center;
+    .login-error {
+      height: 0;
+      padding:0;
+      font-size: 14px;
+      transition: all .2s;
+      opacity: 0;
+      margin-bottom: 0;
+    }
+    .panel-main{
+      background-color: #fff;
+      padding: 10px 20px;
+      border: 1px solid #d0d0d0;
+      box-shadow: 0 0 10px rgba(0,0,0,.2);
+      user-select: none;
+      .title{
+        padding: 5px 10px;
+        border-bottom: 1px dashed #d0d0d0;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        .icon {
+          font-size: 36px;
+          padding-right: 10px;
+        }
+      }
+      .login-form {
+        padding: 20px 0;
+        .username-input,.password-input {
+          padding-bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          .u-text-input{
+            margin-bottom: 10px;
+          }
+          .error-msg{
+            font-size: 12px;
+            padding: 2px 5px;
+            background-color: #f0f0f0;
+            color: #888;
+            text-align: right;
+            display: inline-block;
+            align-self: flex-end;
+            transition: all .2s;
+            &.error{
+              background-color: #ffdddd;
+              color: #ff3300
+            }
+          }
+        }
+        .submit-button{
+          display: flex;
+          border-top: 1px dashed #d0d0d0;
+          padding-top: 20px;
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+  &.error {
+    .login-error {
+      margin-bottom: 20px;
+      height: auto;
+      padding: 5px 10px;
+      opacity: 1;
+      border: 1px dashed #ff3300;
+      background-color: #ffdddd;
+      color: #ff3300;
+    }
+    .panel-main {
+      border: 1px dashed #ff3300;
+    }
+  }
+}

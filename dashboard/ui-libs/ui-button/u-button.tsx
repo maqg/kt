@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Component, FocusEvent, MouseEvent} from "react";
+import {Component, FocusEvent, MouseEvent, RefObject} from "react";
 
 export interface UButtonProps {
     graph?: any,
@@ -15,13 +15,15 @@ export interface UButtonStates {
     isFocus: boolean
 }
 export class UButton extends Component<UButtonProps, UButtonStates>{
+    buttonRef: RefObject<HTMLButtonElement>;
     constructor(props: UButtonProps) {
         super(props);
         this.state = {
             isHover: false,
             isDown: false,
             isFocus: false
-        }
+        };
+        this.buttonRef = React.createRef();
     }
     private onMouseEnter(e:MouseEvent) {
         e.preventDefault();
@@ -69,6 +71,7 @@ export class UButton extends Component<UButtonProps, UButtonStates>{
     private onClick(e: MouseEvent) {
         e.preventDefault();
         if (this.props.disabled) return;
+        this.buttonRef.current.focus();
         this.props.onClick && this.props.onClick(e);
     }
     private makeClassName() {
@@ -94,6 +97,7 @@ export class UButton extends Component<UButtonProps, UButtonStates>{
     }
     render() {
         return <button className={this.makeClassName()}
+                       ref={this.buttonRef}
                        disabled={this.props.disabled}
                        onFocus={(e)=>this.onFocus(e)}
                        onBlur={(e)=>this.onBlur(e)}

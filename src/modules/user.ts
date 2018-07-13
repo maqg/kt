@@ -7,8 +7,8 @@ import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
 import {TB_USER} from "../config/config";
-import {User} from "../models/User";
-import {getMilliSeconds} from "../utils/utils";
+import {User, USER_TYPE_WX} from "../models/User";
+import {getMilliSeconds, getUuid} from "../utils/utils";
 
 async function get_user_count() {
 	try {
@@ -34,9 +34,9 @@ async function get_user(id: string) {
 	}
 }
 
-async function get_user_byopenid(openId: string) {
+export async function get_user_byopenid(openId: string) {
 	try {
-		let items = await knex(TB_USER).where("bikeId", "=", openId).select();
+		let items = await knex(TB_USER).where("openId", "=", openId).select();
 		if (!items.length) {
 			console.log("account of " + openId + " not exist");
 			return null;
@@ -51,9 +51,9 @@ async function get_user_byopenid(openId: string) {
 	}
 }
 
-async function get_user_byunionid(unionId: string) {
+export async function get_user_byunionid(unionId: string) {
 	try {
-		let items = await knex(TB_USER).where("userId", "=", unionId).select();
+		let items = await knex(TB_USER).where("unionId", "=", unionId).select();
 		if (!items.length) {
 			console.log("user of " + unionId + " not exist");
 			return null;
@@ -123,6 +123,48 @@ async function web_show_allusers(paras) {
 
 function get_user_unpaied_info(userId: string) {
 	return 0;
+}
+
+/*
+{
+	code: '021OWkwf1G1ocz0hpUwf1eSywf1OWkww',
+	rawData: {
+		"nickName": "Henry.Ma",
+		"gender": 1,
+		"language": "zh_CN",
+		"city": "朝阳",
+		"province": "北京",
+		"country": "中国",
+		"avatarUrl": "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epsiaA2IfhyXZDFiavZKwV3WePACIeg9Y38x4aVTl9O7Op2umN2D0uPKic3Fo1dlNP0OgHJQL0NK6LDA/132"
+	},
+}
+ */
+export async function add_user(paras, sessionInfo) {
+
+	let rawData = JSON.parse(paras["rawData"]);
+
+	let obj = {
+		id: getUuid(),
+		openId: sessionInfo["openid"],
+		unionId: sessionInfo["unionid"],
+		nickname: rawData["nickName"],
+		city: rawData["city"],
+		province: rawData["province"],
+		country: rawData["country"],
+		gender: rawData["gender"],
+		avatar: rawData["avatarUrl"],
+		type: USER_TYPE_WX,
+		createTime: getMilliSeconds(),
+		updateTime: getMilliSeconds()
+	};
+	try {
+		await knex(TB_USER).insert(obj);
+	} catch (e) {
+		console.log("Add User of " + rawData["nickname"] + " error " + e.toString());
+		return null;
+	}
+
+	return await get_user(obj["id"]);
 }
 
 /*

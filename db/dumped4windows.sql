@@ -49,7 +49,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1531117742000,1531117742000,0);
+INSERT INTO `account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',7,'enabled','ktadmin','c341cba6a1437624815de477a43240e5','',0,1531380271000,1531380271000,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `apitrace` (
 
 LOCK TABLES `apitrace` WRITE;
 /*!40000 ALTER TABLE `apitrace` DISABLE KEYS */;
-INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1531117742000,0,0,'{\"username\": \"admin\"}','{}');
+INSERT INTO `apitrace` VALUES (1,'octlink.kt.v1.account.APILogin','finished','登录账户',1531380271000,0,0,'{\"username\": \"admin\"}','{}');
 /*!40000 ALTER TABLE `apitrace` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,6 +145,8 @@ CREATE TABLE `bike` (
   `imei` varchar(50) NOT NULL DEFAULT '',
   `longitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '经度',
   `latitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '纬度',
+  `usageTimes` int(11) NOT NULL DEFAULT '0' COMMENT 'Bike Usage Times',
+  `manTimes` int(11) NOT NULL DEFAULT '0' COMMENT 'Bike Maintenance Times',
   `batterySurplus` int(11) NOT NULL DEFAULT '0',
   `status` varchar(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled/deleted/maint',
   `rentStatus` varchar(16) NOT NULL DEFAULT 'free' COMMENT 'occupied',
@@ -164,6 +166,7 @@ CREATE TABLE `bike` (
   KEY `bike_imei` (`imei`),
   KEY `bike_batterySurplus` (`batterySurplus`),
   KEY `bike_status` (`status`),
+  KEY `bike_position` (`longitude`,`latitude`),
   KEY `bike_rentstatus` (`rentStatus`),
   KEY `bike_onlinestatus` (`onlineStatus`),
   KEY `bike_lockstatus` (`lockStatus`),
@@ -180,7 +183,7 @@ CREATE TABLE `bike` (
 
 LOCK TABLES `bike` WRITE;
 /*!40000 ALTER TABLE `bike` DISABLE KEYS */;
-INSERT INTO `bike` VALUES ('00000000000000000000000000000000','01004331231','00000000000000000000000000000000','','','imei123',0.000000,0.000000,100,'enabled','free','online','locked','sufficient','Beijing','F1',1530612627000,1530612627000,1530612627000,0);
+INSERT INTO `bike` VALUES ('00000000000000000000000000000000','01004331231','00000000000000000000000000000000','','','imei123',0.000000,0.000000,0,0,100,'enabled','free','online','locked','sufficient','Beijing','F1',1530612627000,1530612627000,1530612627000,0);
 /*!40000 ALTER TABLE `bike` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -247,7 +250,7 @@ CREATE TABLE `bikemodel` (
 
 LOCK TABLES `bikemodel` WRITE;
 /*!40000 ALTER TABLE `bikemodel` DISABLE KEYS */;
-INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1531117742000,1531117742000,0);
+INSERT INTO `bikemodel` VALUES ('00000000000000000000000000000000','深圳1型','金华南','3c',3700,'Taobao','v100',30000,1531380271000,1531380271000,0);
 /*!40000 ALTER TABLE `bikemodel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,7 +362,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1531117742000,0);
+INSERT INTO `promotion` VALUES ('00000000000000000000000000000000','newbie','新人注册送','enabled',1,1530612627000,1539612627000,1530612627000,0,0),('00000000000000000000000000000001','share','分享送','enabled',2,1530612627000,1539612627000,1530612627000,1531380271000,0);
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -393,7 +396,7 @@ CREATE TABLE `rentcharge` (
 
 LOCK TABLES `rentcharge` WRITE;
 /*!40000 ALTER TABLE `rentcharge` DISABLE KEYS */;
-INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1531117742000,1531117742000,0);
+INSERT INTO `rentcharge` VALUES ('00000000000000000000000000000000','计费标准',200,0,100,10,10,2400,1531380271000,1531380271000,0);
 /*!40000 ALTER TABLE `rentcharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -479,12 +482,17 @@ CREATE TABLE `user` (
   `status` varchar(16) NOT NULL DEFAULT 'enabled' COMMENT 'enabled/disabled',
   `gender` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:Male, 1: Female, 2: Other',
   `nickname` varchar(128) NOT NULL DEFAULT '',
+  `country` varchar(32) NOT NULL DEFAULT '中国',
+  `province` varchar(32) NOT NULL DEFAULT '北京',
+  `city` varchar(32) NOT NULL DEFAULT '北京',
   `avatar` varchar(200) NOT NULL DEFAULT '' COMMENT 'url of lastUser',
   `phone` varchar(20) NOT NULL DEFAULT '' COMMENT 'Phone Number',
   `coupons` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券数量',
   `cash` int(11) NOT NULL DEFAULT '0' COMMENT 'in cents',
-  `registerLongitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '经度',
-  `registerLatitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '纬度',
+  `times` int(11) NOT NULL DEFAULT '0' COMMENT 'Bike Usage Times',
+  `distance` int(11) NOT NULL DEFAULT '0' COMMENT 'in meters',
+  `longitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '经度',
+  `latitude` decimal(11,6) NOT NULL DEFAULT '0.000000' COMMENT '纬度',
   `lastLogin` bigint(20) NOT NULL DEFAULT '0',
   `lastRent` bigint(20) NOT NULL DEFAULT '0',
   `createTime` bigint(20) NOT NULL DEFAULT '0',
@@ -495,8 +503,9 @@ CREATE TABLE `user` (
   KEY `user_unionid` (`unionId`),
   KEY `user_openid` (`openId`),
   KEY `user_cash` (`cash`),
-  KEY `user_registerLongitude` (`registerLongitude`),
-  KEY `user_registerLatitude` (`registerLatitude`),
+  KEY `user_city` (`city`),
+  KEY `user_province` (`province`),
+  KEY `user_longitude` (`longitude`,`latitude`),
   KEY `user_state` (`status`),
   KEY `user_name` (`nickname`),
   KEY `user_phone` (`phone`),
@@ -512,7 +521,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('15e9a5f0-8037-11e8-98e3-525437f07951','xxxxxxl','2223333333',1,'enabled',0,'Henry.Ma','none','15011329430',1,1000,0.000000,0.000000,1530612627000,1530612627000,1530612627000,0,0),('15e9a5f0-8037-11e8-98e3-525437f07952','xxxxxxl','2223333333',1,'enabled',0,'谁是药神？','none','15011329430',1,1000,0.000000,0.000000,1530612627000,1530612627000,1530612627000,0,0),('15e9a5f0-8037-11e8-98e3-525437f07953','xxxxxxl','2223333333',1,'enabled',0,'HenryGoRuby','none','15011329430',1,1000,0.000000,0.000000,1530612627000,1530612627000,1530612627000,0,0);
+INSERT INTO `user` VALUES ('15e9a5f0-8037-11e8-98e3-525437f07951','xxxxxxl','2223333333',1,'enabled',0,'Henry.Ma','中国','安徽','利辛','none','15011329430',1,1000,3,20099,0.000000,0.000000,1530612627000,1530612627000,1530612627000,0,0),('15e9a5f0-8037-11e8-98e3-525437f07952','xxxxxxl','2223333333',1,'enabled',0,'谁是药神？','','','','none','15011329430',1,1000,0,0,0.000000,0.000000,1530612627000,1530612627000,1530612627000,0,0),('15e9a5f0-8037-11e8-98e3-525437f07953','xxxxxxl','2223333333',1,'enabled',0,'HenryGoRuby','','','','none','15011329430',1,1000,0,0,0.000000,0.000000,1530612627000,1530612627000,1530612627000,0,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -526,7 +535,7 @@ UNLOCK TABLES;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_user AFTER DELETE ON user FOR EACH ROW
 BEGIN
-DELETE FROM usercoupon WHERE orderId=old.id;
+DELETE FROM usercoupon WHERE userId=old.id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -716,4 +725,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-09 14:29:02
+-- Dump completed on 2018-07-12 15:24:31
