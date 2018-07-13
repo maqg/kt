@@ -67,6 +67,7 @@
     var g_api_type = "<%= API_TYPE %>";
     var g_api_url = "/api/";
     var g_create_sign_func = createSign;
+    var g_token = "00000000000000000000000000000000";
 
     function getSelectedApi() {
         selectedModule = getSelectedOption("#apiModuleList");
@@ -162,7 +163,7 @@
         json = {
             "api": selectedApi["key"],
             "paras": fetch_api_paras(),
-            "token": "00000000000000000000000000000000",
+            "token": g_token,
             "timestamp": new Date().getTime()
         };
 
@@ -191,6 +192,7 @@
     if (g_api_type === "wxapi") {
         g_api_url = "/wxapi/";
         g_create_sign_func = createSignWx;
+        g_token = "00000000000000000000000000000001";
     }
 
     initModuleList();

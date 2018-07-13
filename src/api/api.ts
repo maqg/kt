@@ -115,7 +115,7 @@ function checkSignature(args): number {
 	return 0;
 }
 
-function checkToken(args) {
+async function checkToken(args) {
 
 	let api = args["api"];
 	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount"
@@ -129,11 +129,13 @@ function checkToken(args) {
 		return false;
 	}
 
-	let session = getSession(args["token"]);
+	let session = await getSession(args["token"]);
 	if (!session) {
 		console.log("Session of " + args["token"] + " Not Exist or Expired");
 		return false;
 	}
+
+	args["paras"]["session"] = session;
 
 	return true;
 }
@@ -141,15 +143,6 @@ function checkToken(args) {
 function checkParas(apiProto, args): (CheckResult) {
 	let apiParas = apiProto["paras"];
 	let paras = args["paras"];
-
-	let ret = checkSignature(args);
-	if (ret != 0) {
-		return new CheckResult(ret, "bad sign of " + args["sign"]);
-	}
-
-	if (!checkToken(args)) {
-		return new CheckResult(Errors.RET_INVALID_TOKEN, "bad skey of " + args["token"]);
-	}
 
 	for (let key in apiParas) {
 		let param = apiParas[key];
@@ -191,6 +184,23 @@ async function apiDispatcher(ctx) {
 	let apiProto = ApiListMap[api];
 
 	if (apiProto) {
+
+		// check signature
+		let ret = checkSignature(args);
+		if (ret != 0) {
+			let resp = buildErrorResp(ret, "Check Sinature Error");
+			ctx.body = transToStr(resp);
+			return;
+		}
+
+		// check Token
+		if (!await checkToken(args)) {
+			let resp = buildErrorResp(Errors.RET_INVALID_TOKEN, "bad token of " + args["token"]);
+			ctx.body = transToStr(resp);
+			return;
+		}
+
+		// check paras
 		let retObj = checkParas(apiProto, args);
 		if (retObj.errorNo != 0) {
 			let resp = buildErrorResp(retObj.errorNo, retObj.errorLog);
@@ -199,7 +209,6 @@ async function apiDispatcher(ctx) {
 		}
 
 		let resp = await apiProto["service"](args["paras"]);
-
 		resp.updateErrorMsg();
 		ctx.body = JSON.stringify(resp);
 	} else {
@@ -221,6 +230,23 @@ async function wxApiDispatcher(ctx) {
 
 	let apiProto = ApiWxListMap[api];
 	if (apiProto) {
+
+		// check signature
+		let ret = checkSignature(args);
+		if (ret != 0) {
+			let resp = buildErrorResp(ret, "Check Sinature Error");
+			ctx.body = transToStr(resp);
+			return;
+		}
+
+		// check Token
+		if (!await checkToken(args)) {
+			let resp = buildErrorResp(Errors.RET_INVALID_TOKEN, "bad token of " + args["token"]);
+			ctx.body = transToStr(resp);
+			return;
+		}
+
+		// check paras
 		let retObj = checkParas(apiProto, args);
 		if (retObj.errorNo != 0) {
 			let resp = buildErrorResp(retObj.errorNo, retObj.errorLog);
@@ -229,7 +255,6 @@ async function wxApiDispatcher(ctx) {
 		}
 
 		let resp = await apiProto["service"](args["paras"]);
-
 		resp.updateErrorMsg();
 		ctx.body = JSON.stringify(resp);
 	} else {

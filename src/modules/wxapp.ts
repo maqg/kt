@@ -9,7 +9,7 @@ import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {getMilliSeconds, getUuid} from "../utils/utils";
 import {WxAppId, WxAppSecretKey} from "../config/config";
 import {Errors} from "../models/KtError";
-import {add_user, get_user_byunionid} from "./user";
+import {add_user, get_user, get_user_byunionid} from "./user";
 import {newSession} from "../models/Session";
 import {ROLE_USER} from "../models/Account";
 
@@ -70,11 +70,44 @@ export async function web_get_userinfo(paras) {
 	});
 }
 
+/*
+{
+    "phone": "15011344332",
+    "captcha": "1234"
+ },
+ */
 export async function web_bind_phone(paras) {
-	return buildSuccessResp();
+	let session = paras["session"];
+	let user = await get_user(session.userId);
+	if (!user) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"User of " + session.username + " Not Exist");
+	}
+
+	if (paras["captcha"]) {
+		user.phone = paras["phone"];
+		user.updateCaptcha();
+		return buildSuccessResp(
+			{
+				"phone": user.phone,
+				"coupon": 1,
+			}
+		);
+	} else {
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Set Captcha Error for phone " + paras["phone"]);
+	}
 }
 
 export async function web_get_smscode(paras) {
+
+	let session = paras["session"];
+	let user = await get_user(session.userId);
+	if (!user) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"User of " + session.username + " Not Exist");
+	}
+
 	return buildSuccessResp();
 }
 

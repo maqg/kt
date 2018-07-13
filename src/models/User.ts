@@ -3,7 +3,9 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {timeToStr} from "../utils/utils";
+import {getMilliSeconds, timeToStr} from "../utils/utils";
+import {knex} from "./Bookshelf";
+import {TB_USER} from "../config/config";
 
 export const USER_TYPE_WX = 1;
 export const USER_TYPE_OTHER = 2;
@@ -74,6 +76,14 @@ export class User {
 			this.updateTime = obj["createTime"];
 			this.deleteTime = obj["createTime"];
 		}
+	}
+
+	async updateCaptcha() {
+		await knex(TB_USER).where("id", this.id)
+			.update({
+				phone: this.phone,
+				updateTime: getMilliSeconds(),
+			});
 	}
 
 	public needLogin() {
