@@ -11,7 +11,8 @@ export class UNavView extends React.Component{
         super(props);
         this.expandList = {
             sysIcon: React.createRef(),
-            sysBtn: React.createRef()
+            sysBtn: React.createRef(),
+            sysComponent: React.createRef()
         }
     }
     componentDidMount(){
@@ -41,7 +42,10 @@ export class UNavView extends React.Component{
             <UNavItem label={'系统按钮'} ref={this.expandList.sysBtn} path={'/btn'} graph={<UIcon iconName={'star'}/>} >
                 <UNavItem label={'按钮组件'} graph={<UIcon iconName={'modx'}/>} path={'/btn/icon-component'}/>
             </UNavItem>
-            <UNavItem label={'系统组件'} graph={<UIcon iconName={'gears'}/>} path={'/comp'}>
+            <UNavItem label={'系统组件'} ref={this.expandList.sysComponent} path={'/sysComponent'} graph={<UIcon iconName={'gears'}/>}>
+                <UNavItem label={'导航组件'} graph={<UIcon iconName={'navicon'}/>} path={'/sysComponent/nav-component'}/>
+                <UNavItem label={'按钮组件'} graph={<UIcon iconName={'hand-stop-o'}/>} path={'/sysComponent/button-component'}/>
+                <UNavItem label={'输入框组件'} graph={<UIcon iconName={'edit'}/>} path={'/sysComponent/input-component'}/>
             </UNavItem>
         </ul>}}/>
     }

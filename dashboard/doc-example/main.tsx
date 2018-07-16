@@ -10,6 +10,9 @@ import {UIconCompView} from "./views/u-icon-comp-view";
 import * as hljs from "highlight.js";
 import {UIconMapView} from "./views/u-icon-map";
 import {UComponentView} from "./views/u-component-view";
+import {UButtonCompView} from "./views/u-button-comp-view";
+import {UInputCompView} from "./views/u-input-comp-view";
+import {UNavCompView} from "./views/u-nav-comp-view";
 import {UNavItem} from "../ui-libs/ui-nav";
 import {UNavView} from "./views/u-nav-view";
 
@@ -29,6 +32,9 @@ export class DocLayout extends React.Component<any>{
                     <Route path="/icon" exact render={()=>{return <Redirect to={'/icon/icon-component'}/>}} />
                     <Route path="/icon/icon-component"  component={UIconCompView} />
                     <Route path="/icon/icon-map"  component={UIconMapView} />
+                    <Route path="/sysComponent/nav-component"  component={UNavCompView} />
+                    <Route path="/sysComponent/button-component"  component={UButtonCompView} />
+                    <Route path="/sysComponent/input-component"  component={UInputCompView} />
                     <Redirect to={'/'}/>
                 </Switch>
             </main>
