@@ -4,7 +4,8 @@ export interface AuthUser {
     id: string,
     username: string,
     role: number,
-    token: string
+    token: string,
+    time: number
 }
 export class AuthTool {
     static setAuthInfo(user: AuthUser) {

@@ -34,7 +34,10 @@ export class NavView extends React.Component{
     render() {
         return <Route render={(data:any) => {return <ul className={'u-nav-list'}>
             {(this.location = data.location.pathname) && false}
-            <UNavItem label={'用户管理'} graph={<UIcon iconName={'vcard-o'}/>} path={'/main/user'}/>
+            <UNavItem label={'用户管理'} graph={<UIcon iconName={'vcard-o'}/>} path={'/main/user'}>
+                <UNavItem label={'管理员'} graph={<UIcon iconName={'user-circle'}/>} path={'/main/user/admin'}/>
+                <UNavItem label={'普通用户'} graph={<UIcon iconName={'users'}/>} path={'/main/user/rider'}/>
+            </UNavItem>
             <UNavItem label={'计费管理'} graph={<UIcon iconName={'calculator'}/>} path={'/main/rent'}/>
             <UNavItem label={'设备管理'} ref={this.expandList.devNav} path={'/main/dev'} graph={<UIcon iconName={'microchip'}/>} >
                 <UNavItem label={'单车管理'} graph={<UIcon iconName={'bicycle'}/>} path={'/main/dev/bike'}/>
