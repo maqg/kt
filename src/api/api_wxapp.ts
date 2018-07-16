@@ -11,19 +11,22 @@ import {
 	PARAM_TYPE_STRINGLIST
 } from "../config/config";
 import {
+	web_bind_phone,
 	web_fetch_coupon,
 	web_fetch_nearbybikes,
 	web_fetch_rentinfo,
 	web_fetch_rentlist,
+	web_fetch_walletinfo,
 	web_get_capitals,
 	web_get_couponlist,
 	web_get_promotionlist,
 	web_get_smscode,
 	web_get_userinfo,
-	web_fetch_walletinfo,
+	web_lock_bike,
 	web_post_repairinfo,
-	web_recharge, web_refund,
-	web_unlock_bike, web_bind_phone
+	web_recharge,
+	web_refund, web_send_ridemsg,
+	web_unlock_bike
 } from "../modules/wxapp";
 
 export const ApiWxApp = {
@@ -243,7 +246,6 @@ export const ApiWxApp = {
 				}
 			},
 		},
-
 		{
 			"name": "获取租赁列表",
 			"service": web_fetch_rentlist,
@@ -258,6 +260,42 @@ export const ApiWxApp = {
 					"type": PARAM_TYPE_INT,
 					"desc": "Query Limitation",
 					"default": 15,
+				},
+			},
+		},
+
+		{
+			"name": "结束订单（从车锁发出）",
+			"service": web_lock_bike,
+			"key": "APILockBike",
+			"paras": {
+				"imei": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "IMEI of Bike",
+					"default": PARAM_NOT_NULL,
+				},
+				"orderNo": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Order Serial Number",
+					"default": "",
+				},
+			},
+		},
+
+		{
+			"name": "上传运动信息（从车锁发出）",
+			"service": web_send_ridemsg,
+			"key": "APISendRideMsg",
+			"paras": {
+				"imei": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "IMEI of Bike",
+					"default": PARAM_NOT_NULL,
+				},
+				"msg": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Msg Body",
+					"default": "{}",
 				},
 			},
 		},

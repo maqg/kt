@@ -71,9 +71,15 @@
       }
     }
     &.expand {
-      .u-nav-link {
+      >.u-nav-link {
+        background-color: rgba(0,0,0,.5);
+        color: #fff;
         .tail{
           transform: rotate(90deg);
+        }
+        &.hover{
+          background-color: #888;
+          color: #eee;
         }
       }
       .sub-nav-list {

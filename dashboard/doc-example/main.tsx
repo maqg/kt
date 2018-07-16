@@ -15,6 +15,8 @@ import {UIconMapView} from "./views/u-icon-map";
 import {UComponentView} from "./views/u-component-view";
 import {UButtonCompView} from "./views/u-button-comp-view";
 import {UInputCompView} from "./views/u-input-comp-view";
+import {UNavItem} from "../ui-libs/ui-nav";
+import {UNavView} from "./views/u-nav-view";
 
 export class DocLayout extends React.Component<any>{
     constructor(props: any){
@@ -38,6 +40,7 @@ export class DocLayout extends React.Component<any>{
                     </UNavItem>
                 </UNavList>}}/>
 
+                <UNavView/>
             </nav>
             <main className={'doc-main'}>
                 <Switch>
@@ -45,9 +48,6 @@ export class DocLayout extends React.Component<any>{
                     <Route path="/icon" exact render={()=>{return <Redirect to={'/icon/icon-component'}/>}} />
                     <Route path="/icon/icon-component"  component={UIconCompView} />
                     <Route path="/icon/icon-map"  component={UIconMapView} />
-                    <Route path="/system/nav-component" component={UNavCompView}/>
-                    <Route path="/system/button-component" component={UButtonCompView}/>
-                    <Route path="/system/input-component" component={UInputCompView}/>
                     <Redirect to={'/'}/>
                 </Switch>
             </main>

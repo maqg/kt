@@ -20,7 +20,7 @@ async function get_user_count() {
 	}
 }
 
-async function get_user(id: string) {
+export async function get_user(id: string) {
 	try {
 		let items = await knex(TB_USER).where("id", "=", id).select();
 		if (!items.length) {

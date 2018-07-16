@@ -4,7 +4,7 @@ import {render} from "react-dom";
 import {Redirect, Route, Switch} from "react-router";
 import {AuthTool} from "./util-tools/auth-tool";
 import LoginView from "./views/login-view/login-view";
-import {MainView} from "./views/main-view";
+import MainView from "./views/main-view/main-view";
 import './static/style/style.scss';
 
 export class KTDashboard extends React.Component<any>{

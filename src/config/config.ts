@@ -50,6 +50,7 @@ export const TB_RIDEMSG = "ridemsg";
 export const TB_WORKLIST = "worklist";
 export const TB_MAINTENANCE = "maintenance";
 export const TB_BATTERY = "battery";
+export const TB_PROMOTION = "promotion";
 
 
 

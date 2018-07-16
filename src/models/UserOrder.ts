@@ -31,6 +31,7 @@ export class UserOrder {
 	calories: number; // in KCa
 	distance: number; // in meters
 	speed: number; // in meters/hour
+	heartRate: number;
 
 	createTime: number;
 	updateTime: number;
@@ -54,6 +55,7 @@ export class UserOrder {
 			this.calories = obj["calories"];
 			this.distance = obj["distance"];
 			this.speed = obj["speed"];
+			this.heartRate = obj["heartRate"];
 			this.orderNo = obj["orderNo"];
 
 			this.cashFee = obj["cashFee"];

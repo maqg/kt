@@ -243,6 +243,7 @@ CREATE TABLE `userorder` (
 		`calories` INTEGER NOT NULL DEFAULT '0' COMMENT '',
 		`distance` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters',
 		`speed` INTEGER NOT NULL DEFAULT '0' COMMENT 'in meters/hour',
+		`heartRate` INTEGER NOT NULL DEFAULT '0' COMMENT 'in times/min',
 		`createTime` BIGINT NOT NULL DEFAULT '0',
 		`updateTime` BIGINT NOT NULL DEFAULT '0',
 		`deleteTime` BIGINT NOT NULL DEFAULT '0',

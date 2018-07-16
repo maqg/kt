@@ -6,9 +6,10 @@ import {MouseEvent} from "react";
 export interface UNavItemProps {
     graph?: any,
     label?: string,
-    path?: string,
+    path: string,
+    location?: string,
+    exact?: boolean,
     className?: string[],
-    expand?:boolean
 }
 export interface UNavItemStates {
     isExpand: boolean,
@@ -17,6 +18,7 @@ export interface UNavItemStates {
     title: string,
 }
 export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
+
     subContainer: HTMLElement;
     constructor(props: UNavItemProps){
         super(props);
@@ -26,12 +28,6 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
             isDown: false,
             title: "展开",
         }
-    }
-    componentDidMount(){
-        this.setState({
-            isExpand: this.props.expand,
-            title: this.props.expand ?"收起":"展开"
-        })
     }
     private makeAClassName(): string {
         let names = ['u-nav-link'];
@@ -70,6 +66,12 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
         e.preventDefault();
         this.setState({isDown: false});
     }
+    setExpand(){
+        this.setState({
+            isExpand: true,
+            title: "收起",
+        })
+    }
     private onNavClick(e: MouseEvent) {
         e.preventDefault();
         if (this.state.isExpand) {
@@ -103,13 +105,12 @@ export class UNavItem extends React.Component<UNavItemProps, UNavItemStates>{
                     <div className={'sub-list-container'} ref={(ref)=>{this.subContainer = ref}}>
                         {this.props.children}
                     </div>
-
                 </ul>
             </li>
         } else {
             return <li className={this.makeLiClassName()}>
                 <NavLink className={this.makeAClassName()}
-                         to={this.props.path || ''} replace exact
+                         to={this.props.path || ''} replace exact={this.props.exact}
                          onMouseDown={(e)=>{this.onMouseDown(e)}}
                          onMouseUp={(e)=>{this.onMouseUp(e)}}
                          onMouseEnter={(e)=>{this.onMouseEnter(e)}}

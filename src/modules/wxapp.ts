@@ -6,12 +6,14 @@
 import * as SuperAgent from 'superagent';
 
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
-import {getMilliSeconds, getUuid} from "../utils/utils";
+import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
 import {WxAppId, WxAppSecretKey} from "../config/config";
 import {Errors} from "../models/KtError";
-import {add_user, get_user_byunionid} from "./user";
+import {add_user, get_user, get_user_byunionid} from "./user";
 import {newSession} from "../models/Session";
 import {ROLE_USER} from "../models/Account";
+import {get_nearby_bikes} from "./bike";
+import {web_show_useroder, web_show_userorders} from "./userorder";
 
 const WXAPP_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session'
 
@@ -58,8 +60,8 @@ export async function web_get_userinfo(paras) {
 	return buildSuccessResp({
 		"token": session.id,
 		"unfinishedOrder": "",
-		"cash": 1400, // balance
-		"coupons": 10,
+		"cash": user.cash,
+		"coupons": user.coupons,
 		"phone": user.phone,
 		"nickname": user.nickname,
 		"gender": user.gender,
@@ -70,11 +72,44 @@ export async function web_get_userinfo(paras) {
 	});
 }
 
+/*
+{
+    "phone": "15011344332",
+    "captcha": "1234"
+ },
+ */
 export async function web_bind_phone(paras) {
-	return buildSuccessResp();
+	let session = paras["session"];
+	let user = await get_user(session.userId);
+	if (!user) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"User of " + session.username + " Not Exist");
+	}
+
+	if (paras["captcha"]) {
+		user.phone = paras["phone"];
+		user.updateCaptcha();
+		return buildSuccessResp(
+			{
+				"phone": user.phone,
+				"coupon": 1,
+			}
+		);
+	} else {
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Set Captcha Error for phone " + paras["phone"]);
+	}
 }
 
 export async function web_get_smscode(paras) {
+
+	let session = paras["session"];
+	let user = await get_user(session.userId);
+	if (!user) {
+		return buildErrorResp(Errors.RET_ITEM_NOT_EXIST,
+			"User of " + session.username + " Not Exist");
+	}
+
 	return buildSuccessResp();
 }
 
@@ -103,15 +138,17 @@ export async function web_get_capitals(paras) {
 			"data": [
 				{
 					"createTime": getMilliSeconds(),
+					"createTimeStr": timeToStr(getMilliSeconds()),
 					"serialNumber": "xxx00223131323",
 					"user": "Henry.Ma",
-					"totalAmount": 200, // in cents
-					"payAmount": 200, // in cents
+					"totalAmount": 2000, // in cents
+					"payAmount": 2000, // in cents
 					"describe": "xxx",
 					"payStatus": true,
 					"payTime": getMilliSeconds(),
-					"refundStatus": true,
-					"refundAmount": 100, // in cents
+					"refundStatus": false,
+					"tradeType": 0, // 0: recharge, 1: refund
+					"refundAmount": 0, // in cents
 				},
 			]
 		}
@@ -130,10 +167,20 @@ export async function web_get_couponlist(paras) {
 			"data": [
 				{
 					"serial": getUuid(),
+					"cbType": 0, // 0: cash, 1: discount
 					"createTime": getMilliSeconds(),
+					"expireTimeStr": timeToStr(getMilliSeconds()),
 					"isValid": true,
-					"amount": 100,
-				}
+					"amount": 500,
+				},
+				{
+					"serial": getUuid(),
+					"cbType": 0, // 0: cash, 1: discount
+					"createTime": getMilliSeconds(),
+					"expireTimeStr": timeToStr(getMilliSeconds()),
+					"isValid": true,
+					"amount": 300,
+				},
 			]
 		}
 	);
@@ -161,26 +208,18 @@ export async function web_get_promotionlist(paras) {
 }
 
 export async function web_fetch_nearbybikes(paras) {
-	return buildSuccessResp(
-		{
-			"total": 1,
-			"count": 1,
-			"data": [
-				{
-					"longitude": 0.000000,
-					"latitude": 0.0000000,
-					"address": "北京市朝阳区安定路1号奥体中心",
-					"floor": "体育场2265一层看台",
-					"availableCount": 3,
-					"totalCount": 10,
-					"picUrl": "https://sssss.com/ssss.png",
-				},
-			]
-		}
-	);
+	return get_nearby_bikes(paras);
 }
 
 export async function web_post_repairinfo(paras) {
+	return buildSuccessResp();
+}
+
+export async function web_lock_bike(paras) {
+	return buildSuccessResp();
+}
+
+export async function web_send_ridemsg(paras) {
 	return buildSuccessResp();
 }
 
@@ -195,55 +234,10 @@ export async function web_unlock_bike(paras) {
 }
 
 export async function web_fetch_rentinfo(paras) {
-	return buildSuccessResp(
-		{
-			"createTime": getMilliSeconds(),
-			"bikeSerial": "01033013032",
-			"unlockType": 1,
-			"longitude": 0.000000,
-			"latitude": 0.000000,
-			"address": "北京市朝阳区安定路1号奥体中心",
-			"floor": "体育场2265一层看台",
-			"distance": 2000, // in metres
-			"calories": 233,
-			"heartRate": 80,
-			"speed": 200000,
-			"isReturned": true,
-			"returnTime": getMilliSeconds(),
-			"totalTime": 19021, // in seconds
-			"totalAmount": 100, // in cents
-			"payAmount": 100,
-			"payCoupon": 0,
-		}
-	);
+	paras["id"] = "00000000000000000000000000000000";
+	return web_show_useroder(paras);
 }
 
 export async function web_fetch_rentlist(paras) {
-	return buildSuccessResp(
-		{
-			"total": 10,
-			"count": 1,
-			"data": [
-				{
-					"createTime": getMilliSeconds(),
-					"bikeSerial": "01033013032",
-					"unlockType": 1,
-					"longitude": 0.000000,
-					"latitude": 0.000000,
-					"address": "北京市朝阳区安定路1号奥体中心",
-					"floor": "体育场2265一层看台",
-					"distance": 2000, // in metres
-					"calories": 233,
-					"heartRate": 80,
-					"speed": 200000,
-					"isReturned": true,
-					"returnTime": getMilliSeconds(),
-					"totalTime": 19021, // in seconds
-					"totalAmount": 100, // in cents
-					"payAmount": 100,
-					"payCoupon": 0,
-				},
-			]
-		}
-	);
+	return web_show_userorders(paras);
 }
