@@ -15,7 +15,7 @@ import {ROLE_USER} from "../models/Account";
 import {get_nearby_bikes} from "./bike";
 import {web_show_useroder, web_show_userorders} from "./userorder";
 
-const WXAPP_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session'
+const WXAPP_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session';
 
 /*
  {"session_key":"S4kU3sBz1PkTKXe8or11Vg==",
@@ -216,6 +216,10 @@ export async function web_post_repairinfo(paras) {
 }
 
 export async function web_lock_bike(paras) {
+	return buildSuccessResp();
+}
+
+export async function web_send_bike_status(paras) {
 	return buildSuccessResp();
 }
 
