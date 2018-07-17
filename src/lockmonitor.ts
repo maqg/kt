@@ -55,7 +55,7 @@ class LockSocket {
 
 let bikeMap = {
 	"imei123456789XX": {
-		"userId": "00000000000000000000000000000000",
+		"userId": "15e9a5f0-8037-11e8-98e3-525437f07951",
 	}
 };
 
@@ -83,7 +83,11 @@ async function parseData(socket: LockSocket, data: string) {
 			console.log("Got Bike Sync Status Msg From: " + socket.bike.imei);
 		} else if (dataObj.opcode == OPCODE_SYNC_RIDEMSG) {
 			// to sync ride msg
-			insert_ridemsg(socket.bike, socket.order, dataObj);
+			if (socket.order) {
+				insert_ridemsg(socket.bike, socket.order, dataObj);
+			} else {
+				console.log("No order with socket, so skip this ride msg");
+			}
 			console.log("Got Ride Msg Syncing From: " + socket.bike.imei);
 		} else if (dataObj.opcode == OPCODE_UNLOCK_CALLBACK) {
 			// handle unlock callback

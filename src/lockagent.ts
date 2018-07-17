@@ -14,6 +14,8 @@ import {OPCODE_LOCK_CALLBACK, OPCODE_SYNC_RIDEMSG, OPCODE_SYNC_STATUS, OPCODE_UN
 let quitting = false;
 let conn;
 let retryTimeout = 3000;
+
+//let ServerAddr = "ktc.octlink.com";
 let ServerAddr = "localhost";
 
 const IMEI = "imei123456789XX";
