@@ -72,8 +72,6 @@ function createSign(args) {
 	let parasStr = "";
 	let params = [];
 
-	console.log(args);
-
 	parasStr += "api=" + args["api"];
 	parasStr += "timestamp=" + args["timestamp"];
 

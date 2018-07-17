@@ -10,6 +10,8 @@ import * as Net from 'net';
 import {Config} from "./config/config";
 import {Bike} from "./models/Bike";
 import {get_bike_byimei, update_bike_onlike_status} from "./modules/bike";
+import {insert_ridemsg} from "./modules/ridemsg";
+import {insert_order} from "./modules/userorder";
 
 export const OPCODE_SYNC_STATUS = 1;
 export const OPCODE_UNLOCK_CALLBACK = 2;
@@ -42,6 +44,7 @@ class LockSocket {
 	socket: any;
 	imei: string;
 	bike: Bike;
+	order: any;
 	key: string;
 
 	constructor (socket) {
@@ -50,11 +53,18 @@ class LockSocket {
 	}
 }
 
+let bikeMap = {
+	"imei123456789XX": {
+		"userId": "00000000000000000000000000000000",
+	}
+};
+
 let socketMap = {};
 
 async function parseData(socket: LockSocket, data: string) {
 	try {
 		let dataObj = JSON.parse(data);
+
 		console.log("Got Data " + data + " from socket " + socket.key);
 		if (!socket.bike) {
 			// bike not specified, just find it
@@ -70,16 +80,24 @@ async function parseData(socket: LockSocket, data: string) {
 		socket.bike.online();
 
 		if (dataObj.opcode == OPCODE_SYNC_STATUS) {
-			//
 			console.log("Got Bike Sync Status Msg From: " + socket.bike.imei);
 		} else if (dataObj.opcode == OPCODE_SYNC_RIDEMSG) {
 			// to sync ride msg
+			insert_ridemsg(socket.bike, socket.order, dataObj);
 			console.log("Got Ride Msg Syncing From: " + socket.bike.imei);
 		} else if (dataObj.opcode == OPCODE_UNLOCK_CALLBACK) {
 			// handle unlock callback
+			if (!socket.order) {
+				socket.order = await insert_order(bikeMap[socket.imei]["userId"],
+					socket.bike.id, dataObj.time);
+			}
 			console.log("Got Unlock Callback From: " + socket.bike.imei);
 		} else if (dataObj.opcode == OPCODE_LOCK_CALLBACK) {
 			// handle lock callback
+			if (socket.order) {
+				socket.order.finish(dataObj);
+				console.log("order of " + socket.order.id + " Finished");
+			}
 			console.log("Got Lock Callback From: " + socket.bike.imei);
 		}
 	} catch (e) {

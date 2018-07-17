@@ -23,6 +23,7 @@ let g_ridemsg_interval = null;
 
 let g_calories = 0;
 let g_distance = 0;
+let g_seconds = 0;
 
 let ridemsg_lock;
 let RideMsg = [];
@@ -57,14 +58,17 @@ function lock_callback() {
 
 function get_ridemsg() {
 	g_calories += getRandom(1, 2);
-	g_distance += getRandom(50, 100);
+	g_distance += getRandom(20, 45);
+	g_seconds += 5;
+
 	return {
 		"imei": IMEI,
-		"opcoce": OPCODE_SYNC_RIDEMSG,
+		"opcode": OPCODE_SYNC_RIDEMSG,
 		"heartRate": getRandom(100, 140),
 		"speed": getRandom(18000, 24000),
 		"calories": g_calories,
 		"distance": g_distance,
+		"duration": g_seconds,
 		"time": getMilliSeconds()
 	};
 }
@@ -94,6 +98,7 @@ process.stdin.on("data", function (data) {
 function syncRideMsgThread() {
 	g_calories = 0;
 	g_distance = 0;
+	g_seconds = 0;
 	g_ridemsg_interval = setInterval(function () {
 		let msg = get_ridemsg();
 		conn.write(JSON.stringify(msg));

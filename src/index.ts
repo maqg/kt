@@ -8,43 +8,54 @@ import * as KoaViews from 'koa-views'
 import {Config} from './config/config'
 import {apiDispatcher, initApis, runApiTest, runWXApiTest, wxApiDispatcher} from "./api/api";
 
-const app = new Koa();
-const router = new Router();
+import * as Cluster from "cluster";
+import * as Os from "os";
 
-router.get('/api/test/', async(ctx, next) => {
-	await runApiTest(ctx, next)
-});
+const numCPUs = Os.cpus().length;
 
-router.post('/api/', async(ctx, next) => {
-	await apiDispatcher(ctx);
-});
+if (Cluster.isMaster) {
+	for (let i = 0; i < numCPUs; i++) {
+		Cluster.fork();
+	}
+} else {
+	const app = new Koa();
+	const router = new Router();
 
-router.get('/wxapi/test/', async(ctx, next) => {
-	await runWXApiTest(ctx, next)
-});
+	router.get('/api/test/', async (ctx, next) => {
+		await runApiTest(ctx, next)
+	});
 
-router.post('/wxapi/', async(ctx, next) => {
-	await wxApiDispatcher(ctx);
-});
+	router.post('/api/', async (ctx, next) => {
+		await apiDispatcher(ctx);
+	});
 
-router.get('/dashboard/', async(ctx: Context)=>{
-    await ctx.render('dashboard');
-});
+	router.get('/wxapi/test/', async (ctx, next) => {
+		await runWXApiTest(ctx, next)
+	});
 
-router.get('/dashboard-doc/', async(ctx: Context)=>{
-    await ctx.render('doc');
-});
+	router.post('/wxapi/', async (ctx, next) => {
+		await wxApiDispatcher(ctx);
+	});
 
-router.get('', async(ctx: Context)=>{
-	ctx.body = "Welcome to Keep Trying";
-});
+	router.get('/dashboard/', async (ctx: Context) => {
+		await ctx.render('dashboard');
+	});
 
-app.use(KoaBodyParar());
-app.use(KoaViews("./views", { extension: 'html', map: {html: 'ejs'}}));
-app.use(KoaStatic("./static"));
-app.use(router.routes());
-app.use(router.allowedMethods());
-initApis();
-app.listen(Config.Port);
+	router.get('/dashboard-doc/', async (ctx: Context) => {
+		await ctx.render('doc');
+	});
 
-console.log("Listen on Port " + Config.Port);
+	router.get('', async (ctx: Context) => {
+		ctx.body = "Welcome to Keep Trying";
+	});
+
+	app.use(KoaBodyParar());
+	app.use(KoaViews("./views", {extension: 'html', map: {html: 'ejs'}}));
+	app.use(KoaStatic("./static"));
+	app.use(router.routes());
+	app.use(router.allowedMethods());
+	initApis();
+	app.listen(Config.Port);
+
+	console.log("Listen on Port " + Config.Port);
+}

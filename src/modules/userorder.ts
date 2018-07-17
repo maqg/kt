@@ -7,7 +7,7 @@ import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
 import {TB_USERORDER} from "../config/config";
-import {getMilliSeconds} from "../utils/utils";
+import {getMilliSeconds, getUuid} from "../utils/utils";
 import {UserOrder} from "../models/UserOrder";
 
 async function get_userorder_count() {
@@ -151,7 +151,6 @@ export async function web_update_orderstatus(paras) {
 			"User Order of " + paras["id"] + " Not Exist")
 	}
 
-
 	try {
 		await knex(TB_USERORDER).where("id", paras["id"])
 			.update({
@@ -165,6 +164,26 @@ export async function web_update_orderstatus(paras) {
 	}
 
 	return buildSuccessResp();
+}
+
+export async function insert_order(userId, bikeId, startTime) {
+	let obj = {
+		id: getUuid(),
+		orderNo: getUuid(),
+		userId: userId,
+		bikeId: bikeId,
+		startTime: startTime,
+		status: "new",
+		createTime: getMilliSeconds(),
+		updateTime: getMilliSeconds(),
+	};
+	try {
+		await knex(TB_USERORDER).insert(obj);
+		return await get_userorder(obj["id"]);
+	} catch (e) {
+		console.log("Add User Order of " + bikeId + " error " + e.toString());
+		return null;
+	}
 }
 
 /*

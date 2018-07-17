@@ -6,9 +6,11 @@
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
-import {TB_RIDEMSG} from "../config/config";
+import {TB_ACCOUNT, TB_RIDEMSG} from "../config/config";
 import {getMilliSeconds} from "../utils/utils";
 import {BikeLog} from "../models/BikeLog";
+import {Bike} from "../models/Bike";
+import {UserOrder} from "../models/UserOrder";
 
 async function get_ridemsg_count() {
 	try {
@@ -78,7 +80,46 @@ async function add_ridemsg(orderId: string, bikeId: string,
 	return buildSuccessResp();
 }
 
+export async function insert_ridemsg(bike: Bike, order: UserOrder, msg) {
+	let obj = {
+		orderId: order.id,
+		heartRate: msg.heartRate,
+		bikeId: bike.id,
+		speed: msg.speed,
+		calories: msg.calories,
+		distance: msg.distance,
+		seconds: msg.duration,
+		createTime: getMilliSeconds()
+	};
+	try {
+		await knex(TB_RIDEMSG).insert(obj);
+	} catch (e) {
+		console.log("Add ride log of " + bike.id + " error " + e.toString());
+	}
+}
+
 async function web_clear_msgs(paras) {
+
+	let cond = {};
+
+	if (paras["orderId"]) {
+		cond["orderId"] = paras["orderId"];
+	}
+
+	if (paras["bikeId"]) {
+		cond["bikeId"] = paras["bikeId"];
+	}
+	try {
+		await knex(TB_RIDEMSG).where(cond)
+			.where("createTime", ">", paras["startTime"])
+			.where("createTime", "<", paras["endTime"] ? paras["endTime"] : getMilliSeconds())
+			.del();
+	} catch (e) {
+		console.log(e);
+		return buildErrorResp(Errors.RET_DB_ERR,
+			"Failed to remove ridemsgs, Error " + e.toString());
+	}
+
 	return buildSuccessResp();
 }
 

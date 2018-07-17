@@ -3,8 +3,13 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {getUuid, timeToStr} from "../utils/utils";
+import {getMilliSeconds, getRandom, getUuid, timeToStr} from "../utils/utils";
+import {knex} from "./Bookshelf";
+import {TB_USERORDER} from "../config/config";
 
+const ORDER_STATUS_NEW = "new";
+const ORDER_STATUS_UNPAIED = "unpaied";
+const ORDER_STATUS_FINISHED = "finished";
 
 export class UserOrder {
 
@@ -15,6 +20,7 @@ export class UserOrder {
 	bikeId: string;
 	orderNo: string;
 
+	totalFee: number;
 	cashFee: number;
 	couponFee: number;
 
@@ -58,6 +64,7 @@ export class UserOrder {
 			this.heartRate = obj["heartRate"];
 			this.orderNo = obj["orderNo"];
 
+			this.totalFee = obj["totalFee"];
 			this.cashFee = obj["cashFee"];
 			this.couponFee = obj["couponFee"];
 
@@ -71,6 +78,33 @@ export class UserOrder {
 			this.updateTime = obj["createTime"];
 			this.deleteTime = obj["createTime"];
 		}
+	}
+
+	async finish(msg) {
+		this.status = ORDER_STATUS_FINISHED;
+		this.endTime = msg.time;
+		this.cashFee = getRandom(1,4);
+		this.totalFee = this.cashFee;
+		this.couponFee = 0;
+		this.distance = getRandom(3000, 5000);
+		this.heartRate = getRandom(100, 150);
+		this.duration = getRandom(400, 800);
+		this.speed = getRandom(15, 20) * 1000;
+		this.calories = getRandom(300, 600);
+		await knex(TB_USERORDER).where("id", this.id)
+			.update({
+				cashFee: this.cashFee,
+				totalFee: this.totalFee,
+				status: this.status,
+				endTime: msg.time,
+				couponFee: 0,
+				distance: this.distance,
+				heartRate: this.heartRate,
+				duration: this.duration,
+				speed: this.speed,
+				calories: this.calories,
+				updateTime: getMilliSeconds()
+			})
 	}
 
 	public toObj() {
