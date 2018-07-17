@@ -1,5 +1,5 @@
 import {SignTool} from "../sign-tool";
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, { AxiosResponse} from 'axios';
 export interface APIRequestParas {[key:string]: any}
 export interface APIRequest{
     api: string,

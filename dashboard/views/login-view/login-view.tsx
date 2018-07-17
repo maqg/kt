@@ -58,7 +58,8 @@ class LoginView extends React.Component<RouteComponentProps<any>, LoginViewState
                     id: ret.cookie.id,
                     username: ret.cookie.username,
                     role: ret.cookie.role,
-                    token: ret.token
+                    token: ret.token,
+                    time: (new Date()).getTime()
                 });
                 this.props.history.push('/main')
             } catch (e) {

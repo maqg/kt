@@ -1,5 +1,4 @@
-import {APIRequest, APIRequestParas, APIResponse, APIResponseData, ApiTools} from "./api-tools";
-import axios from 'axios';
+import {APIRequestParas, APIResponse, APIResponseData, ApiTools} from "./api-tools";
 import {Base64} from "js-base64";
 export interface LoginParas extends APIRequestParas{
     username: string

@@ -4,6 +4,7 @@
  */
 
 const Config = {
+	"LockMsgListenPort": 7001,
 	"Port": 8000,
 	"DbName": "dbkt",
 	"DbUser": "root",

@@ -25,7 +25,7 @@ import {
 	web_lock_bike,
 	web_post_repairinfo,
 	web_recharge,
-	web_refund, web_send_ridemsg,
+	web_refund, web_send_bike_status, web_send_ridemsg,
 	web_unlock_bike
 } from "../modules/wxapp";
 
@@ -260,6 +260,23 @@ export const ApiWxApp = {
 					"type": PARAM_TYPE_INT,
 					"desc": "Query Limitation",
 					"default": 15,
+				},
+			},
+		},
+		{
+			"name": "上传状态信息（从车锁发出）",
+			"service": web_send_bike_status,
+			"key": "APISendBikeStatus",
+			"paras": {
+				"imei": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "IMEI of Bike",
+					"default": PARAM_NOT_NULL,
+				},
+				"orderNo": {
+					"type": PARAM_TYPE_STRING,
+					"desc": "Order Serial Number",
+					"default": "",
 				},
 			},
 		},
