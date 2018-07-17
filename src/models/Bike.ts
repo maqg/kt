@@ -3,8 +3,12 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-import {timeToStr} from "../utils/utils";
+import {getMilliSeconds, timeToStr} from "../utils/utils";
+import {TB_BIKE} from "../config/config";
+import {knex} from "./Bookshelf";
 
+export const BIKE_ONLINE_STATUS_ONLINE = "online";
+export const BIKE_ONLINE_STATUS_OFFLINE = "offline";
 
 export class Bike {
 
@@ -65,6 +69,29 @@ export class Bike {
 			this.updateTime = obj["createTime"];
 			this.deleteTime = obj["createTime"];
 			this.lastRent = obj["lastRent"];
+		}
+	}
+
+	async offline() {
+		await this.updateOnlineStatus(BIKE_ONLINE_STATUS_OFFLINE);
+	}
+
+	async online() {
+		await this.updateOnlineStatus(BIKE_ONLINE_STATUS_ONLINE);
+	}
+
+	async updateOnlineStatus(status) {
+		try {
+			let now = getMilliSeconds();
+			let obj = {
+				"onlineStatus": status,
+			};
+			if (status == BIKE_ONLINE_STATUS_ONLINE) {
+				obj["updateTime"] = getMilliSeconds();
+			}
+			await knex(TB_BIKE).where("id", this.id).update(obj)
+		} catch (e) {
+			console.log("Failed to update bike status of to offline " + e.toString());
 		}
 	}
 

@@ -9,30 +9,86 @@
 import * as Net from 'net';
 import {Config} from "./config/config";
 import {Bike} from "./models/Bike";
+import {get_bike_byimei, update_bike_onlike_status} from "./modules/bike";
+
+export const OPCODE_SYNC_STATUS = 1;
+export const OPCODE_UNLOCK_CALLBACK = 2;
+export const OPCODE_LOCK_CALLBACK = 3;
+export const OPCODE_SYNC_RIDEMSG = 4;
+
+let g_update_bikestatus_interval = null;
+
+function updateBikeStatusThread() {
+	g_update_bikestatus_interval = setInterval(function () {
+		update_bike_onlike_status();
+		console.log("Update All Bikes' Online Status OK");
+	}, 60000);
+}
+
+function clearBikeStatusInterval() {
+	try {
+		clearInterval(g_update_bikestatus_interval);
+	} catch (e) {
+		console.log("interval not inited");
+	}
+}
 
 let server = Net.createServer();
+
+// start status monitor Thread
+updateBikeStatusThread();
 
 class LockSocket {
 	socket: any;
 	imei: string;
 	bike: Bike;
+	key: string;
 
 	constructor (socket) {
 		this.socket = socket;
-	}
-
-	public key () {
-		return this.socket.remoteAddress + "#" + this.socket.remotePort;
+		this.key = this.socket.remoteAddress + "#" + this.socket.remotePort;
 	}
 }
 
-//聚合所有客户端
-let sockets = [];
-
 let socketMap = {};
 
+async function parseData(socket: LockSocket, data: string) {
+	try {
+		let dataObj = JSON.parse(data);
+		console.log("Got Data " + data + " from socket " + socket.key);
+		if (!socket.bike) {
+			// bike not specified, just find it
+			socket.bike = await get_bike_byimei(dataObj.imei);
+			socket.imei = dataObj.imei;
+		}
+
+		if (!socket.bike) {
+			console.log("Bike of " + dataObj.imei + " Not Exist");
+			return;
+		}
+
+		socket.bike.online();
+
+		if (dataObj.opcode == OPCODE_SYNC_STATUS) {
+			//
+			console.log("Got Bike Sync Status Msg From: " + socket.bike.imei);
+		} else if (dataObj.opcode == OPCODE_SYNC_RIDEMSG) {
+			// to sync ride msg
+			console.log("Got Ride Msg Syncing From: " + socket.bike.imei);
+		} else if (dataObj.opcode == OPCODE_UNLOCK_CALLBACK) {
+			// handle unlock callback
+			console.log("Got Unlock Callback From: " + socket.bike.imei);
+		} else if (dataObj.opcode == OPCODE_LOCK_CALLBACK) {
+			// handle lock callback
+			console.log("Got Lock Callback From: " + socket.bike.imei);
+		}
+	} catch (e) {
+		console.log("Got Bad Data from socket " + socket.key + ", Data: " + data);
+	}
+}
+
 //接受新的客户端连接
-server.on("connection", function(socket){
+server.on("connection", function(socket) {
 
 	let lockSocket = new LockSocket(socket);
 
@@ -40,11 +96,10 @@ server.on("connection", function(socket){
 		+ socket.remoteAddress + "Port: "
 		+ socket.remotePort);
 
-	socketMap[lockSocket.key()] = lockSocket;
-	sockets.push(socket);
+	socketMap[lockSocket.key] = lockSocket;
 
 	// 从连接中读取数据
-	socket.on("data", function(data) {
+	lockSocket.socket.on("data", function(data) {
 
 		let key = socket.remoteAddress + "#" + socket.remotePort;
 		if (socketMap.hasOwnProperty(key)) {
@@ -53,22 +108,15 @@ server.on("connection", function(socket){
 			console.log("no socket found for " + key);
 		}
 
-		console.log("got data:", data.toString());
+		parseData(lockSocket, data.toString());
+	});
 
-		//广播数据
-		//每当一个已连接的用户输入数据，就将这些数据广播给其他所有已连接的用户
-		sockets.forEach(function(otherSocket){
-			if (otherSocket !== socket){
-				otherSocket.write(data);
-			}
-		});
+	lockSocket.socket.on("error", function() {
+		console.log("connection errored");
+	});
 
-		//删除被关闭的连接
-		socket.on("close", function() {
-			console.log("connection closed");
-			let index = sockets.indexOf(socket);
-			sockets.splice(index, 1);
-		});
+	lockSocket.socket.on("close", function() {
+		console.log("connection closed");
 	});
 });
 

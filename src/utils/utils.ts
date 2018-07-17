@@ -59,4 +59,14 @@ function b64_decode(src) {
 	return Base64.decode(src);
 }
 
-export {getUuid, getCurrentDate, getMilliSeconds, dateToStr, timeToStr, transToStr, parseValue, b64_decode, b64_encode};
+function getRandom(Min, Max)
+{
+	let Range = Max - Min;
+	let Rand = Math.random();
+	return (Min + Math.round(Rand * Range));
+}
+
+export {getUuid, getCurrentDate, getMilliSeconds, dateToStr,
+	timeToStr, transToStr, parseValue, b64_decode, b64_encode,
+	getRandom,
+};
