@@ -17,6 +17,8 @@ export const OPCODE_SYNC_STATUS = 1;
 export const OPCODE_UNLOCK_CALLBACK = 2;
 export const OPCODE_LOCK_CALLBACK = 3;
 export const OPCODE_SYNC_RIDEMSG = 4;
+export const OPCODE_START_RIDE = 5;
+export const OPCODE_FINISH_RIDE = 6;
 
 let g_update_bikestatus_interval = null;
 
