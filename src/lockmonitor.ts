@@ -7,22 +7,21 @@
  */
 
 import * as Net from 'net';
-import {Config} from "./config/config";
+import {
+	Config,
+	OPCODE_LOCK_CALLBACK,
+	OPCODE_SYNC_RIDEMSG,
+	OPCODE_SYNC_STATUS,
+	OPCODE_UNLOCK_CALLBACK
+} from "./config/config";
 import {Bike} from "./models/Bike";
 import {get_bike_byimei, update_bike_onlike_status} from "./modules/bike";
 import {insert_ridemsg} from "./modules/ridemsg";
 import {insert_order} from "./modules/userorder";
 
-export const OPCODE_SYNC_STATUS = 1;
-export const OPCODE_UNLOCK_CALLBACK = 2;
-export const OPCODE_LOCK_CALLBACK = 3;
-export const OPCODE_SYNC_RIDEMSG = 4;
-export const OPCODE_START_RIDE = 5;
-export const OPCODE_FINISH_RIDE = 6;
-
 let g_update_bikestatus_interval = null;
 
-function updateBikeStatusThread() {
+function startUpdateBikeStatusThread() {
 	g_update_bikestatus_interval = setInterval(function () {
 		update_bike_onlike_status();
 		console.log("Update All Bikes' Online Status OK");
@@ -38,9 +37,6 @@ function clearBikeStatusInterval() {
 }
 
 let server = Net.createServer();
-
-// start status monitor Thread
-updateBikeStatusThread();
 
 class LockSocket {
 	socket: any;
@@ -157,3 +153,6 @@ server.on("listening", function () {
 });
 
 server.listen(Config.LockMsgListenPort);
+
+// start status monitor Thread
+startUpdateBikeStatusThread();
