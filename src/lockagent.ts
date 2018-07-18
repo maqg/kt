@@ -6,55 +6,174 @@
  * ---------------------------------------------------------------------
  */
 
-import * as Net from 'net';
+import * as Net from "net";
 import {Config} from "./config/config";
+import {getMilliSeconds, getRandom} from "./utils/utils";
+import {OPCODE_LOCK_CALLBACK, OPCODE_SYNC_RIDEMSG, OPCODE_SYNC_STATUS, OPCODE_UNLOCK_CALLBACK} from "./lockmonitor";
 
 let quitting = false;
 let conn;
-let retryTimeout = 3000;	// 三秒，定义三秒后重新连接
-let retriedTimes = 0;	// 记录重新连接的次数
-let maxRetries = 10;	// 最多重新连接十次
+let retryTimeout = 3000;
+
+//let ServerAddr = "ktc.octlink.com";
+let ServerAddr = "localhost";
 
 const IMEI = "imei123456789XX";
 
-process.stdin.resume();	//process.stdin流来接受用户的键盘输入，这个可读流初始化时处于暂停状态，调用流上的resume()方法来恢复流
+let g_heartbeat_interval = null;
+let g_ridemsg_interval = null;
+
+let g_calories = 0;
+let g_distance = 0;
+let g_seconds = 0;
+
+let ridemsg_lock;
+let RideMsg = [];
+
+let LockStatus = "locked";
+
+function get_heartbeatmsg() { // heart beat message
+	return {
+		"imei": IMEI,
+		"opcode": OPCODE_SYNC_STATUS,
+		"voltage": 1.2,
+		"mac": "11:22:33:44:55:66",
+		"lockStatus": LockStatus,
+	};
+}
+
+function unlock_callback() {
+	conn.write(JSON.stringify({
+		"imei": IMEI,
+		"opcode": OPCODE_UNLOCK_CALLBACK,
+		"time": getMilliSeconds(),
+	}));
+}
+
+function lock_callback() {
+	conn.write(JSON.stringify({
+		"imei": IMEI,
+		"opcode": OPCODE_LOCK_CALLBACK,
+		"time": getMilliSeconds(),
+	}));
+}
+
+function get_ridemsg() {
+	g_calories += getRandom(1, 2);
+	g_distance += getRandom(20, 45);
+	g_seconds += 5;
+
+	return {
+		"imei": IMEI,
+		"opcode": OPCODE_SYNC_RIDEMSG,
+		"heartRate": getRandom(100, 140),
+		"speed": getRandom(18000, 24000),
+		"calories": g_calories,
+		"distance": g_distance,
+		"duration": g_seconds,
+		"time": getMilliSeconds()
+	};
+}
+
+process.stdin.resume();
 
 process.stdin.on("data", function (data) {
-	if (data.toString().trim().toLowerCase() === "quit") {
+	let cmd = data.toString().trim().toLowerCase();
+
+	if (cmd === "quit") {
 		quitting = true;
-		console.log("quitting");
 		conn.end();
 		process.stdin.pause();
+	} else if (cmd == "lock") {
+		lock_callback();
+		LockStatus = "locked";
+		clearRideMsgInterval();
+	} else if (cmd == "unlock") { // from BlueTooth
+		unlock_callback();
+		LockStatus = "unlocked";
+		syncRideMsgThread();
 	} else {
-		let obj = {
-			"imei": IMEI,
-			"voltage": 1.2,
-			"mac": "11:22:33:44:55:66",
-			"data": data,
-		};
-		conn.write(JSON.stringify(obj));
+		console.log("Wrong Command of " + cmd);
 	}
 });
 
-//连接时设置最多连接十次，并且开启定时器三秒后再连接
+function syncRideMsgThread() {
+	g_calories = 0;
+	g_distance = 0;
+	g_seconds = 0;
+	g_ridemsg_interval = setInterval(function () {
+		let msg = get_ridemsg();
+		conn.write(JSON.stringify(msg));
+		console.log("Write to Server of Ride Msg OK");
+	}, 5000);
+}
+
+function syncHeartBeatMsgThread(conn) {
+	g_heartbeat_interval = setInterval(function () {
+		let msg = get_heartbeatmsg();
+		conn.write(JSON.stringify(msg));
+		console.log("Write to Server of Heart Beat Msg OK");
+	}, 30000);
+}
+
+function clearHeartBeatMsgInterval() {
+	try {
+		clearInterval(g_heartbeat_interval);
+	} catch (e) {
+		console.log("interval not inited");
+	}
+}
+
+function clearRideMsgInterval() {
+	try {
+		clearInterval(g_ridemsg_interval);
+	} catch (e) {
+		console.log("interval not inited");
+	}
+}
+
+/*
+ * {
+ *   "cmd": "unlock",
+ * }
+ */
+function parseCmd(cmd) {
+	if (cmd["cmd"] == "unlock") {
+		console.log("To Unlock Bike Now");
+		LockStatus = "unlocked";
+		syncRideMsgThread();
+	} else {
+		console.log("Got Wrong cmd obj " + JSON.stringify(cmd));
+	}
+}
+
 (function connect() {
+
 	function reconnect() {
-		if (retriedTimes >= maxRetries) {
-			throw new Error("Max retries have been exceeded, I give up.");
-		}
-		retriedTimes += 1;
 		setTimeout(connect, retryTimeout);
 	}
 
-	conn = Net.createConnection(Config.LockMsgListenPort);
+	conn = Net.createConnection(Config.LockMsgListenPort, ServerAddr);
 
 	conn.on("connect", function () {
-		retriedTimes = 0;
-		console.log("connect to server");
+		console.log("connected to server " + ServerAddr + ", Port: " + Config.LockMsgListenPort);
+		syncHeartBeatMsgThread(conn);
 	});
 
 	conn.on("error", function (err) {
 		console.log("Error in connection:", err.toString());
+		clearHeartBeatMsgInterval();
+		clearRideMsgInterval();
+	});
+
+	conn.on("data", function (data) {
+		try {
+			let msg = JSON.parse(data.toString());
+			console.log(msg);
+			parseCmd(msg);
+		} catch (e) {
+			console.log("Got bad msg from Server: " + e.toString())
+		}
 	});
 
 	conn.on("close", function () {
@@ -62,9 +181,10 @@ process.stdin.on("data", function (data) {
 			console.log("connection got closed, will try to reconnect");
 			reconnect();
 		}
+		clearHeartBeatMsgInterval();
+		clearRideMsgInterval();
 	});
 
 	//打印
 	conn.pipe(process.stdout, {end: false});
 })();
-

@@ -67,6 +67,7 @@
     "@types/react-router-dom": "^4.2.7",
     "autoprefixer": "^8.6.4",
     "bookshelf": "^0.13.3",
+    "cluster": "^0.7.7",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",

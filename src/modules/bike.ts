@@ -20,11 +20,25 @@ async function get_bike_count() {
 	}
 }
 
-async function get_bike(id: string) {
+export async function get_bike(id: string) {
 	try {
 		let items = await knex(TB_BIKE).where("id", "=", id).select();
 		if (!items.length) {
 			console.log("bike of " + id + " not exist");
+			return null;
+		}
+		return new Bike(items[0]);
+	} catch (e) {
+		console.log("get bike error " + e.toString());
+		return null;
+	}
+}
+
+export async function get_bike_byimei(imei: string) {
+	try {
+		let items = await knex(TB_BIKE).where("imei", "=", imei).select();
+		if (!items.length) {
+			console.log("bike of " + imei + " not exist");
 			return null;
 		}
 		return new Bike(items[0]);
@@ -151,4 +165,17 @@ export async function web_update_bikestatus(paras) {
 	return buildSuccessResp();
 }
 
-export {web_show_bike, web_show_allbikes};
+let BIKE_LOST_TIMEOUT = 2 * 60 * 1000;
+async function update_bike_onlike_status() {
+	try {
+		let now = getMilliSeconds();
+		await knex(TB_BIKE).where("updateTime",  "<", now - BIKE_LOST_TIMEOUT)
+			.update({
+				onlineStatus: "offline"
+			})
+	} catch (e) {
+		console.log("Failed to update bike status of to offline " + e.toString());
+	}
+}
+
+export {web_show_bike, web_show_allbikes, update_bike_onlike_status};
