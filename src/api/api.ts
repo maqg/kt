@@ -318,11 +318,15 @@ function initApis() {
 }
 
 async function runApiTest(ctx, next) {
-	await ctx.render('apitest', {TITLE: "Keep Trying", APICONFIG: JSON.stringify(ApiModuleMap), API_TYPE: "api"});
+	await ctx.render("apitest", {TITLE: "Keep Trying", APICONFIG: JSON.stringify(ApiModuleMap), API_TYPE: "api"});
 }
 
 async function runWXApiTest(ctx, next) {
-	await ctx.render('apitest', {TITLE: "WXAPI", APICONFIG: JSON.stringify(ApiWxModuleMap), API_TYPE: "wxapi"});
+	await ctx.render("apitest", {TITLE: "WXAPI", APICONFIG: JSON.stringify(ApiWxModuleMap), API_TYPE: "wxapi"});
 }
 
-export {apiDispatcher, initApis, runApiTest, runWXApiTest, wxApiDispatcher}
+async function runWsTest(ctx, next) {
+	await ctx.render("wstest", {TITLE: "WebSocket Test Page"});
+}
+
+export {apiDispatcher, initApis, runApiTest, runWXApiTest, wxApiDispatcher, runWsTest}

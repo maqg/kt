@@ -6,12 +6,15 @@ import * as KoaBodyParar from 'koa-bodyparser'
 import * as KoaViews from 'koa-views'
 
 import {Config} from './config/config'
-import {apiDispatcher, initApis, runApiTest, runWXApiTest, wxApiDispatcher} from "./api/api";
+import {apiDispatcher, initApis, runApiTest, runWsTest, runWXApiTest, wxApiDispatcher} from "./api/api";
 
 import * as Cluster from "cluster";
 import * as Os from "os";
+import {startWServer} from "./websocket";
 
 const numCPUs = Os.cpus().length;
+
+console.log("Got " + numCPUs + " Cpus");
 
 if (Cluster.isMaster) {
 	for (let i = 0; i < numCPUs; i++) {
@@ -31,6 +34,10 @@ if (Cluster.isMaster) {
 
 	router.get('/wxapi/test/', async (ctx, next) => {
 		await runWXApiTest(ctx, next)
+	});
+
+	router.get('/wstest/', async (ctx, next) => {
+		await runWsTest(ctx, next)
 	});
 
 	router.post('/wxapi/', async (ctx, next) => {
@@ -54,7 +61,11 @@ if (Cluster.isMaster) {
 	app.use(KoaStatic("./static"));
 	app.use(router.routes());
 	app.use(router.allowedMethods());
+
 	initApis();
+
+	startWServer();
+
 	app.listen(Config.Port);
 
 	console.log("Listen on Port " + Config.Port);

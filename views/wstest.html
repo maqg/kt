@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= TITLE %></title>
+</head>
+<body>
+
+<h1>Welcome to <%= TITLE %></h1>
+
+<br>
+<label>Token：</label>
+<input id="token" type="text" value="0000000000000000000000000000000000000001"/>
+<br>
+<label>OpenId：</label>
+<input id="openId" type="text" value="openid123"/>
+<br>
+<button id="connectBtn">发送</button>
+
+<div id="recv" style="background-color: #a6e1ec"></div>
+
+<script type="text/javascript">
+
+    document.getElementById("connectBtn").onclick = function () {
+
+        var openId = document.getElementById("openId").value;
+        var token = document.getElementById("token").value;
+        var url = "";
+
+        if (window.location.hostname === "localhost") {
+            url = "ws://localhost:8001/?openId=" + openId + "&token=" + token;
+        } else {
+            url = "wss://" + window.location.host + "/ws/?openId=" + openId + "&token=" + token;
+        }
+
+        console.log(url);
+
+        var ws = new WebSocket(url);
+
+        ws.onopen = function () {
+            document.getElementById("recv").innerHTML = "Connected To WServer!";
+        };
+
+        ws.onclose = function () {
+            document.getElementById("recv").innerHTML = "Disconnected From WServer!";
+        };
+
+        ws.onmessage = function (e) {
+            document.getElementById("recv").innerHTML = e.data;
+        };
+    }
+
+</script>
+</body>
+</html>
