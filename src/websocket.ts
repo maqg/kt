@@ -1,6 +1,5 @@
 import * as WebSocket from "nodejs-websocket";
-import {Config} from "./config/config";
-import {OPCODE_FINISH_RIDE, OPCODE_START_RIDE, OPCODE_SYNC_RIDEMSG} from "./lockmonitor";
+import {Config, OPCODE_FINISH_RIDE, OPCODE_START_RIDE, OPCODE_SYNC_RIDEMSG} from "./config/config";
 import {getMilliSeconds, getRandom} from "./utils/utils";
 
 let g_ws_conn = null;
