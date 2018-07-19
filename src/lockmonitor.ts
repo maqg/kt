@@ -15,16 +15,19 @@ import {
 	OPCODE_SYNC_RIDEMSG,
 	OPCODE_SYNC_STATUS,
 	OPCODE_UNLOCK_CALLBACK,
-	RedisChannelLockOperation
+	RedisChannelLockMonitorLockCallback,
+	RedisChannelLockMonitorRideMsg,
+	RedisChannelLockMonitorStatus,
+	RedisChannelLockMonitorUnlockCallback,
+	RedisChannelMonitorLockLock,
+	RedisChannelMonitorLockUnlock
 } from "./config/config";
-import {Bike} from "./models/Bike";
-import {get_bike_byimei, update_bike_onlike_status} from "./modules/bike";
-import {insert_ridemsg} from "./modules/ridemsg";
-import {insert_order} from "./modules/userorder";
+import {update_bike_onlike_status} from "./modules/bike";
 
 let g_update_bikestatus_interval = null;
-let pub = null;
-let sub = null;
+let pubRedis = null;
+let subRedis = null;
+let dataRedis = null;
 
 function startUpdateBikeStatusThread() {
 	g_update_bikestatus_interval = setInterval(function () {
@@ -44,8 +47,6 @@ function clearBikeStatusInterval() {
 class LockSocket {
 	socket: any;
 	imei: string;
-	bike: Bike;
-	order: any;
 	key: string;
 
 	constructor (socket) {
@@ -54,59 +55,35 @@ class LockSocket {
 	}
 }
 
-let bikeMap = {
-	"imei123456789XX": {
-		"userId": "15e9a5f0-8037-11e8-98e3-525437f07951",
-	}
-};
-
 let socketMap = {};
 
-async function parseData(socket: LockSocket, data: string) {
+function dispathData(socket: LockSocket, data: string) {
+	let channel = RedisChannelLockMonitorStatus;
+
+	console.log("Got Lock Msg From: " + socket.key);
+
 	try {
 		let dataObj = JSON.parse(data);
+		socket.imei = dataObj.imei;
 
-		console.log("Got Data " + data + " from socket " + socket.key);
-		if (!socket.bike) {
-			// bike not specified, just find it
-			socket.bike = await get_bike_byimei(dataObj.imei);
-			socket.imei = dataObj.imei;
+		let key = dataRedis.get(socket.imei);
+		if (!key) {
+			dataRedis.set(socket.imei, socket.key);
 		}
-
-		if (!socket.bike) {
-			console.log("Bike of " + dataObj.imei + " Not Exist");
-			return;
-		}
-
-		socket.bike.online();
 
 		if (dataObj.opcode == OPCODE_SYNC_STATUS) {
-			console.log("Got Bike Sync Status Msg From: " + socket.bike.imei);
+			channel = RedisChannelLockMonitorStatus;
 		} else if (dataObj.opcode == OPCODE_SYNC_RIDEMSG) {
-			// to sync ride msg
-			if (socket.order) {
-				insert_ridemsg(socket.bike, socket.order, dataObj);
-			} else {
-				console.log("No order with socket, so skip this ride msg");
-			}
-			console.log("Got Ride Msg Syncing From: " + socket.bike.imei);
+			channel = RedisChannelLockMonitorRideMsg;
 		} else if (dataObj.opcode == OPCODE_UNLOCK_CALLBACK) {
-			// handle unlock callback
-			if (!socket.order) {
-				socket.order = await insert_order(bikeMap[socket.imei]["userId"],
-					socket.bike.id, dataObj.time);
-			}
-			console.log("Got Unlock Callback From: " + socket.bike.imei);
+			channel = RedisChannelLockMonitorLockCallback;
 		} else if (dataObj.opcode == OPCODE_LOCK_CALLBACK) {
-			// handle lock callback
-			if (socket.order) {
-				socket.order.finish(dataObj);
-				console.log("order of " + socket.order.id + " Finished");
-			}
-			console.log("Got Lock Callback From: " + socket.bike.imei);
+			channel = RedisChannelLockMonitorUnlockCallback;
 		}
+
+		pubRedis.publish(channel, data);
 	} catch (e) {
-		console.log("Got Bad Data from socket " + socket.key + ", Data: " + data);
+		console.log("TCP Server: bad data format " + data);
 	}
 }
 
@@ -126,15 +103,7 @@ function startTcpSocket() {
 
 		// 从连接中读取数据
 		lockSocket.socket.on("data", function(data) {
-
-			let key = socket.remoteAddress + "#" + socket.remotePort;
-			if (socketMap.hasOwnProperty(key)) {
-				console.log("got data from socket " + key);
-			} else {
-				console.log("no socket found for " + key);
-			}
-
-			parseData(lockSocket, data.toString());
+			dispathData(lockSocket, data.toString());
 		});
 
 		lockSocket.socket.on("error", function() {
@@ -159,20 +128,30 @@ function startTcpSocket() {
 	});
 
 	server.listen(Config.LockMsgListenPort);
-
 }
 
 function startRedis() {
 
-	sub = new Redis(Config.RedisPort, Config.RedesHost);
-	pub = new Redis(Config.RedisPort, Config.RedesHost);
-	sub.subscribe(RedisChannelLockOperation, function (error, count) {
+	subRedis = new Redis(Config.RedisPort, Config.RedesHost);
+	pubRedis = new Redis(Config.RedisPort, Config.RedesHost);
+	dataRedis = new Redis(Config.RedisPort, Config.RedesHost);
+
+	subRedis.subscribe(RedisChannelLockMonitorStatus,
+		RedisChannelMonitorLockUnlock,
+		RedisChannelMonitorLockLock,
+		function (error, count) {
 		console.log("Redis Subscribe Started");
-		pub.publish(RedisChannelLockOperation, "Test");
+		pubRedis.publish(RedisChannelLockMonitorStatus, "Test");
 	});
 
-	sub.on("message", function (channel, message) {
-		console.log("got message " + message + " From Channel " +  channel);
+	subRedis.on("message", function (channel, message) {
+		if (channel == RedisChannelLockMonitorStatus) {
+			console.log("to sync lock status " + message);
+		} else if (channel == RedisChannelMonitorLockUnlock) {
+			console.log("Tell lock to unlock " +  message);
+		} else if (channel == RedisChannelMonitorLockLock) {
+			console.log("Tell lock to lock " + message);
+		}
 	});
 }
 

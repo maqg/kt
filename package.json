@@ -9,9 +9,9 @@
     "run-server": "nodemon ./dist/index.js",
     "dev-dashboard": "webpack --config ./webpack.config.js",
     "dev-doc": "webpack --config ./webpack.config.doc.js",
-    "dev-tcpserver": "tsc -w -p ./tsconfig.json",
     "run-tcpserver": "nodemon ./dist/lockmonitor.js",
-    "run-lockagent": "nodemon ./dist/lockagent.js"
+    "run-lockagent": "nodemon ./dist/lockagent.js",
+    "run-websocket": "nodemon ./dist/websocket.js"
   },
   "keywords": [
     "kt"

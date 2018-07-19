@@ -3,7 +3,14 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
-export const RedisChannelLockOperation = "LockOperation";
+export const RedisChannelLockMonitorStatus = "lock#monitor#status";
+export const RedisChannelLockMonitorLockCallback = "lock#monitor#lockcallback";
+export const RedisChannelLockMonitorUnlockCallback = "lock#monitor#unlockcallback";
+export const RedisChannelLockMonitorRideMsg = "lock#monitor#ridemsg";
+export const RedisChannelMonitorLockUnlock = "monitor#lock#unlock";
+export const RedisChannelMonitorLockLock = "monitor#lock#lock";
+
+
 export const RedisChannelFromLock = "MsgFromLock";
 
 const Config = {
