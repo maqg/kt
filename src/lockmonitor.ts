@@ -7,12 +7,15 @@
  */
 
 import * as Net from 'net';
+import * as Redis from "ioredis";
+
 import {
 	Config,
 	OPCODE_LOCK_CALLBACK,
 	OPCODE_SYNC_RIDEMSG,
 	OPCODE_SYNC_STATUS,
-	OPCODE_UNLOCK_CALLBACK
+	OPCODE_UNLOCK_CALLBACK,
+	RedisChannelLockOperation
 } from "./config/config";
 import {Bike} from "./models/Bike";
 import {get_bike_byimei, update_bike_onlike_status} from "./modules/bike";
@@ -20,6 +23,8 @@ import {insert_ridemsg} from "./modules/ridemsg";
 import {insert_order} from "./modules/userorder";
 
 let g_update_bikestatus_interval = null;
+let pub = null;
+let sub = null;
 
 function startUpdateBikeStatusThread() {
 	g_update_bikestatus_interval = setInterval(function () {
@@ -35,8 +40,6 @@ function clearBikeStatusInterval() {
 		console.log("interval not inited");
 	}
 }
-
-let server = Net.createServer();
 
 class LockSocket {
 	socket: any;
@@ -107,52 +110,84 @@ async function parseData(socket: LockSocket, data: string) {
 	}
 }
 
-//接受新的客户端连接
-server.on("connection", function(socket) {
+function startTcpSocket() {
 
-	let lockSocket = new LockSocket(socket);
+	let server = Net.createServer();
 
-	console.log("got a new connection, Address: "
-		+ socket.remoteAddress + "Port: "
-		+ socket.remotePort);
+	server.on("connection", function(socket) {
 
-	socketMap[lockSocket.key] = lockSocket;
+		let lockSocket = new LockSocket(socket);
 
-	// 从连接中读取数据
-	lockSocket.socket.on("data", function(data) {
+		console.log("got a new connection, Address: "
+			+ socket.remoteAddress + "Port: "
+			+ socket.remotePort);
 
-		let key = socket.remoteAddress + "#" + socket.remotePort;
-		if (socketMap.hasOwnProperty(key)) {
-			console.log("got data from socket " + key);
-		} else {
-			console.log("no socket found for " + key);
-		}
+		socketMap[lockSocket.key] = lockSocket;
 
-		parseData(lockSocket, data.toString());
+		// 从连接中读取数据
+		lockSocket.socket.on("data", function(data) {
+
+			let key = socket.remoteAddress + "#" + socket.remotePort;
+			if (socketMap.hasOwnProperty(key)) {
+				console.log("got data from socket " + key);
+			} else {
+				console.log("no socket found for " + key);
+			}
+
+			parseData(lockSocket, data.toString());
+		});
+
+		lockSocket.socket.on("error", function() {
+			console.log("connection errored");
+		});
+
+		lockSocket.socket.on("close", function() {
+			console.log("connection closed");
+		});
 	});
 
-	lockSocket.socket.on("error", function() {
-		console.log("connection errored");
+	server.on("error", function(err){
+		console.log("Server error:", err.message);
 	});
 
-	lockSocket.socket.on("close", function() {
-		console.log("connection closed");
+	server.on("close", function(){
+		console.log("Server closed");
 	});
-});
 
-server.on("error", function(err){
-	console.log("Server error:", err.message);
-});
+	server.on("listening", function () {
+		console.log("Server Listening on port " + Config.LockMsgListenPort);
+	});
 
-server.on("close", function(){
-	console.log("Server closed");
-});
+	server.listen(Config.LockMsgListenPort);
 
-server.on("listening", function () {
-	console.log("Server Listening on port " + Config.LockMsgListenPort);
-});
+}
 
-server.listen(Config.LockMsgListenPort);
+function startRedis() {
 
-// start status monitor Thread
-startUpdateBikeStatusThread();
+	sub = new Redis(Config.RedisPort, Config.RedesHost);
+	pub = new Redis(Config.RedisPort, Config.RedesHost);
+	sub.subscribe(RedisChannelLockOperation, function (error, count) {
+		console.log("Redis Subscribe Started");
+		pub.publish(RedisChannelLockOperation, "Test");
+	});
+
+	sub.on("message", function (channel, message) {
+		console.log("got message " + message + " From Channel " +  channel);
+	});
+}
+
+export function startMonitorServer() {
+
+	startTcpSocket();
+	console.log("Tcp Socket Server Started");
+
+	startRedis();
+	console.log("Redis subscribe Started");
+
+	// start status monitor Thread
+	startUpdateBikeStatusThread();
+	console.log("Bike Status Monitord Started");
+}
+
+startMonitorServer();
+console.log("Monitor Server Started!");

@@ -122,3 +122,5 @@ export function startWServer() {
 	console.log("WebSocket Listening on Port " + Config.WebSocketPort);
 }
 
+startWServer();
+console.log("WebSocket Server Started!");

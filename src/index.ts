@@ -10,7 +10,6 @@ import {apiDispatcher, initApis, runApiTest, runWsTest, runWXApiTest, wxApiDispa
 
 import * as Cluster from "cluster";
 import * as Os from "os";
-import {startWServer} from "./websocket";
 
 const numCPUs = Os.cpus().length;
 
@@ -63,10 +62,6 @@ if (Cluster.isMaster) {
 	app.use(router.allowedMethods());
 
 	initApis();
-
-	startWServer();
-
 	app.listen(Config.Port);
-
 	console.log("Listen on Port " + Config.Port);
 }

@@ -3,9 +3,17 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
+export const RedisChannelLockOperation = "LockOperation";
+export const RedisChannelFromLock = "MsgFromLock";
+
 const Config = {
 	"LockMsgListenPort": 7001,
+
 	"WebSocketPort": 8001,
+
+	"RedisPort": 6379,
+	"RedesHost": "localhost",
+
 	"Port": 8000,
 	"DbName": "dbkt",
 	"DbUser": "root",
