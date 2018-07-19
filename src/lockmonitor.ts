@@ -153,6 +153,10 @@ function startRedis() {
 			console.log("Tell lock to lock " + message);
 		}
 	});
+
+	dataRedis.get("imei123ABCDEFG").then(function (data) {
+		console.log(data);
+	});
 }
 
 export function startMonitorServer() {
