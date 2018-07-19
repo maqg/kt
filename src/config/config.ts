@@ -5,6 +5,7 @@
 
 const Config = {
 	"LockMsgListenPort": 7001,
+	"WebSocketPort": 8001,
 	"Port": 8000,
 	"DbName": "dbkt",
 	"DbUser": "root",
@@ -54,5 +55,12 @@ export const TB_BATTERY = "battery";
 export const TB_PROMOTION = "promotion";
 
 
+// for OPCODE
+export const OPCODE_SYNC_STATUS = 1;
+export const OPCODE_UNLOCK_CALLBACK = 2;
+export const OPCODE_LOCK_CALLBACK = 3;
+export const OPCODE_SYNC_RIDEMSG = 4;
+export const OPCODE_START_RIDE = 5;
+export const OPCODE_FINISH_RIDE = 6;
 
 export {Config, API_PREFIX, ApiModuleMap, ApiWxModuleMap};

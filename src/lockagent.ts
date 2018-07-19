@@ -7,18 +7,23 @@
  */
 
 import * as Net from "net";
-import {Config} from "./config/config";
+import {
+	Config,
+	OPCODE_LOCK_CALLBACK,
+	OPCODE_SYNC_RIDEMSG,
+	OPCODE_SYNC_STATUS,
+	OPCODE_UNLOCK_CALLBACK
+} from "./config/config";
 import {getMilliSeconds, getRandom} from "./utils/utils";
-import {OPCODE_LOCK_CALLBACK, OPCODE_SYNC_RIDEMSG, OPCODE_SYNC_STATUS, OPCODE_UNLOCK_CALLBACK} from "./lockmonitor";
 
 let quitting = false;
 let conn;
 let retryTimeout = 3000;
 
-//let ServerAddr = "ktc.octlink.com";
-let ServerAddr = "localhost";
+let ServerAddr = "ktc.octlink.com";
+//let ServerAddr = "localhost";
 
-const IMEI = "imei123456789XX";
+const IMEI = "imei123ABCDEFG";
 
 let g_heartbeat_interval = null;
 let g_ridemsg_interval = null;
