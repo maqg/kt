@@ -11,7 +11,7 @@ import {apiDispatcher, initApis, runApiTest, runWsTest, runWXApiTest, wxApiDispa
 import * as Cluster from "cluster";
 import * as Os from "os";
 
-const numCPUs = Os.cpus().length;
+const numCPUs = 1;
 
 console.log("Got " + numCPUs + " Cpus");
 

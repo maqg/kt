@@ -33,6 +33,10 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
         if(nextProps.checked !== this.props.checked) {
             this.setState({
                 check:nextProps.checked
+            }, ()=>{
+                // if(this.props.onCheck){
+                //     this.props.onCheck(this.state.check)
+                // }
             })
         }
     }
@@ -149,7 +153,7 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
                    onFocus={(e)=>this.onFocus(e)}
                    onBlur={(e)=>this.onBlur(e)}
                    onChange={(e)=>{this.onCheckChange(e)}}
-                   checked={this.state.check}
+                   checked={!!this.state.check}
             />
             {this.props.label && <span className={'label'} onClick={(e)=>this.onCheckClick(e)}>{this.props.label}</span>}
             <div className={'check-box'} onClick={(e)=>this.onCheckClick(e)}>

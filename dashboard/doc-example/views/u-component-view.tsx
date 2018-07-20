@@ -52,6 +52,7 @@ export interface UComponentViewStates {
     tableIndex: boolean,
     data: any[],
     checkTrigger: boolean,
+    testInputValue: string
 }
 export class UComponentView extends Component<any, UComponentViewStates>{
     ref:RefObject<UButton> = React.createRef();
@@ -82,7 +83,8 @@ export class UComponentView extends Component<any, UComponentViewStates>{
                 {name: 'still', age: 250},
                 {name: 'fucked', age: 20}
             ],
-            checkTrigger: false
+            checkTrigger: false,
+            testInputValue: ''
         }
     }
 
@@ -111,8 +113,11 @@ export class UComponentView extends Component<any, UComponentViewStates>{
                 <UButton graph={<UIcon iconName={'star'}/>} disabled={true} label={'星星'}/>
             </div>
             <div className={'name'}>UTextInput</div>
+            <UButton label={'set-value-to: AAA'} onClick={()=>{
+                this.setState({testInputValue: "AAA"})
+            }}/>
             <div className={'view'}>
-                <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'}/>
+                <UTextInput graph={<UIcon iconName={'star'}/>} value={this.state.testInputValue} onChange={(e)=>{this.setState({testInputValue: e})}} label={'星星'} placeholder={'请输入文字信息'}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} isPassword={true} placeholder={'请输入文字信息'}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'} disabled={true}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'} isError={true}/>
@@ -122,7 +127,7 @@ export class UComponentView extends Component<any, UComponentViewStates>{
             <div className={'view'}>
                 <UCheck label={'check'} onCheck={(c)=>{console.log('isCheck:' + c)}}/>
                 <UCheck label={'disabled'} disabled={true} onCheck={(c)=>{console.log('isCheck:' + c)}}/>
-                <UCheck label={'checked'} checked={this.state.checkTrigger}  onCheck={(c)=>{console.log('isCheck:' + c)}}/>
+                <UCheck label={'checked'} checked={this.state.checkTrigger}  onCheck={(c)=>{console.log('isCheck:' + c); this.setState({checkTrigger: c}) }}/>
                 <UButton label={'trigger'} onClick={()=>{this.setState((pre)=>{return {checkTrigger: !pre.checkTrigger}})}}/>
             </div>
             <div className={'name'}>UTable</div>
