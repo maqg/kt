@@ -7,26 +7,85 @@ import {LoginApi} from "../../util-tools/api/login-api";
 import {withRouter} from "react-router";
 import {NavLink} from "react-router-dom";
 import {UTable, UTableColumn} from "../../ui-libs/ui-table/u-table";
+import {Base64} from "js-base64";
 
-export class UComponentView extends Component{
+export interface SubCompBaseValueProps {
+    fullData: any,
+    data: any
+}
+export interface SubCompBaseValueStates {
+    showBase: boolean
+}
+export class SubCompBaseValue extends React.Component<SubCompBaseValueProps, SubCompBaseValueStates>{
+    constructor(props: SubCompBaseValueProps){
+        super(props);
+        this.state = {
+            showBase: false
+        }
+    }
+    getShowValue(){
+        if(this.state.showBase){
+            return Base64.encode(this.props.data);
+        } else {
+            return this.props.data;
+        }
+    }
+    trigger(){
+        this.setState((pre)=>{
+            console.log(this.props.fullData);
+            return {
+                showBase: !pre.showBase
+            }
+        })
+    }
+    render() {
+        return <div className={'sub-base-value'}>
+            <span className={'value'}>{this.getShowValue()}</span>
+            <UButton label={this.state.showBase? "显示明文" :"显示Base"} onClick={()=>this.trigger()}/>
+        </div>
+    }
+}
+export interface UComponentViewStates {
+    tableCheck: boolean,
+    tableHead: boolean,
+    tableMulti: boolean,
+    tableIndex: boolean,
+    data: any[],
+    checkTrigger: boolean,
+}
+export class UComponentView extends Component<any, UComponentViewStates>{
     ref:RefObject<UButton> = React.createRef();
     columns: UTableColumn[] = [];
-    constructor(props: any){
+    tableRef: RefObject<UTable> = React.createRef();
+    constructor(props: any) {
         super(props);
         let c1: UTableColumn = {
-            label: "Column1",
+            header: (c: UTableColumn) => {return <div><UIcon iconName={'glass'}/>{c.key}</div>},
             key: 'name'
         };
         let c2: UTableColumn = {
-            label: 'Column2',
+            header: <span><UIcon iconName={'star'}/> With Star!</span>,
             key: 'age',
-            graph: <UIcon iconName={'star'}/>,
-            fill:(value)=>{
-                return <span className={'new-file'}>{value}</span>
-            }
+            unSelectable: true,
+            primary: true
         };
         this.columns.push(c1, c2);
+
+        this.state = {
+            tableCheck: false,
+            tableHead: false,
+            tableMulti: false,
+            tableIndex: false,
+            data: [
+                {name: 'hello', age: 123},
+                {name: 'world', age: 222},
+                {name: 'still', age: 250},
+                {name: 'fucked', age: 20}
+            ],
+            checkTrigger: false
+        }
     }
+
     async click(e: MouseEvent) {
         let api: LoginApi = new LoginApi();
         let resp;
@@ -63,10 +122,36 @@ export class UComponentView extends Component{
             <div className={'view'}>
                 <UCheck label={'check'} onCheck={(c)=>{console.log('isCheck:' + c)}}/>
                 <UCheck label={'disabled'} disabled={true} onCheck={(c)=>{console.log('isCheck:' + c)}}/>
+                <UCheck label={'checked'} checked={this.state.checkTrigger}  onCheck={(c)=>{console.log('isCheck:' + c)}}/>
+                <UButton label={'trigger'} onClick={()=>{this.setState((pre)=>{return {checkTrigger: !pre.checkTrigger}})}}/>
             </div>
             <div className={'name'}>UTable</div>
             <div className={'view'}>
-                <UTable data={null} column={this.columns}/>
+                <div className={'props-check'} style={{display: 'flex'}}>
+                    <UCheck label={'check'} onCheck={(check)=>{this.setState({tableCheck: check})}}/>
+                    <UCheck label={'head'} onCheck={(check)=>{this.setState({tableHead: check})}}/>
+                    <UCheck label={'multi'} onCheck={(check)=>{this.setState({tableMulti: check})}}/>
+                    <UCheck label={'index'} onCheck={(check)=>{this.setState({tableIndex: check})}}/>
+                    <UButton label={'remove-data'} onClick={()=>{this.setState((pre)=>{
+                        let newData = [...pre.data];
+                        newData.shift();
+                        return {
+                            data: newData
+                        }
+                    })}}/>
+                    <UButton label={'print-selected'} onClick={()=>{
+                        let data = this.tableRef.current.getSelectedData();
+                        console.log(JSON.stringify(data));
+                    }}/>
+                </div>
+                <UTable data={this.state.data} column={this.columns}
+                        ref = {this.tableRef}
+                        multi={this.state.tableMulti}
+                        withIndex={this.state.tableIndex}
+                        withCheck={this.state.tableCheck}
+                        withHead={this.state.tableHead} onSelected={(ret:any[])=>{
+                    console.dir(JSON.stringify(ret));
+                }}/>
             </div>
         </div>
     }
