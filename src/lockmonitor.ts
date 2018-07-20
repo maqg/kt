@@ -140,9 +140,8 @@ function startRedis() {
 		RedisChannelMonitorLockUnlock,
 		RedisChannelMonitorLockLock,
 		function (error, count) {
-		console.log("Redis Subscribe Started");
-		pubRedis.publish(RedisChannelLockMonitorStatus, "Test");
-	});
+			console.log("Redis Subscribe Started");
+		});
 
 	subRedis.on("message", function (channel, message) {
 		if (channel == RedisChannelLockMonitorStatus) {
