@@ -8,7 +8,7 @@ import {Errors} from "../models/KtError";
 import {knex} from "../models/Bookshelf";
 import {TB_BIKE} from "../config/config";
 import {getMilliSeconds} from "../utils/utils";
-import {Bike} from "../models/Bike";
+import {Bike, BIKE_ONLINE_STATUS_ONLINE} from "../models/Bike";
 
 async function get_bike_count() {
 	try {
@@ -17,6 +17,21 @@ async function get_bike_count() {
 	} catch (e) {
 		console.log("get account count error " + e.toString());
 		return 0;
+	}
+}
+
+export async function updateBikeStatusByImei(message, status) {
+	try {
+		let now = getMilliSeconds();
+		let obj = {
+			"onlineStatus": status,
+		};
+		if (status == BIKE_ONLINE_STATUS_ONLINE) {
+			obj["updateTime"] = getMilliSeconds();
+		}
+		await knex(TB_BIKE).where("imei", message["imei"]).update(obj);
+	} catch (e) {
+		console.log("Failed to update bike status of to offline " + e.toString());
 	}
 }
 

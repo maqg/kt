@@ -83,7 +83,9 @@ export const OPCODE_START_RIDE = 5;
 export const OPCODE_FINISH_RIDE = 6;
 
 function initRedistPublisher() {
-	RedisPublisher = new Redis(Config.RedisPort, Config.RedesHost);
+	if (!RedisPublisher) {
+		RedisPublisher = new Redis(Config.RedisPort, Config.RedesHost);
+	}
 }
 
-export {Config, API_PREFIX, ApiModuleMap, ApiWxModuleMap};
+export {Config, API_PREFIX, ApiModuleMap, ApiWxModuleMap, initRedistPublisher};
