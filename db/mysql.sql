@@ -191,6 +191,7 @@ CREATE TABLE `bike` (
 		`currentUser` VARCHAR(36) NOT NULL DEFAULT '',
 		`lastUser` VARCHAR(36) NOT NULL DEFAULT '',
 		`imei` VARCHAR(50) NOT NULL DEFAULT '',
+		`mac` VARCHAR(20) NOT NULL DEFAULT '',
 		`longitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '经度',
 		`latitude` DECIMAL(11,6) NOT NULL DEFAULT '0.0' COMMENT '纬度',
 		`usageTimes` INTEGER NOT NULL DEFAULT '0' COMMENT 'Bike Usage Times',
