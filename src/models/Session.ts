@@ -6,6 +6,7 @@
 import {getMilliSeconds, getUuid} from "../utils/utils";
 import {knex} from "./Bookshelf";
 import {TB_SESSION, TEST_TOKEN} from "../config/config";
+import {accessSync} from "fs";
 
 export const EXPIRE_TIMEOUT = (30 * 24 * 60 * 60 * 1000);
 
@@ -63,14 +64,17 @@ export class Session {
 	}
 }
 
-export async function getSession(token) {
+export async function getSession(token): Promise<Session> {
 	try {
-		let items = await knex(TB_SESSION).where("id", "=", token)	.select();
-		if (!items.length) {
-			console.log("session of " + token + " not exist");
-			return null;
-		}
-		return new Session(items[0]);
+		knex(TB_SESSION).where("id", "=", token)
+			.select()
+			.then(function (items) {
+				if (!items.length) {
+					console.log("session of " + token + " not exist");
+					return null;
+				}
+				return new Session(items[0]);
+			});
 	} catch (e) {
 		console.log("get session error " + e.toString());
 		return null;

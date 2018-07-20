@@ -9,9 +9,9 @@
     "run-server": "nodemon ./dist/index.js",
     "dev-dashboard": "webpack --config ./webpack.config.js",
     "dev-doc": "webpack --config ./webpack.config.doc.js",
-    "dev-tcpserver": "tsc -w -p ./tsconfig.json",
     "run-tcpserver": "nodemon ./dist/lockmonitor.js",
-    "run-lockagent": "nodemon ./dist/lockagent.js"
+    "run-lockagent": "nodemon ./dist/lockagent.js",
+    "run-websocket": "nodemon ./dist/websocket.js"
   },
   "keywords": [
     "kt"
@@ -71,12 +71,14 @@
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
+    "ioredis": "^3.2.2",
     "js-sha1": "^0.6.0",
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.9.0",
     "nodejs-websocket": "^1.7.1",
     "nodemon": "^1.17.5",
     "postcss-loader": "^2.1.5",
+    "q": "^1.5.1",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "superagent": "^3.8.3",

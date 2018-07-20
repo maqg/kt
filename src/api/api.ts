@@ -129,13 +129,13 @@ async function checkToken(args) {
 		return false;
 	}
 
-	let session = await getSession(args["token"]);
-	if (!session) {
-		console.log("Session of " + args["token"] + " Not Exist or Expired");
-		return false;
-	}
-
-	args["paras"]["session"] = session;
+	getSession(args["token"]).then(function (session) {
+		if (!session) {
+			console.log("Session of " + args["token"] + " Not Exist or Expired");
+			return false;
+		}
+		args["paras"]["session"] = session;
+	});
 
 	return true;
 }
@@ -254,9 +254,11 @@ async function wxApiDispatcher(ctx) {
 			return
 		}
 
-		let resp = await apiProto["service"](args["paras"]);
-		resp.updateErrorMsg();
-		ctx.body = JSON.stringify(resp);
+		apiProto["service"](args["paras"]).then(function (resp) {
+			resp.updateErrorMsg();
+			ctx.body = JSON.stringify(resp);
+		});
+
 	} else {
 		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, apiProto + "not exist");
 		ctx.body = transToStr(resp);

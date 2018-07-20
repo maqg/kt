@@ -3,9 +3,24 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
+export const RedisChannelLockMonitorStatus = "lock#monitor#status";
+export const RedisChannelLockMonitorLockCallback = "lock#monitor#lockcallback";
+export const RedisChannelLockMonitorUnlockCallback = "lock#monitor#unlockcallback";
+export const RedisChannelLockMonitorRideMsg = "lock#monitor#ridemsg";
+export const RedisChannelMonitorLockUnlock = "monitor#lock#unlock";
+export const RedisChannelMonitorLockLock = "monitor#lock#lock";
+
+
+export const RedisChannelFromLock = "MsgFromLock";
+
 const Config = {
 	"LockMsgListenPort": 7001,
+
 	"WebSocketPort": 8001,
+
+	"RedisPort": 6379,
+	"RedesHost": "localhost",
+
 	"Port": 8000,
 	"DbName": "dbkt",
 	"DbUser": "root",

@@ -1,9 +1,16 @@
 import * as WebSocket from "nodejs-websocket";
-import {Config, OPCODE_FINISH_RIDE, OPCODE_START_RIDE, OPCODE_SYNC_RIDEMSG} from "./config/config";
+import * as Redis from "ioredis";
+import {
+	Config,
+	OPCODE_FINISH_RIDE,
+	OPCODE_START_RIDE,
+	OPCODE_SYNC_RIDEMSG, RedisChannelLockMonitorLockCallback, RedisChannelLockMonitorRideMsg,
+	RedisChannelLockMonitorStatus, RedisChannelLockMonitorUnlockCallback
+} from "./config/config";
 import {getMilliSeconds, getRandom} from "./utils/utils";
 
 let g_ws_conn = null;
-let g_socket_map = {};
+let g_token_socket_map = {};
 let g_sync_msg_interval = null;
 
 let g_calories = 0;
@@ -68,8 +75,8 @@ function getFinishRideMsg() {
 
 function startSyncMsgThread() {
 	g_sync_msg_interval = setInterval(function () {
-		for (let key in g_socket_map) {
-			let tmpSocket = g_socket_map[key];
+		for (let key in g_token_socket_map) {
+			let tmpSocket = g_token_socket_map[key];
 			if (tmpSocket) {
 				if (tmpSocket.seconds == 0) {
 					tmpSocket.socket.sendText(JSON.stringify(getStartRideMsg()));
@@ -95,7 +102,7 @@ export function startWServer() {
 			let paras = parseWsParas(conn.path);
 			console.log("Got New Connection with paras " + JSON.stringify(paras));
 
-			g_socket_map[paras["token"]] = {
+			g_token_socket_map[paras["token"]] = {
 				"openId": paras["openId"],
 				"socket": conn,
 				"seconds": 0,
@@ -122,3 +129,30 @@ export function startWServer() {
 	console.log("WebSocket Listening on Port " + Config.WebSocketPort);
 }
 
+function startRedis() {
+
+	let sub = new Redis(Config.RedisPort, Config.RedesHost);
+	sub.subscribe(RedisChannelLockMonitorRideMsg,
+		RedisChannelLockMonitorLockCallback,
+		RedisChannelLockMonitorUnlockCallback,
+		function (error, count) {
+		console.log("Redis Subscribe Started");
+	});
+
+	sub.on("message", function (channel, message) {
+		console.log("got message " + message + " From Channel " +  channel);
+		if (channel == RedisChannelLockMonitorRideMsg) {
+			console.log("To Sync ride msg " +  message);
+		} else if (channel == RedisChannelLockMonitorLockCallback) {
+			console.log("To handle lock callback " +  message);
+		} else if (channel == RedisChannelLockMonitorUnlockCallback) {
+			console.log("To handle unlock callback " + message);
+		}
+	});
+}
+
+startWServer();
+console.log("WebSocket Server Started!");
+
+startRedis();
+console.log("Redis Subscribe Started");
