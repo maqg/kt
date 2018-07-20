@@ -26,7 +26,7 @@ import {ApiUserOrder} from "./api_userorder";
 import {ApiOrderLog} from "./api_orderlog";
 import {ApiBikeLog} from "./api_bikelog";
 import {ApiBike} from "./api_bike";
-import {getSession} from "../models/Session";
+import {getSession, Session} from "../models/Session";
 import {ApiRideMsg} from "./api_ridemsg";
 import {ApiBattery} from "./api_battery";
 import {ApiPromotion} from "./api_promotion";
@@ -115,29 +115,37 @@ function checkSignature(args): number {
 	return 0;
 }
 
-async function checkToken(args) {
+function getNewSession(token): Promise<Session> {
+	return new Promise(function (resolve) {
+		return resolve(null);
+	})
+}
+
+function checkToken(args): Promise<boolean> {
 
 	let api = args["api"];
 	if (api == API_PREFIX + ApiAccount.module + ".APILoginByAccount"
 		|| api == API_PREFIX + ApiWxApp.module + ".APIGetUserInfo") {
 		console.log("No need to do session check for login apis");
-		return true;
+		return new Promise(function (resolve) {
+			return resolve(true);
+		});
 	}
 
 	if (!args["token"]) {
 		console.log("toke not speicied");
-		return false;
+		return new Promise(function (resolve) {
+			return resolve(false);
+		});
 	}
 
-	getSession(args["token"]).then(function (session) {
-		if (!session) {
-			console.log("Session of " + args["token"] + " Not Exist or Expired");
-			return false;
-		}
+	return getSession(args["token"]).then(function (session) {
 		args["paras"]["session"] = session;
+		return true;
+	}).catch(function (error) {
+		console.log("check token error " + error);
+		return false;
 	});
-
-	return true;
 }
 
 function checkParas(apiProto, args): (CheckResult) {
@@ -208,9 +216,10 @@ async function apiDispatcher(ctx) {
 			return
 		}
 
-		let resp = await apiProto["service"](args["paras"]);
-		resp.updateErrorMsg();
-		ctx.body = JSON.stringify(resp);
+		return apiProto["service"](args["paras"]).then(function (resp) {
+			resp.updateErrorMsg();
+			ctx.body = JSON.stringify(resp);
+		});
 	} else {
 		let resp = buildErrorResp(Errors.RET_NO_SUCH_API, apiProto + "not exist");
 		ctx.body = transToStr(resp);
@@ -254,7 +263,7 @@ async function wxApiDispatcher(ctx) {
 			return
 		}
 
-		apiProto["service"](args["paras"]).then(function (resp) {
+		return apiProto["service"](args["paras"]).then(function (resp) {
 			resp.updateErrorMsg();
 			ctx.body = JSON.stringify(resp);
 		});

@@ -149,7 +149,13 @@ function parseCmd(cmd) {
 	if (cmd["cmd"] == "unlock") {
 		console.log("To Unlock Bike Now");
 		LockStatus = "unlocked";
+		unlock_callback();
 		syncRideMsgThread();
+	} else if (cmd["cmd"] == "lock") {
+		console.log("Got Lock Msg");
+		clearRideMsgInterval();
+		LockStatus = "locked";
+		lock_callback();
 	} else {
 		console.log("Got Wrong cmd obj " + JSON.stringify(cmd));
 	}
@@ -165,6 +171,7 @@ function parseCmd(cmd) {
 
 	conn.on("connect", function () {
 		console.log("connected to server " + ServerAddr + ", Port: " + Config.LockMsgListenPort);
+		conn.write(JSON.stringify(get_heartbeatmsg()));
 		syncHeartBeatMsgThread(conn);
 	});
 

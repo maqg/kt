@@ -3,6 +3,8 @@
  * Created at 06.29.2018 by Henry.Ma
  */
 
+import * as Redis from "ioredis";
+
 export const RedisChannelLockMonitorStatus = "lock#monitor#status";
 export const RedisChannelLockMonitorLockCallback = "lock#monitor#lockcallback";
 export const RedisChannelLockMonitorUnlockCallback = "lock#monitor#unlockcallback";
@@ -12,6 +14,8 @@ export const RedisChannelMonitorLockLock = "monitor#lock#lock";
 
 
 export const RedisChannelFromLock = "MsgFromLock";
+
+export let RedisPublisher = null;
 
 const Config = {
 	"LockMsgListenPort": 7001,
@@ -77,5 +81,9 @@ export const OPCODE_LOCK_CALLBACK = 3;
 export const OPCODE_SYNC_RIDEMSG = 4;
 export const OPCODE_START_RIDE = 5;
 export const OPCODE_FINISH_RIDE = 6;
+
+function initRedistPublisher() {
+	RedisPublisher = new Redis(Config.RedisPort, Config.RedesHost);
+}
 
 export {Config, API_PREFIX, ApiModuleMap, ApiWxModuleMap};

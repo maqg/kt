@@ -10,6 +10,18 @@ import {knex} from "./Bookshelf";
 export const BIKE_ONLINE_STATUS_ONLINE = "online";
 export const BIKE_ONLINE_STATUS_OFFLINE = "offline";
 
+export const BIKE_STATUS_ENABLED = "enabled";
+export const BIKE_STATUS_DISABLED = "disabled";
+
+export const BIKE_RENT_STATUS_FREE = "free";
+export const BIKE_RENT_STATUS_OCCUPIED = "occupide";
+
+export const BIKE_BATTERY_STATUS_SUFFICIENT = "sufficient";
+export const BIKE_BATTERY_STATUS_NORMAL = "normal";
+export const BIKE_BATTERY_STATUS_LACK = "lack";
+export const BIKE_BATTERY_STATUS_NONE = "none";
+
+
 export class Bike {
 
 	rawdata: any;
@@ -20,6 +32,7 @@ export class Bike {
 	currentUser: string;
 	lastUser: string;
 
+	mac: string;
 	imei: string;
 	longitude: any;
 	latitude: any;
@@ -50,6 +63,7 @@ export class Bike {
 			this.serial = obj["serial"];
 			this.modelId = obj["modelId"];
 			this.imei = obj["imei"];
+			this.mac = obj["mac"];
 
 			this.lastUser = obj["lastUser"];
 			this.currentUser = obj["currentUser"];
@@ -70,6 +84,13 @@ export class Bike {
 			this.deleteTime = obj["createTime"];
 			this.lastRent = obj["lastRent"];
 		}
+	}
+
+	public isReady() {
+		return this.rentStatus == BIKE_RENT_STATUS_FREE
+			&& this.status == BIKE_STATUS_ENABLED
+			&& this.onlineStatus == BIKE_ONLINE_STATUS_ONLINE
+			&& (this.batteryStatus != BIKE_BATTERY_STATUS_LACK && this.batteryStatus != BIKE_BATTERY_STATUS_NONE);
 	}
 
 	async offline() {

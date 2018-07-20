@@ -7,13 +7,14 @@ import * as SuperAgent from 'superagent';
 
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
-import {WxAppId, WxAppSecretKey} from "../config/config";
+import {RedisChannelMonitorLockUnlock, RedisPublisher, WxAppId, WxAppSecretKey} from "../config/config";
 import {Errors} from "../models/KtError";
 import {add_user, get_user, get_user_byunionid} from "./user";
 import {newSession} from "../models/Session";
 import {ROLE_USER} from "../models/Account";
-import {get_nearby_bikes} from "./bike";
+import {get_bike_byimei, get_bike_byserial, get_nearby_bikes} from "./bike";
 import {web_show_useroder, web_show_userorders} from "./userorder";
+import {BIKE_ONLINE_STATUS_OFFLINE} from "../models/Bike";
 
 const WXAPP_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session';
 
@@ -41,7 +42,7 @@ async function get_openid(paras) {
 export async function web_get_userinfo(paras) {
 
 	let sessionInfo = await get_openid(paras);
-	if (!sessionInfo) {
+	if (!sessionInfo || !sessionInfo["openid"] || !sessionInfo["unionid"]) {
 		return buildErrorResp(Errors.RET_WX_LOGIN_ERR,
 			"Login from WeiXin Error with Code " + paras["code"]);
 	}
@@ -228,11 +229,33 @@ export async function web_send_ridemsg(paras) {
 }
 
 export async function web_unlock_bike(paras) {
+	let bike = await get_bike_byserial(paras["qrcode"]);
+
+	if (!bike) {
+		return buildErrorResp(Errors.RET_BIKE_NOT_READY,
+			"Bike not exist: " + paras["qrcode"]);
+	}
+
+	if (!bike.isReady()) {
+		return buildErrorResp(Errors.RET_BIKE_NOT_READY,
+			"Bike not ready, status:" + bike.status
+			+ ",online:" + bike.onlineStatus
+			+ ",rent:" + bike.rentStatus
+			+ ",battery:" + bike.batteryStatus);
+	}
+
+	// Message sent to LockMonitor Thread.
+	RedisPublisher.publish(RedisChannelMonitorLockUnlock, JSON.stringify({
+		"imei": bike.imei,
+		"serial": bike.serial
+	}));
+
 	return buildSuccessResp(
 		{
-			"serialNo": getUuid(),
+			"serialNo": bike.serial,
+			"id": bike.id,
 			"blueToothModel": 1, // 1 generation or 2 generation
-			"blueToothMac": "11:22:33:44:55:65", // if GPRS failed, with blue tooth to open it again.
+			"blueToothMac": bike.mac,
 		}
 	);
 }

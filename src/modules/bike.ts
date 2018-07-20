@@ -48,6 +48,20 @@ export async function get_bike_byimei(imei: string) {
 	}
 }
 
+export async function get_bike_byserial(serial: string) {
+	try {
+		let items = await knex(TB_BIKE).where("serial", "=", serial).select();
+		if (!items.length) {
+			console.log("bike of " + serial + " not exist");
+			return null;
+		}
+		return new Bike(items[0]);
+	} catch (e) {
+		console.log("get bike error " + e.toString());
+		return null;
+	}
+}
+
 async function web_show_bike(paras) {
 	let model = await get_bike(paras["id"]);
 	if (!model) {

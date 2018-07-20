@@ -64,21 +64,22 @@ export class Session {
 	}
 }
 
-export async function getSession(token): Promise<Session> {
-	try {
-		knex(TB_SESSION).where("id", "=", token)
-			.select()
-			.then(function (items) {
-				if (!items.length) {
-					console.log("session of " + token + " not exist");
-					return null;
-				}
+export function getSession(token): Promise<Session> {
+	return knex(TB_SESSION)
+		.where("id", "=", token)
+		.select().then(function (items) {
+			if (!items.length) {
+				console.log("session of " + token + " not exist");
+				return null;
+			} else {
 				return new Session(items[0]);
-			});
-	} catch (e) {
-		console.log("get session error " + e.toString());
-		return null;
-	}
+			}
+		}).then(function (session) {
+			return session;
+		}).catch(function (err) {
+			console.log("Query session from db error " + err.toString());
+			return null;
+		});
 }
 
 export async function newSession(userId: string, username: string, role: number) {
