@@ -4,7 +4,8 @@ import {UIcon} from "../ui-icon";
 
 export interface UCheckProps {
     label?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    checked?:boolean,
     onCheck?: (check: boolean) => void
 }
 
@@ -19,13 +20,23 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
     constructor(props: UCheckProps) {
         super(props);
         this.state ={
-            check:false,
+            check:!!this.props.checked,
             hover: false,
             down: false,
             focus: false
         };
         this.inputRef = React.createRef();
     }
+
+    componentWillReceiveProps(nextProps: Readonly<UCheckProps>, nextContext: any): void {
+        // console.log('trigger-check;', nextProps.checked === this.props.checked);
+        if(nextProps.checked !== this.props.checked) {
+            this.setState({
+                check:nextProps.checked
+            })
+        }
+    }
+
     makeClassName(): string {
         let names = ['u-check'];
         if(this.props.disabled) {
@@ -115,8 +126,22 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
             }
         })
     }
+    setCheck(isCheck: boolean, notify?: boolean) {
+        if(this.props.disabled) return;
+        this.setState({
+            check: isCheck
+        }, ()=>{
+            if(this.props.onCheck && !!notify){
+                this.props.onCheck(this.state.check)
+            }
+        })
+    }
     render() {
-        return <div className={this.makeClassName()} onMouseEnter={(e)=>this.onMouseEnter(e)} onMouseLeave={(e)=>this.onMouseLeave(e)} onMouseDown={(e)=>this.onMouseDown(e)} onMouseUp={(e)=>this.onMouseUp(e)}>
+        return <div className={this.makeClassName()}
+                    onMouseEnter={(e)=>this.onMouseEnter(e)}
+                    onMouseLeave={(e)=>this.onMouseLeave(e)}
+                    onMouseDown={(e)=>this.onMouseDown(e)}
+                    onMouseUp={(e)=>this.onMouseUp(e)}>
             <input type={'checkbox'}
                    disabled={this.props.disabled}
                    ref={this.inputRef}
