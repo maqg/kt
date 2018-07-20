@@ -78,7 +78,6 @@
     "nodejs-websocket": "^1.7.1",
     "nodemon": "^1.17.5",
     "postcss-loader": "^2.1.5",
-    "q": "^1.5.1",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "superagent": "^3.8.3",

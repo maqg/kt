@@ -5,7 +5,7 @@ import * as KoaStatic from 'koa-static'
 import * as KoaBodyParar from 'koa-bodyparser'
 import * as KoaViews from 'koa-views'
 
-import {Config} from './config/config'
+import {Config, initRedistPublisher} from './config/config'
 import {apiDispatcher, initApis, runApiTest, runWsTest, runWXApiTest, wxApiDispatcher} from "./api/api";
 
 import * as Cluster from "cluster";
@@ -62,6 +62,9 @@ if (Cluster.isMaster) {
 	app.use(router.allowedMethods());
 
 	initApis();
+
+	initRedistPublisher();
+
 	app.listen(Config.Port);
 	console.log("Listen on Port " + Config.Port);
 }

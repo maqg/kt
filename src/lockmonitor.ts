@@ -22,7 +22,8 @@ import {
 	RedisChannelMonitorLockLock,
 	RedisChannelMonitorLockUnlock
 } from "./config/config";
-import {update_bike_onlike_status} from "./modules/bike";
+import {update_bike_onlike_status, updateBikeStatusByImei} from "./modules/bike";
+import {Bike, BIKE_ONLINE_STATUS_ONLINE} from "./models/Bike";
 
 let g_update_bikestatus_interval = null;
 let pubRedis = null;
@@ -67,7 +68,7 @@ function dispathData(socket: LockSocket, data: string) {
 		socket.imei = dataObj.imei;
 
 		let key = dataRedis.get(socket.imei);
-		if (!key) {
+		if (!key || key) {
 			dataRedis.set(socket.imei, socket.key);
 		}
 
@@ -144,17 +145,31 @@ function startRedis() {
 		});
 
 	subRedis.on("message", function (channel, message) {
+		let msgObj = JSON.parse(message);
 		if (channel == RedisChannelLockMonitorStatus) {
+			updateBikeStatusByImei(msgObj, BIKE_ONLINE_STATUS_ONLINE);
 			console.log("to sync lock status " + message);
 		} else if (channel == RedisChannelMonitorLockUnlock) {
 			console.log("Tell lock to unlock " +  message);
+			dataRedis.get(msgObj["imei"]).then(function (key) {
+				let socket = socketMap[key];
+				if (socket) {
+					socket.socket.write(JSON.stringify({
+						"cmd": "unlock"
+					}));
+				}
+			});
 		} else if (channel == RedisChannelMonitorLockLock) {
 			console.log("Tell lock to lock " + message);
+			dataRedis.get(msgObj["imei"]).then(function (key) {
+				let socket = socketMap[key];
+				if (socket) {
+					socket.socket.write(JSON.stringify({
+						"cmd": "lock"
+					}));
+				}
+			});
 		}
-	});
-
-	dataRedis.get("imei123ABCDEFG").then(function (data) {
-		console.log(data);
 	});
 }
 

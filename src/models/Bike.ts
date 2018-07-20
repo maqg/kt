@@ -55,8 +55,12 @@ export class Bike {
 	updateTime: number;
 	deleteTime: number;
 
-	constructor(obj?: any) {
+	constructor(obj?: any, imei?: string) {
 		this.rawdata = obj;
+
+		if (imei) {
+			this.imei = imei;
+		}
 
 		if (obj) {
 			this.id = obj["id"];
@@ -99,6 +103,25 @@ export class Bike {
 
 	async online() {
 		await this.updateOnlineStatus(BIKE_ONLINE_STATUS_ONLINE);
+	}
+
+	async onlineByImei() {
+		await this.updateOnlineStatusByImei(BIKE_ONLINE_STATUS_ONLINE);
+	}
+
+	async updateOnlineStatusByImei(status) {
+		try {
+			let now = getMilliSeconds();
+			let obj = {
+				"onlineStatus": status,
+			};
+			if (status == BIKE_ONLINE_STATUS_ONLINE) {
+				obj["updateTime"] = getMilliSeconds();
+			}
+			await knex(TB_BIKE).where("imei", this.imei).update(obj)
+		} catch (e) {
+			console.log("Failed to update bike status of to offline " + e.toString());
+		}
 	}
 
 	async updateOnlineStatus(status) {
