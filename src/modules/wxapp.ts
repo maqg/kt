@@ -7,7 +7,7 @@ import * as SuperAgent from 'superagent';
 
 import {buildErrorResp, buildSuccessResp} from "../models/ApiResponse";
 import {getMilliSeconds, getUuid, timeToStr} from "../utils/utils";
-import {RedisChannelMonitorLockUnlock, RedisPublisher, WxAppId, WxAppSecretKey} from "../config/config";
+import {RedisChannelMonitorLockUnlock, RedisData, RedisPublisher, WxAppId, WxAppSecretKey} from "../config/config";
 import {Errors} from "../models/KtError";
 import {add_user, get_user, get_user_byunionid} from "./user";
 import {newSession} from "../models/Session";
@@ -243,6 +243,17 @@ export async function web_unlock_bike(paras) {
 			+ ",rent:" + bike.rentStatus
 			+ ",battery:" + bike.batteryStatus);
 	}
+
+	// store relationship of imei and userid
+	await RedisData.set(bike.imei + "#userId", paras.session.userId);
+	await RedisData.set(bike.imei + "#bikeId", bike.id);
+
+	get_user(paras.session.userId).then(function (user) {
+		if (user) {
+			RedisData.set(bike.imei + "#openId", user.openId);
+		}
+	});
+
 
 	// Message sent to LockMonitor Thread.
 	RedisPublisher.publish(RedisChannelMonitorLockUnlock, JSON.stringify({

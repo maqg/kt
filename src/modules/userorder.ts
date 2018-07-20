@@ -20,7 +20,7 @@ async function get_userorder_count() {
 	}
 }
 
-async function get_userorder(id: string) {
+export async function get_userorder(id: string) {
 	try {
 		let items = await knex(TB_USERORDER).where("id", "=", id).select();
 		if (!items.length) {
@@ -177,13 +177,18 @@ export async function insert_order(userId, bikeId, startTime) {
 		createTime: getMilliSeconds(),
 		updateTime: getMilliSeconds(),
 	};
-	try {
-		await knex(TB_USERORDER).insert(obj);
-		return await get_userorder(obj["id"]);
-	} catch (e) {
-		console.log("Add User Order of " + bikeId + " error " + e.toString());
-		return null;
-	}
+
+	return knex(TB_USERORDER).insert(obj).then(function () {
+		return get_userorder(obj["id"]).then(function (order) {
+			return order;
+		}).then(function (resp) {
+			return resp;
+		})
+	}).then(function (resp) {
+		return resp;
+	}).catch(function (err) {
+		return err;
+	});
 }
 
 /*
