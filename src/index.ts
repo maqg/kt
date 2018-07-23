@@ -63,7 +63,7 @@ if (Cluster.isMaster) {
 
 	initApis();
 
-	initRedistPublisher();
+	// initRedistPublisher();
 
 	app.listen(Config.Port);
 	console.log("Listen on Port " + Config.Port);
