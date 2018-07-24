@@ -16,6 +16,7 @@ export const RedisChannelMonitorLockLock = "monitor#lock#lock";
 export const RedisChannelFromLock = "MsgFromLock";
 
 export let RedisPublisher = null;
+export let RedisData = null;
 
 const Config = {
 	"LockMsgListenPort": 7001,
@@ -85,6 +86,10 @@ export const OPCODE_FINISH_RIDE = 6;
 function initRedistPublisher() {
 	if (!RedisPublisher) {
 		RedisPublisher = new Redis(Config.RedisPort, Config.RedesHost);
+	}
+
+	if (!RedisData) {
+		RedisData = new Redis(Config.RedisPort, Config.RedesHost);
 	}
 }
 

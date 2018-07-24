@@ -65,23 +65,22 @@ function dispathData(socket: LockSocket, data: string) {
 
 	try {
 		let dataObj = JSON.parse(data);
-		socket.imei = dataObj.imei;
-
-		let key = dataRedis.get(socket.imei);
-		if (!key || key) {
-			dataRedis.set(socket.imei, socket.key);
-		}
 
 		if (dataObj.opcode == OPCODE_SYNC_STATUS) {
 			channel = RedisChannelLockMonitorStatus;
+			socket.imei = dataObj.imei;
+
+			dataRedis.set(socket.imei + "#key", socket.key).then(function () {
+				pubRedis.publish(channel, data); // make sure set finished before publish.
+			});
+			return;
 		} else if (dataObj.opcode == OPCODE_SYNC_RIDEMSG) {
 			channel = RedisChannelLockMonitorRideMsg;
-		} else if (dataObj.opcode == OPCODE_UNLOCK_CALLBACK) {
-			channel = RedisChannelLockMonitorLockCallback;
 		} else if (dataObj.opcode == OPCODE_LOCK_CALLBACK) {
+			channel = RedisChannelLockMonitorLockCallback;
+		} else if (dataObj.opcode == OPCODE_UNLOCK_CALLBACK) {
 			channel = RedisChannelLockMonitorUnlockCallback;
 		}
-
 		pubRedis.publish(channel, data);
 	} catch (e) {
 		console.log("TCP Server: bad data format " + data);
@@ -144,6 +143,9 @@ function startRedis() {
 			console.log("Redis Subscribe Started");
 		});
 
+	/*
+	 * Send Msg From monitor to locker Over TCP Connection.
+	 */
 	subRedis.on("message", function (channel, message) {
 		let msgObj = JSON.parse(message);
 		if (channel == RedisChannelLockMonitorStatus) {
@@ -151,9 +153,12 @@ function startRedis() {
 			console.log("to sync lock status " + message);
 		} else if (channel == RedisChannelMonitorLockUnlock) {
 			console.log("Tell lock to unlock " +  message);
-			dataRedis.get(msgObj["imei"]).then(function (key) {
+			dataRedis.get(msgObj["imei"] + "#key").then(function (key) {
 				let socket = socketMap[key];
+				console.log("got key of " + key);
+				console.log(socketMap);
 				if (socket) {
+					console.log("Writed unlock msg to locker " + msgObj["imei"]);
 					socket.socket.write(JSON.stringify({
 						"cmd": "unlock"
 					}));
@@ -161,7 +166,7 @@ function startRedis() {
 			});
 		} else if (channel == RedisChannelMonitorLockLock) {
 			console.log("Tell lock to lock " + message);
-			dataRedis.get(msgObj["imei"]).then(function (key) {
+			dataRedis.get(msgObj["imei"] + "#key").then(function (key) {
 				let socket = socketMap[key];
 				if (socket) {
 					socket.socket.write(JSON.stringify({

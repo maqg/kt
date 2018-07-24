@@ -5,7 +5,6 @@ import {UIcon} from "../ui-icon";
 export interface UCheckProps {
     label?: string,
     disabled?: boolean,
-    checked?:boolean,
     onCheck?: (check: boolean) => void
 }
 
@@ -20,7 +19,7 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
     constructor(props: UCheckProps) {
         super(props);
         this.state ={
-            check:!!this.props.checked,
+            check: false,
             hover: false,
             down: false,
             focus: false
@@ -28,16 +27,7 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
         this.inputRef = React.createRef();
     }
 
-    componentWillReceiveProps(nextProps: Readonly<UCheckProps>, nextContext: any): void {
-        // console.log('trigger-check;', nextProps.checked === this.props.checked);
-        if(nextProps.checked !== this.props.checked) {
-            this.setState({
-                check:nextProps.checked
-            })
-        }
-    }
-
-    makeClassName(): string {
+    private makeClassName(): string {
         let names = ['u-check'];
         if(this.props.disabled) {
             names.push('disabled');
@@ -58,14 +48,14 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
 
         return names.join(' ');
     }
-    onMouseEnter(e: MouseEvent) {
+    private onMouseEnter(e: MouseEvent) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.setState({
             hover: true
         })
     }
-    onMouseLeave(e: MouseEvent) {
+    private onMouseLeave(e: MouseEvent) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.setState({
@@ -73,14 +63,14 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
             down: false
         })
     }
-    onMouseDown(e: MouseEvent) {
+    private onMouseDown(e: MouseEvent) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.setState({
             down: true
         })
     }
-    onMouseUp(e: MouseEvent) {
+    private onMouseUp(e: MouseEvent) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.setState({
@@ -88,21 +78,21 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
             hover: true
         })
     }
-    onFocus(e: FormEvent<HTMLInputElement>) {
+    private onFocus(e: FormEvent<HTMLInputElement>) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.setState({
             focus: true
         })
     }
-    onBlur(e: FormEvent<HTMLInputElement>) {
+    private onBlur(e: FormEvent<HTMLInputElement>) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.setState({
             focus: false
         })
     }
-    onCheckClick(e: MouseEvent) {
+    private onCheckClick(e: MouseEvent) {
         e.preventDefault();
         if(this.props.disabled) return;
         this.inputRef.current.focus();
@@ -116,7 +106,7 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
             }
         })
     }
-    onCheckChange(e: FormEvent<HTMLInputElement>) {
+    private onCheckChange(e: FormEvent<HTMLInputElement>) {
         e.preventDefault();
         this.setState({
             check: e.currentTarget.checked
@@ -136,6 +126,9 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
             }
         })
     }
+    getCheck(){
+        return this.state.check;
+    }
     render() {
         return <div className={this.makeClassName()}
                     onMouseEnter={(e)=>this.onMouseEnter(e)}
@@ -149,6 +142,7 @@ export class UCheck extends React.Component<UCheckProps, UCheckStates>{
                    onFocus={(e)=>this.onFocus(e)}
                    onBlur={(e)=>this.onBlur(e)}
                    onChange={(e)=>{this.onCheckChange(e)}}
+                   onInput={(e)=>{this.onCheckChange(e)}}
                    checked={this.state.check}
             />
             {this.props.label && <span className={'label'} onClick={(e)=>this.onCheckClick(e)}>{this.props.label}</span>}

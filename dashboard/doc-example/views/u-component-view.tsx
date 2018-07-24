@@ -50,13 +50,19 @@ export interface UComponentViewStates {
     tableHead: boolean,
     tableMulti: boolean,
     tableIndex: boolean,
-    data: any[],
-    checkTrigger: boolean,
 }
 export class UComponentView extends Component<any, UComponentViewStates>{
     ref:RefObject<UButton> = React.createRef();
     columns: UTableColumn[] = [];
     tableRef: RefObject<UTable> = React.createRef();
+    controlledCheck: RefObject<UCheck> = React.createRef();
+    controlledInput: RefObject<UTextInput> = React.createRef();
+    data = [
+        {name: 'hello', age: 123},
+        {name: 'world', age: 222},
+        {name: 'still', age: 250},
+        {name: 'fucked', age: 20}
+        ];
     constructor(props: any) {
         super(props);
         let c1: UTableColumn = {
@@ -70,22 +76,27 @@ export class UComponentView extends Component<any, UComponentViewStates>{
             primary: true
         };
         this.columns.push(c1, c2);
-
         this.state = {
             tableCheck: false,
             tableHead: false,
             tableMulti: false,
             tableIndex: false,
-            data: [
-                {name: 'hello', age: 123},
-                {name: 'world', age: 222},
-                {name: 'still', age: 250},
-                {name: 'fucked', age: 20}
-            ],
-            checkTrigger: false
+
         }
     }
-
+    shiftDataItem() {
+        let data = this.tableRef.current.getData();
+        let newData = [...data];
+        newData.shift();
+        this.tableRef.current.setData(newData);
+    }
+    componentDidMount(){
+        this.tableRef.current.setData(this.data);
+    }
+    triggerCheck = ()=>{
+        let oldValue = this.controlledCheck.current.getCheck();
+        this.controlledCheck.current.setCheck(!oldValue, true);
+    };
     async click(e: MouseEvent) {
         let api: LoginApi = new LoginApi();
         let resp;
@@ -111,8 +122,14 @@ export class UComponentView extends Component<any, UComponentViewStates>{
                 <UButton graph={<UIcon iconName={'star'}/>} disabled={true} label={'星星'}/>
             </div>
             <div className={'name'}>UTextInput</div>
+            <UButton label={'set-value-to: AAA'} onClick={()=>{
+                this.controlledInput.current.setValue("AAA", true);
+            }}/>
             <div className={'view'}>
-                <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'}/>
+                <UTextInput graph={<UIcon iconName={'star'}/>} ref={this.controlledInput}
+                            onChange={(e)=>{console.log('set value:',e)}}
+                            label={'星星'}
+                            placeholder={'请输入文字信息'}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} isPassword={true} placeholder={'请输入文字信息'}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'} disabled={true}/>
                 <UTextInput graph={<UIcon iconName={'star'}/>} label={'星星'} placeholder={'请输入文字信息'} isError={true}/>
@@ -122,29 +139,23 @@ export class UComponentView extends Component<any, UComponentViewStates>{
             <div className={'view'}>
                 <UCheck label={'check'} onCheck={(c)=>{console.log('isCheck:' + c)}}/>
                 <UCheck label={'disabled'} disabled={true} onCheck={(c)=>{console.log('isCheck:' + c)}}/>
-                <UCheck label={'checked'} checked={this.state.checkTrigger}  onCheck={(c)=>{console.log('isCheck:' + c)}}/>
-                <UButton label={'trigger'} onClick={()=>{this.setState((pre)=>{return {checkTrigger: !pre.checkTrigger}})}}/>
+                <UCheck label={'checked'} ref={this.controlledCheck}  onCheck={(c)=>{console.log('isCheck:' + c);}}/>
+                <UButton label={'trigger'} onClick={this.triggerCheck}/>
             </div>
             <div className={'name'}>UTable</div>
             <div className={'view'}>
                 <div className={'props-check'} style={{display: 'flex'}}>
-                    <UCheck label={'check'} onCheck={(check)=>{this.setState({tableCheck: check})}}/>
-                    <UCheck label={'head'} onCheck={(check)=>{this.setState({tableHead: check})}}/>
-                    <UCheck label={'multi'} onCheck={(check)=>{this.setState({tableMulti: check})}}/>
+                    <UCheck label={'check'}  onCheck={(check)=>{this.setState({tableCheck: check})}}/>
+                    <UCheck label={'head'}  onCheck={(check)=>{this.setState({tableHead: check})}}/>
+                    <UCheck label={'multi'}  onCheck={(check)=>{this.setState({tableMulti: check})}}/>
                     <UCheck label={'index'} onCheck={(check)=>{this.setState({tableIndex: check})}}/>
-                    <UButton label={'remove-data'} onClick={()=>{this.setState((pre)=>{
-                        let newData = [...pre.data];
-                        newData.shift();
-                        return {
-                            data: newData
-                        }
-                    })}}/>
+                    <UButton label={'remove-data'} onClick={()=>this.shiftDataItem()}/>
                     <UButton label={'print-selected'} onClick={()=>{
                         let data = this.tableRef.current.getSelectedData();
                         console.log(JSON.stringify(data));
                     }}/>
                 </div>
-                <UTable data={this.state.data} column={this.columns}
+                <UTable column={this.columns}
                         ref = {this.tableRef}
                         multi={this.state.tableMulti}
                         withIndex={this.state.tableIndex}

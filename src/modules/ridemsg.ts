@@ -80,11 +80,11 @@ async function add_ridemsg(orderId: string, bikeId: string,
 	return buildSuccessResp();
 }
 
-export async function insert_ridemsg(bike: Bike, order: UserOrder, msg) {
+export async function insert_ridemsg(bikeId: string, orderId: string, msg) {
 	let obj = {
-		orderId: order.id,
+		orderId: orderId,
 		heartRate: msg.heartRate,
-		bikeId: bike.id,
+		bikeId: bikeId,
 		speed: msg.speed,
 		calories: msg.calories,
 		distance: msg.distance,
@@ -94,7 +94,7 @@ export async function insert_ridemsg(bike: Bike, order: UserOrder, msg) {
 	try {
 		await knex(TB_RIDEMSG).insert(obj);
 	} catch (e) {
-		console.log("Add ride log of " + bike.id + " error " + e.toString());
+		console.log("Add ride log of " + bikeId + " error " + e.toString());
 	}
 }
 

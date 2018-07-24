@@ -16,7 +16,6 @@ export interface UTableRowProps {
     withCheck?:boolean,
     withIndex?:boolean,
     index: number,
-    selected:boolean,
     makeIndex?: (index: number) => any,
     onSelected?: (uniID: string, check: boolean) => void
 }
@@ -50,23 +49,25 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
             down: false
         };
         this.checkRef = React.createRef();
-
-    }
-
-    componentWillReceiveProps(nextProps: Readonly<UTableRowProps>, nextContext: any): void {
-        if(nextProps.selected !== this.props.selected) {
-            // console.log(nextProps.data.name,'checked:',nextProps.selected);
-            this.setState({
-                selected: nextProps.selected
-            })
-        }
     }
 
     getUniqueID() {
         // console.log(getRowDataUniqueID(this.props.column, this.props.data, this.props.index));
         return getRowDataUniqueID(this.props.column, this.props.data, this.props.index);
     }
-    makeClassName() {
+    setSelected(selected: boolean, notify?:boolean) {
+        this.setState({
+            selected: selected
+        }, ()=>{
+            if(this.props.onSelected && notify) {
+                this.props.onSelected(this.getUniqueID(), selected);
+            }
+            if(this.checkRef.current){
+                this.checkRef.current.setCheck(this.state.selected);
+            }
+        })
+    }
+    private makeClassName() {
         let name=['u-table-row'];
         if(this.state.down) {
             name.push('down');
@@ -84,8 +85,7 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
         }
         return name.join(' ');
     }
-    // check by checkbox
-    onCheck(isCheck: boolean) {
+    private onCheck(isCheck: boolean) {
         this.setState({
             selected: isCheck
         }, ()=>{
@@ -94,9 +94,48 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
             }
         })
     }
-    renderColumns():ReactElement<any> {
+    private onTrClick(e: MouseEvent) {
+        e.preventDefault();
+        this.setState((pre)=>{
+            return{selected:!pre.selected}
+        }, ()=>{
+            if(this.props.onSelected) {
+                this.props.onSelected(this.getUniqueID(), this.state.selected);
+            }
+            if(this.checkRef.current){
+                this.checkRef.current.setCheck(this.state.selected);
+            }
+        });
+    }
+    private onMouseEnter(e: MouseEvent) {
+        e.preventDefault();
+        this.setState({
+            hover: true
+        })
+    }
+    private onMouseLeave(e: MouseEvent) {
+        e.preventDefault();
+        this.setState({
+            hover: false,
+            down: false
+        })
+    }
+    private onMouseDown(e: MouseEvent) {
+        e.preventDefault();
+        this.setState({
+            down: true
+        })
+    }
+    private onMouseUp(e: MouseEvent) {
+        e.preventDefault();
+        this.setState({
+            hover: true,
+            down: false
+        })
+    }
+    private renderColumns():ReactElement<any> {
         return <>
-            {this.props.withCheck && <td key={-2} className={'u-td-check'}><UCheck ref={this.checkRef} checked={this.state.selected} onCheck={(e)=>this.onCheck(e)}/></td>}
+            {this.props.withCheck && <td key={-2} className={'u-td-check'}><UCheck ref={this.checkRef} onCheck={(e)=>this.onCheck(e)}/></td>}
             {this.props.withIndex && <td key={-1} className={'u-td-index'} onClick={(e)=>this.onTrClick(e)}>{this.props.makeIndex?this.props.makeIndex(this.props.index):this.props.index}</td>}
             {this.props.column.map((c: UTableColumn, index: number) => {
                 let value = this.props.data[c.key]?this.props.data[c.key]:"";
@@ -111,70 +150,22 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
             })}
         </>
     }
-    //check by row click
-    onTrClick(e: MouseEvent) {
-        e.preventDefault();
-        this.setState((pre)=>{
-            return{selected:!pre.selected}
-        }, ()=>{
-            if(this.props.onSelected) {
-                this.props.onSelected(this.getUniqueID(), this.state.selected);
-            }
-            if(this.checkRef.current){
-                this.checkRef.current.setCheck(this.state.selected);
-            }
-        });
-    }
-    setSelected(selected: boolean, notify?:boolean) {
-        this.setState({
-            selected: selected
-        }, ()=>{
-            if(this.props.onSelected && notify) {
-                this.props.onSelected(this.getUniqueID(), selected);
-            }
-            if(this.checkRef.current){
-                this.checkRef.current.setCheck(this.state.selected);
-            }
-        })
-    }
-    onMouseEnter(e: MouseEvent) {
-        e.preventDefault();
-        this.setState({
-            hover: true
-        })
-    }
-    onMouseLeave(e: MouseEvent) {
-        e.preventDefault();
-        this.setState({
-            hover: false,
-            down: false
-        })
-    }
-    onMouseDown(e: MouseEvent) {
-        e.preventDefault();
-        this.setState({
-            down: true
-        })
-    }
-    onMouseUp(e: MouseEvent) {
-        e.preventDefault();
-        this.setState({
-            hover: true,
-            down: false
-        })
-    }
     render() {
-        return <tr className={this.makeClassName()}  >
+        return <tr className={this.makeClassName()}
+                   onMouseEnter={e=>this.onMouseEnter(e)}
+                   onMouseLeave={e=>this.onMouseLeave(e)}
+                   onMouseDown={e=>this.onMouseDown(e)}
+                   onMouseUp={e=>this.onMouseUp(e)}>
             {this.renderColumns()}
         </tr>
     }
 }
 
 export interface UTableStates {
-    selected: string[]
+    selected: string[],
+    data: any[]
 }
 export interface UTableProps {
-    data: any[],
     column: UTableColumn[],
     onSelected?: (items: any[]) => void,
     withHead ?:boolean,
@@ -191,10 +182,19 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
         this.rows = [];
         this.checkAllRef = React.createRef();
         this.state = {
-            selected: []
+            selected: [],
+            data: []
         }
     }
-    renderHead() {
+    setData(data: any[]) {
+        this.setState({data: data}, ()=>{
+            this.reMapSelected(data);
+        })
+    }
+    getData(): any[]{
+        return this.state.data;
+    }
+    private renderHead() {
         return <>
             {this.props.column.map((c: UTableColumn, index:number)=>{
                 return <th key={'th-'+index}>
@@ -204,7 +204,7 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
             })}
         </>
     }
-    onCheck(e: boolean){
+    private onCheck(e: boolean){
         if(e) {
             let newSelected: string[] = [];
             this.rows.map((rowRef: RefObject<UTableRow>) => {
@@ -215,7 +215,7 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
                 selected: newSelected
             }, ()=>{
                 if(this.props.onSelected) {
-                    this.props.onSelected(this.props.data);
+                    this.props.onSelected(this.state.data);
                 }
             });
 
@@ -233,17 +233,17 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
             });
         }
     }
-    findRowByUniID(uniID: string): RefObject<UTableRow> {
+    private findRowByUniID(uniID: string): RefObject<UTableRow> {
         return this.rows.find((value: RefObject<UTableRow>) => {
             return value.current.getUniqueID() === uniID;
         });
     }
-    findDataByUniID(uniID: string): any{
-        return this.props.data.find((value: any, index: number)=>{
+    private findDataByUniID(uniID: string): any{
+        return this.state.data.find((value: any, index: number)=>{
             return uniID === this.getUniIDbyItem(value, index);
         });
     }
-    rowSelect(uniID: string, check: boolean){
+    private rowSelect(uniID: string, check: boolean){
         let after = ()=>{
             if(this.props.onSelected) {
                 let selectedData: any[] = [];
@@ -288,10 +288,10 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
             }, ()=>after());
         }
     }
-    getUniIDbyItem(item: any, index:number){
+    private getUniIDbyItem(item: any, index:number){
         return getRowDataUniqueID(this.props.column, item, index);
     }
-    reMapSelected(items: any[]) {
+    private reMapSelected(items: any[]) {
         let newSelected: string[] = [];
         this.state.selected.map((selectedID: string)=>{
            let matchIndex = items.findIndex((item: any, index: number) => {
@@ -301,35 +301,34 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
                newSelected.push(selectedID);
            }
         });
-        this.setState({selected: newSelected});
-    }
-    componentWillReceiveProps(nextProps: Readonly<UTableProps>, nextContext: any): void {
-        if(nextProps.data !== this.props.data) {
-            this.reMapSelected(nextProps.data);
-        }
-    }
-    checkRowInSelected(data: any, index: number):boolean {
-        let rowDataUniID = this.getUniIDbyItem(data, index);
-        return this.state.selected.findIndex((selectedID: string) => {
-            return selectedID === rowDataUniID;
-        }) >= 0;
-    }
-    getSelectedData(){
-        let selectedData: any[] = [];
-        this.state.selected.map((id: string) => {
-            let data = this.findDataByUniID(id);
-            if(!!data) selectedData.push(data);
+        this.rows.map((row: RefObject<UTableRow>) => {
+            let rowID = row.current.getUniqueID();
+            if(newSelected.findIndex((value: string) => {return value === rowID}) >= 0) {
+                row.current.setSelected(true);
+            } else {
+                row.current.setSelected(false);
+            }
         });
-        return selectedData;
+        this.setState({selected: newSelected}, ()=>{
+            if(this.props.onSelected) {
+                let selectedData: any[] = [];
+                this.state.selected.map((id: string) => {
+                    let data = this.findDataByUniID(id);
+                    if(!!data) selectedData.push(data);
+                });
+                // console.log(JSON.stringify(this.state.selected));
+                this.props.onSelected(selectedData);
+            }
+        });
     }
-    renderBody() {
+
+    private renderBody() {
         this.rows = [];
-        // console.log("update row items");
-        this.props.data.map((data: any, index: number)=>{
+        this.state.data.map((data: any, index: number)=>{
             this.rows[index] = React.createRef();
         });
         return <>
-            {this.props.data && this.props.data.map((data: any, index: number) => {
+            {this.state.data && this.state.data.map((data: any, index: number) => {
                 return <UTableRow
                     ref={this.rows[index]}
                     withIndex={this.props.withIndex}
@@ -339,10 +338,19 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
                     data={data}
                     onSelected={(uniID: string, check: boolean)=>this.rowSelect(uniID, check)}
                     column={this.props.column}
-                    index={index} selected={this.checkRowInSelected(data, index)}/>
+                    index={index}/>
             })}
         </>
     }
+    getSelectedData(){
+        let selectedData: any[] = [];
+        this.state.selected.map((id: string) => {
+            let data = this.findDataByUniID(id);
+            if(!!data) selectedData.push(data);
+        });
+        return selectedData;
+    }
+
     render(){
         return <table className={'u-table'}>
             {this.props.withHead && <thead>

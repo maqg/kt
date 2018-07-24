@@ -18,6 +18,7 @@ export interface UTextInputStates {
 }
 export class UTextInput extends Component<UTextInputProps, UTextInputStates>{
     inputRef: RefObject<HTMLInputElement> = React.createRef();
+
     constructor(props: UTextInputProps) {
         super(props);
         this.state = {
@@ -25,11 +26,6 @@ export class UTextInput extends Component<UTextInputProps, UTextInputStates>{
             isHover: false,
             value: ''
         }
-    }
-    updateValue(value: string){
-        this.setState({
-            value: value
-        })
     }
     private makeClassName() {
         let names = ['u-text-input'];
@@ -79,15 +75,26 @@ export class UTextInput extends Component<UTextInputProps, UTextInputStates>{
     private onInputChange(e: FormEvent<HTMLInputElement>) {
         e.preventDefault();
         let value = e.currentTarget.value;
-        this.props.onChange && this.props.onChange(value);
         this.setState({
             value: value
+        }, ()=>{
+            this.props.onChange && this.props.onChange(value);
         })
     }
     setFocus(){
         this.inputRef.current.focus();
     }
+    setValue(value: string, notify: boolean) {
+        this.setState({
+            value: value
+        }, ()=>{
+            if(this.props.onChange && notify) {
+                this.props.onChange(value)
+            }
+        })
+    }
     render() {
+
         return <div className={this.makeClassName()}
                     onMouseEnter={(e)=>this.onMouseEnter(e)}
                     onMouseLeave={(e)=>this.onMouseLeave(e)}>
