@@ -5,3 +5,5 @@ export * from './ui-text-input/u-text-input';
 export * from './util/validators';
 export * from './util/common';
 export * from './ui-check/u-check';
+export * from './ui-number/u-number';
+export * from './ui-pager/u-pager';

@@ -12,6 +12,8 @@ export interface UTableColumn {
 }
 export interface UTableRowProps {
     data: any,
+    start?:boolean,
+    end?:boolean,
     column: UTableColumn[],
     withCheck?:boolean,
     withIndex?:boolean,
@@ -69,6 +71,12 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
     }
     private makeClassName() {
         let name=['u-table-row'];
+        if(this.props.start){
+            name.push('start');
+        }
+        if(this.props.end) {
+            name.push('end');
+        }
         if(this.state.down) {
             name.push('down');
         }
@@ -121,29 +129,45 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
         })
     }
     private onMouseDown(e: MouseEvent) {
-        e.preventDefault();
+        // e.preventDefault();
         this.setState({
             down: true
         })
     }
     private onMouseUp(e: MouseEvent) {
-        e.preventDefault();
+        // e.preventDefault();
         this.setState({
             hover: true,
             down: false
         })
     }
+    private startRowWith(type: 'check'|'index'|'data', index?:number, dataSize?:number){
+        if(type === 'check') {
+            if(this.props.withCheck) {
+                return 'start';
+            }
+        } else if (type === 'index') {
+            if(!this.props.withCheck && this.props.withIndex) {
+                return 'start';
+            }
+        } else if(!this.props.withIndex && !this.props.withCheck && type === 'data' && index === 0) {
+            return 'start';
+        } else if(type === 'data' && index === (dataSize-1)) {
+            return "end";
+        }
+        return "";
+    }
     private renderColumns():ReactElement<any> {
         return <>
-            {this.props.withCheck && <td key={-2} className={'u-td-check'}><UCheck ref={this.checkRef} onCheck={(e)=>this.onCheck(e)}/></td>}
-            {this.props.withIndex && <td key={-1} className={'u-td-index'} onClick={(e)=>this.onTrClick(e)}>{this.props.makeIndex?this.props.makeIndex(this.props.index):this.props.index}</td>}
+            {this.props.withCheck && <td key={-2} className={'u-td-check ' + this.startRowWith('check')}><UCheck ref={this.checkRef} onCheck={(e)=>this.onCheck(e)}/></td>}
+            {this.props.withIndex && <td key={-1} className={'u-td-index ' + this.startRowWith('index')} onClick={(e)=>this.onTrClick(e)}>{this.props.makeIndex?this.props.makeIndex(this.props.index):this.props.index}</td>}
             {this.props.column.map((c: UTableColumn, index: number) => {
                 let value = this.props.data[c.key]?this.props.data[c.key]:"";
                 if(c.fill) {
                     value = c.fill(value, this.props.data, c);
                 }
                 if(value) {
-                    return <td key={index} className={'u-td'} onClick={(e)=>{if(!c.unSelectable)this.onTrClick(e)}}>
+                    return <td key={index} className={'u-td ' + this.startRowWith('data', index, this.props.column.length)} onClick={(e)=>{if(!c.unSelectable)this.onTrClick(e)}}>
                         {value}
                     </td>
                 }
@@ -194,10 +218,26 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
     getData(): any[]{
         return this.state.data;
     }
+    private startRowWith(type: 'check'|'index'|'data', index?:number, dataSize?:number){
+        if(type === 'check') {
+            if(this.props.withCheck) {
+                return 'start';
+            }
+        } else if (type === 'index') {
+            if(!this.props.withCheck && this.props.withIndex) {
+                return 'start';
+            }
+        } else if(!this.props.withIndex && !this.props.withCheck && type === 'data' && index === 0) {
+            return 'start';
+        } else if(type === 'data' && index === (dataSize-1)) {
+            return "end";
+        }
+        return "";
+    }
     private renderHead() {
         return <>
             {this.props.column.map((c: UTableColumn, index:number)=>{
-                return <th key={'th-'+index}>
+                return <th key={'th-'+index} className={"th-col " + this.startRowWith('data', index, this.props.column.length)}>
                     {typeof c.header === 'function' && c.header(c)}
                     {typeof c.header !== 'function' && c.header}
                 </th>
@@ -331,6 +371,8 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
             {this.state.data && this.state.data.map((data: any, index: number) => {
                 return <UTableRow
                     ref={this.rows[index]}
+                    start={index === 0}
+                    end={index === (this.state.data.length - 1)}
                     withIndex={this.props.withIndex}
                     makeIndex={this.props.makeIndex}
                     withCheck={this.props.withCheck}
@@ -352,11 +394,11 @@ export class UTable extends React.Component<UTableProps, UTableStates>{
     }
 
     render(){
-        return <table className={'u-table'}>
+        return <table className={'u-table'} cellSpacing={0}>
             {this.props.withHead && <thead>
             <tr className={'u-tr-head'}>
-                {this.props.withCheck && <td key={-2} className={'u-th-check'}><UCheck ref={this.checkAllRef} disabled={!this.props.multi} onCheck={(e)=>this.onCheck(e)}/></td>}
-                {this.props.withIndex && <td key={-1} className={'u-th-index'}>#</td>}
+                {this.props.withCheck && <th key={-2} className={'u-th-check ' + this.startRowWith('check')}><UCheck ref={this.checkAllRef} disabled={!this.props.multi} onCheck={(e)=>this.onCheck(e)}/></th>}
+                {this.props.withIndex && <th key={-1} className={'u-th-index ' + this.startRowWith('index')}>#</th>}
                 {this.renderHead()}
             </tr>
             </thead>}

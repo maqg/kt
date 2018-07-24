@@ -1,0 +1,39 @@
+.u-table{
+  background-color: #fff;
+  border-collapse: separate;
+  border-spacing: 1px;
+  .u-tr-head{
+    th{
+      padding: 10px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: normal;
+      color: #333;
+      border: 1px solid #e0e0e0;
+      border-bottom: 4px solid #d0d0d0;
+    }
+  }
+  .u-table-row {
+    td{
+      padding: 10px;
+      font-size: 14px;
+      color: #333;
+      border: 1px solid #e0e0e0;
+    }
+    &.hover{
+      td{
+        background-color: #f0f0f0;
+      }
+    }
+    &.odd{
+      td{
+        background-color: #f0f0f0;
+      }
+    }
+    &.selected{
+      td{
+        border: 1px dashed #2b669a;
+      }
+    }
+  }
+}
