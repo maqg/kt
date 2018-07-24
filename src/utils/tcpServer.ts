@@ -1,6 +1,6 @@
-import EventEmitter = NodeJS.EventEmitter;
+//const EventEmitter = require("Events").EventEmitter;
 import {Config} from "../config/config";
-
+import {EventEmitter} from 'Events';
 let net = require("net");
 let Socket = require("./socket");
 
@@ -23,7 +23,7 @@ export class TcpServer extends EventEmitter {
 
 		super();
 
-		this.port = config.port || Config.LockMsgListenPort;
+		this.port = config.port || Config.BikeSocketPort;
 		this.host = config.host || "localhost";
 		this.protocol = config.protocol || {};
 		this.socketTimeout = config.socketTimeout || 2 * 60 * 1000;

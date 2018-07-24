@@ -20,8 +20,8 @@ let quitting = false;
 let conn;
 let retryTimeout = 3000;
 
-let ServerAddr = "ktc.octlink.com";
-//let ServerAddr = "localhost";
+//let ServerAddr = "ktc.octlink.com";
+let ServerAddr = "localhost";
 
 const IMEI = "imei123ABCDEFG";
 
@@ -167,10 +167,10 @@ function parseCmd(cmd) {
 		setTimeout(connect, retryTimeout);
 	}
 
-	conn = Net.createConnection(Config.LockMsgListenPort, ServerAddr);
+	conn = Net.createConnection(Config.BikeSocketPort, ServerAddr);
 
 	conn.on("connect", function () {
-		console.log("connected to server " + ServerAddr + ", Port: " + Config.LockMsgListenPort);
+		console.log("connected to server " + ServerAddr + ", Port: " + Config.BikeSocketPort);
 		conn.write(JSON.stringify(get_heartbeatmsg()));
 		syncHeartBeatMsgThread(conn);
 	});

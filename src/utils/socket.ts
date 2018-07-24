@@ -1,5 +1,5 @@
 
-import EventEmitter = NodeJS.EventEmitter;
+import {EventEmitter} from 'Events';
 
 const MAX_SN = 255;
 

@@ -124,10 +124,10 @@ function startTcpSocket() {
 	});
 
 	server.on("listening", function () {
-		console.log("Server Listening on port " + Config.LockMsgListenPort);
+		console.log("Server Listening on port " + Config.BikeSocketPort);
 	});
 
-	server.listen(Config.LockMsgListenPort);
+	server.listen(Config.BikeSocketPort);
 }
 
 function startRedis() {

@@ -167,10 +167,10 @@ function parseCmd(cmd) {
 		setTimeout(connect, retryTimeout);
 	}
 
-	conn = Net.createConnection(Config.LockMsgListenPort, ServerAddr);
+	conn = Net.createConnection(Config.BikeSocketPort, ServerAddr);
 
 	conn.on("connect", function () {
-		console.log("connected to server " + ServerAddr + ", Port: " + Config.LockMsgListenPort);
+		console.log("connected to server " + ServerAddr + ", Port: " + Config.BikeSocketPort);
 		conn.write(JSON.stringify(get_heartbeatmsg()));
 		syncHeartBeatMsgThread(conn);
 	});
