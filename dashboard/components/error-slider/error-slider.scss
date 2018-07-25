@@ -1,0 +1,72 @@
+.c-error-slider {
+  position: absolute;
+  right:0;
+  top:0;
+  bottom: 0;
+  overflow-y: auto;
+  border-left: 1px solid #e0e0e0;
+  display: flex;
+  width: 200px;
+  flex-direction: column;
+  .title {
+    flex-shrink: 0;
+    display: flex;
+    padding: 5px 15px;
+    align-items: center;
+    border-bottom: 1px dashed #ff3300;
+    background-color: rgba(255, 40, 0, .2);
+    .left{
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      .u-icon {
+        font-size: 20px;
+      }
+      .label {
+        padding: 0 10px;
+      }
+    }
+    .right{
+      flex-shrink: 0;
+      .u-button {
+        padding: 5px;
+        .graph {
+          padding: 0;
+        }
+      }
+    }
+  }
+  .list {
+    flex-grow: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    .error-item {
+      display: flex;
+      flex-direction: column;
+      border: 1px dashed #ff3300;
+      margin-bottom: 5px;
+      flex-shrink: 0;
+      .info{
+        background-color: rgba(255, 40, 0, .1);
+        padding:5px;
+        font-size: 14px;
+      }
+      .error-title {
+        display: flex;
+        padding: 5px;
+        font-size: 12px;
+        .no-part{
+          display: flex;
+          flex-grow: 1;
+          .error-title-label{
+            font-weight: bold;
+          }
+          .error-title-no {
+          }
+        }
+      }
+    }
+  }
+}

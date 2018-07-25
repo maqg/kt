@@ -6,6 +6,9 @@ import {AccountAction} from "../../components/account-action/account-action";
 import {UNavItem} from "../../ui-libs/ui-nav";
 import {UIcon} from "../../ui-libs/ui-icon";
 import {RefObject} from "react";
+import {GlobalErrorEvent} from "../../util-tools/event-tool";
+import {ErrorObj} from "../../util-tools/api/api-tools";
+import {ErrorSlider} from "../../components/error-slider/error-slider";
 import {AccountView} from "../account-view/account-view";
 import {UserView} from "../user-view/user-view";
 const logoImg = require('../../static/img/logo.png');
@@ -13,6 +16,7 @@ const logoImg = require('../../static/img/logo.png');
 class MainView extends React.Component<RouteComponentProps<any>>{
     accountRef: RefObject<AccountAction>;
     location: string;
+    testInterval: number = 0;
     constructor(props: any) {
         super(props);
         this.accountRef = React.createRef();
@@ -21,6 +25,12 @@ class MainView extends React.Component<RouteComponentProps<any>>{
         if(this.location.indexOf('/main/account') === 0) {
             this.accountRef.current.setExpand(true);
         }
+        this.testInterval = window.setInterval(()=>{
+            let err = new ErrorObj();
+            err.errorNo=3;
+            err.errorMsg = "数据库操作错误";
+            GlobalErrorEvent.emitError(err);
+        }, 2000);
     }
     componentDidUpdate(){
         if(this.location.indexOf('/main/account') === 0) {
@@ -28,6 +38,9 @@ class MainView extends React.Component<RouteComponentProps<any>>{
         } else {
             this.accountRef.current.setExpand(false);
         }
+    }
+    componentWillUnmount(){
+        clearInterval(this.testInterval);
     }
     render() {
         return <div className={'kt-main-view'}>
@@ -53,6 +66,7 @@ class MainView extends React.Component<RouteComponentProps<any>>{
 
                 </div>
                 <div className={'kt-main-frame'}>
+                    <ErrorSlider/>
                     <Route path='/main/user/admin' component={AccountView}/>
                     <Route path='/main/user/rider' component={UserView}/>
                 </div>
