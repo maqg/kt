@@ -1,18 +1,22 @@
+/*
+ * For base tcp socket operations and methods.
+ * Created at 06.29.2018 by Henry.Ma
+ */
 
 import {EventEmitter} from 'Events';
 
 const MAX_SN = 255;
 
-export class Socket extends EventEmitter {
+export class TcpSocket extends EventEmitter {
 
-	key: string;
+	key: string; // remoteAddress#remotePort
 	onData: any;
-	socket: any;
+	socket: any; // client socket
 
 	buf: any;
-	sn: number;
+	seq: number; // seq number from 0 to MAX_SN
 	time: number;
-	reason: string;
+	errorLog: string; // why failed
 
 	constructor(clientSocket, options) {
 
@@ -26,7 +30,7 @@ export class Socket extends EventEmitter {
 		this.key = options.key;
 		this.socket = clientSocket;
 		this.buf = new Buffer(0);
-		this.sn = 0;
+		this.seq = 0;
 		this.time = Date.now();
 
 		this.socket.on("data", this.onData.bind(this));
@@ -47,18 +51,18 @@ export class Socket extends EventEmitter {
 	}
 
 	_onEnd() {
-		this.reason = this.reason || "end";
+		this.errorLog = this.errorLog || "end";
 		this.emit("end", this);
 	}
 
 	_onTimeout() {
-		this.reason = this.reason || "timeout";
+		this.errorLog = this.errorLog || "timeout";
 		this.end();
 		this.emit("timeout", this);
 	}
 
 	_onError(err) {
-		this.reason = this.reason || err.message || err.stack;
+		this.errorLog = this.errorLog || err.message || err.stack;
 	}
 
 	_onConnect() {
@@ -72,8 +76,8 @@ export class Socket extends EventEmitter {
 	}
 
 	getSn() {
-		this.sn = this.sn === MAX_SN ? 0 : this.sn + 1;
-		return this.sn;
+		this.seq = this.seq === MAX_SN ? 0 : this.seq + 1;
+		return this.seq;
 	}
 
 	getKey() {

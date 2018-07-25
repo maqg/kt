@@ -181,7 +181,7 @@ function startRedis() {
 export function startMonitorServer() {
 
 	startTcpSocket();
-	console.log("Tcp Socket Server Started");
+	console.log("Tcp TcpSocket Server Started");
 
 	startRedis();
 	console.log("Redis subscribe Started");

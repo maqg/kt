@@ -1,18 +1,23 @@
-//const EventEmitter = require("Events").EventEmitter;
+/*
+ * Base Structure of Tcp Server of BikeSocket.
+ * Created at 06.29.2018 by Henry.Ma
+ */
+
 import {Config} from "../config/config";
 import {EventEmitter} from 'Events';
-let net = require("net");
-let Socket = require("./socket");
+import {TcpSocket} from "./tcpSocket";
+import * as Net from "net";
 
 export class TcpServer extends EventEmitter {
 
 	port: number; // listening port
 	host: string; // listening host
 
-	protocol: any;
 	socketTimeout: number;
 
 	connections: {};
+
+	dataHandler: any;
 
 	server: any;
 
@@ -25,7 +30,7 @@ export class TcpServer extends EventEmitter {
 
 		this.port = config.port || Config.BikeSocketPort;
 		this.host = config.host || "localhost";
-		this.protocol = config.protocol || {};
+		this.dataHandler = config.dataHandler || function () {};
 		this.socketTimeout = config.socketTimeout || 2 * 60 * 1000;
 		this.connections = {};
 
@@ -43,10 +48,9 @@ export class TcpServer extends EventEmitter {
 			return;
 		}
 
-		//let key = uuid.v1().substring(0,23);
-		let key = socket.remoteAddress.split(":").pop() + ":" + socket.remotePort;
-		let newSocket = new Socket(socket, {
-			onData: this.protocol.socketDataHandler,
+		let key = socket.remoteAddress + ":" + socket.remotePort;
+		let newSocket = new TcpSocket(socket, {
+			onData: this.dataHandler,
 			key: key, socketTimeout: this.socketTimeout
 		});
 		this.connections[key] = newSocket;
@@ -54,7 +58,6 @@ export class TcpServer extends EventEmitter {
 		newSocket.on("message", this._receive.bind(this));
 		newSocket.once("close", this._onSocketClose.bind(this));
 		newSocket.once("error", this._onSocketError.bind(this));
-
 	}
 
 	_onListen() {
@@ -86,7 +89,6 @@ export class TcpServer extends EventEmitter {
 	_generateResponse(msg, socket) {
 		return {
 			_socket: socket,
-			_protocol: this.protocol,
 			_req: msg,
 			send: this._send,
 			ack: this._ack
@@ -96,7 +98,6 @@ export class TcpServer extends EventEmitter {
 	_generateRequest(msg, socket) {
 		return {
 			_socket: socket,
-			_protocol: this.protocol,
 			funcNo: msg.funcNo,
 			sn: msg.sn,
 			body: msg
@@ -104,6 +105,7 @@ export class TcpServer extends EventEmitter {
 	}
 
 	_receive(buf, socket) {
+		/*
 		let msg = this.protocol.decode(buf);
 		let req = this._generateRequest(msg, socket);
 		let res = this._generateResponse(req, socket);
@@ -114,22 +116,28 @@ export class TcpServer extends EventEmitter {
 		this.emit(socket.key + req.funcNo, msg);
 
 		console.log("trigger event", socket.key + req.funcNo);
+		*/
 	}
 
 	_send(msg) {
+		/*
 		msg.sn = this.socket.getSn();
 		this.socket.write(this.protocol.encode(msg));
+		*/
 	}
 
 	_ack(msg) {
+		/*
 		// 设置请求指令对应的ACK指令
 		msg.funcNo = this.protocol.getACKCode(this.req.funcNo);
 		msg.sn = this.req.sn;
 		console.log("ret data %o, imei: %s, funcNo: %s", msg, this.socket.IMEI, this.req.funcNo);
 		this.socket.write(this.protocol.encode(msg));
+		*/
 	}
 
 	send(key, msg, callback) {
+		/*
 		let socket = this.connections[key];
 		if (!socket) {
 			return false;
@@ -147,6 +155,7 @@ export class TcpServer extends EventEmitter {
 			this.once(key + ackNo, callback);
 			console.log("bind event", key + ackNo);
 		}
+		*/
 		return true;
 	}
 
@@ -164,10 +173,8 @@ export class TcpServer extends EventEmitter {
 	}
 
 	startup() {
-
 		this.emit("startup", this);
-
-		this.server = net.createServer();
+		this.server = Net.createServer();
 		this.server.on("connection", this._onConnection.bind(this));
 		this.server.once("error", this._onError.bind(this));
 		this.server.once("close", this._onClose.bind(this));

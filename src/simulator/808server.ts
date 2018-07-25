@@ -182,7 +182,7 @@ function startRedis() {
 export function startMonitorServer() {
 
 	startTcpSocket();
-	console.log("Tcp Socket Server Started");
+	console.log("Tcp TcpSocket Server Started");
 
 	startRedis();
 	console.log("Redis subscribe Started");
@@ -192,12 +192,15 @@ export function startMonitorServer() {
 	console.log("Bike Status Monitord Started");
 }
 
+function parseTcpData(data) {
+	console.log(data.toString());
+}
 
 let server = new TcpServer({
 	"port": Config.BikeSocketPort,
 	"host": Config.BikeSocketHost,
 	"socketTimeout": Config.BikeSocketTimeout,
-	"protocol": {}
+	"dataHandler": parseTcpData,
 });
 
 server.startup();
