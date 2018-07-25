@@ -1,29 +1,45 @@
 import * as React from "react";
-import {Component, MouseEvent, RefObject} from "react";
+import {Component, MouseEvent, ReactElement, RefObject} from "react";
 import {UTable, UTableColumn} from "../../ui-libs/ui-table/u-table";
 import {ShowAllAccountApi, ShowAllAccountResponseData} from "../../util-tools/api/show-all-account-api";
 import {RouteComponentProps, withRouter} from "react-router";
-import {UButton} from "../../ui-libs";
+import {UButton, UPager} from "../../ui-libs";
 import {UIcon} from "../../ui-libs/ui-icon";
 
 export interface AccountViewStates {
     data: [ShowAllAccountResponseData],
-    value: string
+    total: number,
+    start: number,
+    limit: number
 }
 export class AccountView extends React.Component<any, AccountViewStates> {
     showAllAccountApi: ShowAllAccountApi;
     columns: UTableColumn[] = [];
     tableRef: RefObject<UTable> = React.createRef();
 
-    constructor(props: RouteComponentProps<any>) {
+    constructor(props: any) {
         super(props);
+        this.state = {
+            data: null,
+            total: 0,
+            start: 0,
+            limit: 10
+        };
+        this.showAllAccountApi = new ShowAllAccountApi();
         let userNameColumn: UTableColumn = {
             header: "名称",
             key: "username"
         };
         let statusColumn: UTableColumn = {
-            header: "状态",
-            key: "status"
+            header: "可用状态",
+            key: "status",
+            fill: (value) => {
+                let ret: ReactElement<any> = <span>可用</span>;
+                if(value !== "enabled") {
+                    ret = <span>不可用</span>
+                }
+                return ret;
+            }
         };
         let phoneColumn: UTableColumn = {
             header: "电话",
@@ -40,24 +56,23 @@ export class AccountView extends React.Component<any, AccountViewStates> {
             key: "createTimeStr"
         };
         this.columns.push(userNameColumn, statusColumn, phoneColumn, idColumn, createTimeStrColumn);
-        this.showAllAccountApi = new ShowAllAccountApi();
-        this.state = {
-            data: null,
-            value: ""
-        };
         this.getData();
     };
 
     async getData() {
         let ret: ShowAllAccountResponseData;
         try {
-            ret = await this.showAllAccountApi.doShowAllAccount({start: 0, limit: 100});
-            this.setState({data: ret.data});
+            ret = await this.showAllAccountApi.doShowAllAccount({start: this.state.start, limit: this.state.limit});
+            this.setState({
+                data: ret.data,
+                total: ret.total
+            });
             this.tableRef.current.setData(ret.data);
         } catch (e) {
             throw e;
         }
     }
+
     render() {
         return (
             <div>
@@ -71,8 +86,8 @@ export class AccountView extends React.Component<any, AccountViewStates> {
                 <div>
                     <UTable
                         column={this.columns}
-                        withHead={true}
                         ref={this.tableRef}
+                        withHead={true}
                         withCheck={true}
                         withIndex={true}
                         multi={true}
@@ -80,7 +95,10 @@ export class AccountView extends React.Component<any, AccountViewStates> {
                     />
                 </div>
                 <div>
-
+                    <UPager
+                        limit={this.state.limit}
+                        total={this.state.total}
+                        onChange={(p) => {this.setState({start: p*this.state.limit}, () => {this.getData()})}}/>
                 </div>
             </div>
         )

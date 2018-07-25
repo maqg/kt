@@ -25,7 +25,9 @@ export class ShowAccountApi extends ApiTools{
             throw e;
         }
         if(response.errorObj.errorNo !== 0) {
-            throw response.errorObj;
+            let error = response.errorObj;
+            error.time = (new Date()).getTime();
+            throw error;
         }
         return response.data;
     }

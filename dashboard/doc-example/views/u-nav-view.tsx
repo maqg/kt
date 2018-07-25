@@ -48,6 +48,8 @@ export class UNavView extends React.Component{
                 <UNavItem label={'输入框组件'} graph={<UIcon iconName={'edit'}/>} path={'/sysComponent/input-component'}/>
                 <UNavItem label={'勾选框组件'} graph={<UIcon iconName={'check-square-o'}/>} path={'/sysComponent/check-component'}/>
                 <UNavItem label={'表格组件'} graph={<UIcon iconName={'table'}/>} path={'/sysComponent/table-component'}/>
+                <UNavItem label={'数字框组件'} graph={<UIcon iconName={'qq'}/>} path={'/sysComponent/number-component'}/>
+                <UNavItem label={'分页组件'} graph={<UIcon iconName={'step-forward'}/>} path={'/sysComponent/pager-component'}/>
             </UNavItem>
         </ul>}}/>
     }

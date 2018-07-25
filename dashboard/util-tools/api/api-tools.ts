@@ -12,6 +12,7 @@ export class ErrorObj extends Error{
     errorLog: string;
     errorNo: number;
     errorMsg: string;
+    time: number;
 }
 export interface APIResponseData {
     [key: string]: any
@@ -41,6 +42,7 @@ export class ApiTools implements APIRequest {
             error.errorMsg = e.message;
             error.errorNo = e.response.status;
             error.errorLog = e.stack;
+            error.time = (new Date()).getTime();
             throw error;
         }
         return ret.data;
