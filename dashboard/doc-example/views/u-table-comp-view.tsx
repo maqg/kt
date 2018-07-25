@@ -49,7 +49,7 @@ header|any|设置列头信息
 key|string|数据key
 primary|boolean|可选属性
 unSelectable|boolean|可选属性
-fill|boolean|可选属性
+fill|function|处理显示值，可选属性
 `;
     content_title = `
 # 表格组件 **UTable**

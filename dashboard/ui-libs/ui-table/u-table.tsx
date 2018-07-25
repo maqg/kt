@@ -166,11 +166,11 @@ export class UTableRow extends React.Component<UTableRowProps, UTableRowStates>{
                 if(c.fill) {
                     value = c.fill(value, this.props.data, c);
                 }
-                if(value) {
-                    return <td key={index} className={'u-td ' + this.startRowWith('data', index, this.props.column.length)} onClick={(e)=>{if(!c.unSelectable)this.onTrClick(e)}}>
-                        {value}
-                    </td>
-                }
+
+                return <td key={index} className={'u-td ' + this.startRowWith('data', index, this.props.column.length)} onClick={(e)=>{if(!c.unSelectable)this.onTrClick(e)}}>
+                    {value}
+                </td>
+
             })}
         </>
     }

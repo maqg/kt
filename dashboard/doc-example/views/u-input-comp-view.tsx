@@ -18,7 +18,7 @@ graph|any|按钮图标，可选属性
 disabled|boolean|是否可用，可选属性
 isPassword|boolean|是否为密码框
 isError|boolean|验证是否通过
-placeholder|string|提示信息
+placeholder|string|提示输入信息
 onChange|function|change事件处理器
 className|string[]|css class name 列表
 `;

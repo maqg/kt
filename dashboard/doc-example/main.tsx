@@ -17,6 +17,8 @@ import {UNavItem} from "../ui-libs/ui-nav";
 import {UNavView} from "./views/u-nav-view";
 import {UCheckCompView} from "./views/u-check-comp-view";
 import {UTableCompView} from "./views/u-table-comp-view";
+import {UNumberCompView} from "./views/u-number-comp-view";
+import {UPagerCompView} from "./views/u-pager-comp-view";
 
 export class DocLayout extends React.Component<any>{
     constructor(props: any){
@@ -41,6 +43,8 @@ export class DocLayout extends React.Component<any>{
                     <Route path="/sysComponent/input-component" component={UInputCompView}/>
                     <Route path="/sysComponent/check-component" component={UCheckCompView}/>
                     <Route path="/sysComponent/table-component" component={UTableCompView}/>
+                    <Route path="/sysComponent/number-component" component={UNumberCompView}/>
+                    <Route path="/sysComponent/pager-component" component={UPagerCompView}/>
                     <Redirect to={'/'}/>
                 </Switch>
             </main>

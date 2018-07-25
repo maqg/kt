@@ -2,13 +2,13 @@ import {APIRequest, APIRequestParas, APIResponse, APIResponseData, ApiTools} fro
 import {AuthTool} from "../auth-tool";
 
 export interface ShowAllUserParas extends APIRequestParas {
-    id: string,
-    unionId: string,
-    openId: string,
-    phone: number,
-    sNickname: string,
-    startTime: string,
-    endTime: string,
+    id?: string,
+    unionId?: string,
+    openId?: string,
+    phone?: number,
+    sNickname?: string,
+    startTime?: string,
+    endTime?: string,
     start: number,
     limit: number
 }
