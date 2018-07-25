@@ -6,6 +6,7 @@ import {AccountAction} from "../../components/account-action/account-action";
 import {UNavItem} from "../../ui-libs/ui-nav";
 import {UIcon} from "../../ui-libs/ui-icon";
 import {RefObject} from "react";
+import {AccountView} from "../account-view/account-view";
 const logoImg = require('../../static/img/logo.png');
 
 class MainView extends React.Component<RouteComponentProps<any>>{
@@ -51,7 +52,7 @@ class MainView extends React.Component<RouteComponentProps<any>>{
 
                 </div>
                 <div className={'kt-main-frame'}>
-                    Hello World
+                    <Route path="/main/user/admin" component={AccountView}/>
                 </div>
             </div>
         </div>

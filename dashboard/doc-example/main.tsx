@@ -15,6 +15,8 @@ import {UInputCompView} from "./views/u-input-comp-view";
 import {UNavCompView} from "./views/u-nav-comp-view";
 import {UNavItem} from "../ui-libs/ui-nav";
 import {UNavView} from "./views/u-nav-view";
+import {UCheckCompView} from "./views/u-check-comp-view";
+import {UTableCompView} from "./views/u-table-comp-view";
 
 export class DocLayout extends React.Component<any>{
     constructor(props: any){
@@ -29,16 +31,20 @@ export class DocLayout extends React.Component<any>{
             <main className={'doc-main'}>
                 <Switch>
                     <Route path="/" exact replace component={UComponentView}/>
-                    <Route path="/icon" exact render={()=>{return <Redirect to={'/icon/icon-component'}/>}} />
-                    <Route path="/icon/icon-component"  component={UIconCompView} />
-                    <Route path="/icon/icon-map"  component={UIconMapView} />
-                    <Route path="/sysComponent/nav-component"  component={UNavCompView} />
-                    <Route path="/sysComponent/button-component"  component={UButtonCompView} />
-                    <Route path="/sysComponent/input-component"  component={UInputCompView} />
+                    <Route path="/icon" exact render={() => {
+                        return <Redirect to={'/icon/icon-component'}/>
+                    }}/>
+                    <Route path="/icon/icon-component" component={UIconCompView}/>
+                    <Route path="/icon/icon-map" component={UIconMapView}/>
+                    <Route path="/sysComponent/nav-component" component={UNavCompView}/>
+                    <Route path="/sysComponent/button-component" component={UButtonCompView}/>
+                    <Route path="/sysComponent/input-component" component={UInputCompView}/>
+                    <Route path="/sysComponent/check-component" component={UCheckCompView}/>
+                    <Route path="/sysComponent/table-component" component={UTableCompView}/>
                     <Redirect to={'/'}/>
                 </Switch>
             </main>
-        </div>
+        </div>;
     }
 }
 render(<HashRouter>
