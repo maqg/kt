@@ -13,15 +13,15 @@ import {
 	OPCODE_SYNC_RIDEMSG,
 	OPCODE_SYNC_STATUS,
 	OPCODE_UNLOCK_CALLBACK
-} from "./config/config";
-import {getMilliSeconds, getRandom} from "./utils/utils";
+} from "../config/config";
+import {getMilliSeconds, getRandom} from "../utils/utils";
 
 let quitting = false;
 let conn;
 let retryTimeout = 3000;
 
-let ServerAddr = "ktc.octlink.com";
-//let ServerAddr = "localhost";
+//let ServerAddr = "ktc.octlink.com";
+let ServerAddr = "localhost";
 
 const IMEI = "imei123ABCDEFG";
 

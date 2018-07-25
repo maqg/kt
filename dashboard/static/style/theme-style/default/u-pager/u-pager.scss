@@ -1,0 +1,43 @@
+.u-pager{
+  display: inline-flex;
+  justify-content: center;
+  align-items: stretch;
+  .u-button{
+    margin: 0 2px;
+    .graph{
+      padding:0;
+    }
+  }
+  .page-index{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 10px;
+    .current{
+      font-size: 14px;
+      color: #2b669a;
+      font-weight: bold;
+    }
+    .slash {
+      padding: 0 10px;
+      font-weight: bold;
+      color: #888;
+    }
+    .total {
+      font-weight: bold;
+      color: #888;
+    }
+  }
+  .page-jump{
+    display: inline-flex;
+    justify-content: center;
+    align-items: stretch;
+  }
+  .page-jump {
+    padding-left: 20px;
+    .u-text-input{
+      .input{
+        width: 20px;
+      }
+    }
+  }
+}

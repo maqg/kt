@@ -21,9 +21,10 @@ import {
 	RedisChannelLockMonitorUnlockCallback,
 	RedisChannelMonitorLockLock,
 	RedisChannelMonitorLockUnlock
-} from "./config/config";
-import {update_bike_onlike_status, updateBikeStatusByImei} from "./modules/bike";
-import {Bike, BIKE_ONLINE_STATUS_ONLINE} from "./models/Bike";
+} from "../config/config";
+import {update_bike_onlike_status, updateBikeStatusByImei} from "../modules/bike";
+import {Bike, BIKE_ONLINE_STATUS_ONLINE} from "../models/Bike";
+import {TcpServer} from "../utils/tcpServer";
 
 let g_update_bikestatus_interval = null;
 let pubRedis = null;
@@ -191,5 +192,14 @@ export function startMonitorServer() {
 	console.log("Bike Status Monitord Started");
 }
 
-startMonitorServer();
+
+let server = new TcpServer({
+	"port": Config.BikeSocketPort,
+	"host": Config.BikeSocketHost,
+	"socketTimeout": Config.BikeSocketTimeout,
+	"protocol": {}
+});
+
+server.startup();
+
 console.log("Monitor Server Started!");

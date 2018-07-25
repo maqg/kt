@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Component, MouseEvent, RefObject} from "react";
 import {UIcon} from "../../ui-libs/ui-icon";
-import {UButton, UCheck} from "../../ui-libs";
+import {UButton, UCheck, UNumber, UPager} from "../../ui-libs";
 import {UTextInput} from "../../ui-libs";
 import {LoginApi} from "../../util-tools/api/login-api";
 import {withRouter} from "react-router";
@@ -160,9 +160,17 @@ export class UComponentView extends Component<any, UComponentViewStates>{
                         multi={this.state.tableMulti}
                         withIndex={this.state.tableIndex}
                         withCheck={this.state.tableCheck}
-                        withHead={this.state.tableHead} onSelected={(ret:any[])=>{
+                        withHead={true} onSelected={(ret:any[])=>{
                     console.dir(JSON.stringify(ret));
                 }}/>
+            </div>
+            <div className={'name'}>UNumber</div>
+            <div className={'view'}>
+                <UNumber label={'Number'}/>
+            </div>
+            <div className={'name'}>UPager</div>
+            <div className={'view'}>
+                <UPager limit={4} total={40} onChange={(p)=>{console.log(p)}}/>
             </div>
         </div>
     }

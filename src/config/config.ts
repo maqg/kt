@@ -19,7 +19,10 @@ export let RedisPublisher = null;
 export let RedisData = null;
 
 const Config = {
-	"LockMsgListenPort": 7001,
+
+	"BikeSocketPort": 7001,
+	"BikeSocketHost": "localhost",
+	"BikeSocketTimeout": 2 * 60 * 1000,
 
 	"WebSocketPort": 8001,
 

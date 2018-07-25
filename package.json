@@ -9,8 +9,8 @@
     "run-server": "nodemon ./dist/index.js",
     "dev-dashboard": "webpack --config ./webpack.config.js",
     "dev-doc": "webpack --config ./webpack.config.doc.js",
-    "run-tcpserver": "nodemon ./dist/lockmonitor.js",
-    "run-lockagent": "nodemon ./dist/lockagent.js",
+    "run-tcpserver": "nodemon ./dist/simulator/808server.js",
+    "run-lockagent": "nodemon ./dist/simulator/808client.js",
     "run-websocket": "nodemon ./dist/websocket.js"
   },
   "keywords": [

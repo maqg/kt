@@ -6,6 +6,7 @@ export interface UButtonProps {
     label?: string,
     className?: string[],
     disabled?: boolean,
+    title?: string,
     onClick?: (e: MouseEvent) => void
 }
 
@@ -97,6 +98,7 @@ export class UButton extends Component<UButtonProps, UButtonStates>{
     }
     render() {
         return <button className={this.makeClassName()}
+                       title={this.props.title?this.props.title:""}
                        ref={this.buttonRef}
                        disabled={this.props.disabled}
                        onFocus={(e)=>this.onFocus(e)}
